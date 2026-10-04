@@ -2,6 +2,14 @@ import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs";
 
+import { postJson } from "./api.js";
+import { rowStates } from "./state.js";
+import { renderTranslated, syncRowFromDom } from "./translated-view.js";
+import { handleOriginalEdited } from "./retranslate-ui.js";
+import { initAssistant, refreshAssistantButton } from "./assistant.js";
+import { initMerge, refreshMergeButton, unmergeRow } from "./merge-ui.js";
+import { showToast } from "./toast.js";
+
 const SVGNS = "http://www.w3.org/2000/svg";
 const blockRows = document.getElementById("block-rows");
 const pdfPages = document.getElementById("pdf-pages");
@@ -11,6 +19,57 @@ const pageTotal = document.getElementById("page-total");
 const searchInput = document.getElementById("search-input");
 const pageSheets = [];
 let totalPages = 0;
+
+// pdf block id -> its polygon on the page, and pdf block id -> the row that shows it now
+// (a merged row shows several blocks, so one row can be the answer for many ids)
+const polygonsByBlockId = new Map();
+const rowByBlockId = new Map();
+
+function notifySelectionChanged() {
+  refreshAssistantButton();
+  refreshMergeButton();
+}
+
+function setRowHighlight(tr, on) {
+  JSON.parse(tr.dataset.sourceBlocks).forEach((blockId) => {
+    polygonsByBlockId.get(blockId)?.classList.toggle("highlight", on);
+  });
+  tr.classList.toggle("active", on);
+}
+
+// connects a row to the pdf blocks it shows (its state.source_blocks)
+function registerRowBlocks(tr) {
+  const blockIds = rowStates.get(tr.dataset.id).source_blocks.map((block) => block.id);
+  tr.dataset.sourceBlocks = JSON.stringify(blockIds);
+  blockIds.forEach((blockId) => rowByBlockId.set(blockId, tr));
+
+  tr.addEventListener("mouseenter", () => {
+    setRowHighlight(tr, true);
+    polygonsByBlockId.get(blockIds[0])?.scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+  tr.addEventListener("mouseleave", () => setRowHighlight(tr, false));
+}
+
+// builds the row of a state (used when rows are merged or split again)
+function createRowFromState(state) {
+  const tr = makeRow({ id: state.id, text: state.originalText });
+  rowStates.set(state.id, state);
+  renderTranslated(tr);
+  registerRowBlocks(tr);
+  return tr;
+}
+
+function replaceRows(oldRows, newStates) {
+  const newRows = newStates.map(createRowFromState);
+  oldRows[0].before(...newRows);
+  const newIds = newStates.map((state) => state.id);
+  oldRows.forEach((tr) => {
+    if (!newIds.includes(tr.dataset.id)) rowStates.delete(tr.dataset.id);
+    tr.remove();
+  });
+  checkAll.checked = false;
+  notifySelectionChanged();
+}
 
 function applySearch() {
   const q = searchInput.value.trim();
@@ -56,9 +115,20 @@ function makeRow(b) {
   tr.className = "block-row";
   tr.dataset.id = b.id;
 
-  const text = stripHtml(b.html);
+  // a row made by a merge has its own text (b.text), a pdf block has html
+  const text = b.text !== undefined ? b.text : stripHtml(b.html);
   const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   tr.dataset.search = text;
+
+  // the state of the row: what we know about its translation (the segments) and where it comes from
+  rowStates.set(b.id, {
+    id: b.id,
+    segments: [],
+    source_blocks: [{ id: b.id }],
+    originalText: text,
+    aiEdited: false,
+    history: [],
+  });
 
   tr.innerHTML = `
     <td class="col-check text-center">
@@ -71,6 +141,7 @@ function makeRow(b) {
     <td class="translated-cell">
       <div class="translated-text" contenteditable="true" dir="ltr"
            data-id="${b.id}" aria-label="الترجمة">Dummy translation text, to be replaced with the actual translation.</div>
+      <span class="ai-chip" hidden>معدّل بالذكاء الاصطناعي</span>
     </td>
     <td class="col-actions text-center">
       <div class="row-actions">
@@ -82,6 +153,7 @@ function makeRow(b) {
             <li><button class="dropdown-item" type="button" data-action="translate">ترجمة</button></li>
             <li><button class="dropdown-item" type="button" data-action="summarize">تلخيص</button></li>
             <li><button class="dropdown-item" type="button" data-action="revert">استعادة التغييرات</button></li>
+            <li class="merged-only" hidden><button class="dropdown-item" type="button" data-action="unmerge">فك الدمج</button></li>
             <li><hr class="dropdown-divider"></li>
             <li><button class="dropdown-item text-danger" type="button" data-action="delete">حذف</button></li>
           </ul>
@@ -95,18 +167,27 @@ function makeRow(b) {
   const translated = tr.querySelector(".translated-text");
   check.addEventListener("change", () => {
     tr.classList.toggle("active", check.checked);
+    notifySelectionChanged();
   });
   check.addEventListener("click", (e) => e.stopPropagation());
   checkTd.addEventListener("click", () => {
     check.checked = !check.checked;
     tr.classList.toggle("active", check.checked);
+    notifySelectionChanged();
   });
 
   const editClass = (on) => tr.classList.toggle("editing", on);
   original.addEventListener("focus", () => editClass(true));
-  original.addEventListener("blur", () => editClass(false));
+  original.addEventListener("blur", () => {
+    editClass(false);
+    // a changed original means the row is translated again (and the ayahs are checked again)
+    handleOriginalEdited(tr, original.textContent);
+  });
   translated.addEventListener("focus", () => editClass(true));
-  translated.addEventListener("blur", () => editClass(false));
+  translated.addEventListener("blur", () => {
+    editClass(false);
+    syncRowFromDom(tr);
+  });
 
   const dots = tr.querySelector(".btn-dots");
   const dropdown = tr.querySelector(".dropdown");
@@ -125,22 +206,21 @@ function makeRow(b) {
       if (item.dataset.action === "translate") {
         const text = original.textContent.trim();
         if (!text) return;
+        const state = rowStates.get(tr.dataset.id);
         translated.textContent = "يجار الترجمة...";
         try {
-          const res = await fetch("/translate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text, target_lang: "English" }),
-          });
-          if (!res.ok) {
-            translated.textContent = "حدث خطأ أثناء الترجمة";
-            return;
-          }
-          const data = await res.json();
-          translated.textContent = data.translation;
+          const data = await postJson("/translate", { text, target_lang: "English" });
+          // keep the segments: they tell us what is quran and what is normal text
+          state.segments = data.segments;
+          state.originalText = text;
+          state.aiEdited = false;
+          renderTranslated(tr);
         } catch (err) {
-          translated.textContent = "تعذّر الوصول إلى الخادم";
+          renderTranslated(tr);
+          showToast(err.message, true);
         }
+      } else if (item.dataset.action === "unmerge") {
+        unmergeRow(tr);
       } else {
         console.log(item.dataset.action, b.id);
       }
@@ -154,6 +234,9 @@ async function loadBook(filename) {
   blockRows.innerHTML = "";
   pdfPages.innerHTML = "";
   checkAll.checked = false;
+  rowStates.clear();
+  polygonsByBlockId.clear();
+  rowByBlockId.clear();
 
   let data;
   try {
@@ -216,28 +299,19 @@ async function loadBook(filename) {
     for (const b of blocks) {
       const tr = makeRow(b);
       blockRows.appendChild(tr);
+      registerRowBlocks(tr);
 
-      const poly = (b.polygon && b.polygon.length)
-        ? addPolygon(svg, b.polygon)
-        : null;
+      if (b.polygon && b.polygon.length) {
+        const poly = addPolygon(svg, b.polygon);
+        polygonsByBlockId.set(b.id, poly);
 
-      const highlight = (on) => {
-        poly?.classList.toggle("highlight", on);
-        tr.classList.toggle("active", on);
-      };
-
-      tr.addEventListener("mouseenter", () => {
-        highlight(true);
-        if (poly) poly.scrollIntoView({ block: "center", behavior: "smooth" });
-      });
-      tr.addEventListener("mouseleave", () => highlight(false));
-
-      if (poly) {
+        // the row of this block may be a merged row by now, so it is looked up when the mouse comes
         poly.addEventListener("mouseenter", () => {
-          highlight(true);
-          tr.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          const row = rowByBlockId.get(b.id);
+          setRowHighlight(row, true);
+          row.scrollIntoView({ block: "nearest", behavior: "smooth" });
         });
-        poly.addEventListener("mouseleave", () => highlight(false));
+        poly.addEventListener("mouseleave", () => setRowHighlight(rowByBlockId.get(b.id), false));
       }
     }
   });
@@ -247,6 +321,7 @@ async function loadBook(filename) {
       c.checked = checkAll.checked;
       c.closest("tr").classList.toggle("active", checkAll.checked);
     });
+    notifySelectionChanged();
   });
 }
 
@@ -291,3 +366,7 @@ const bookSelect = document.getElementById("book-select");
 bookSelect.addEventListener("change", () => loadBook(bookSelect.value));
 
 loadBook(bookSelect.value);
+
+initAssistant();
+initMerge({ replaceRows });
+notifySelectionChanged();

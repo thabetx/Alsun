@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/web/header-warm.css">
 <link rel="stylesheet" href="/web/styles-warm.css">
+<link rel="stylesheet" href="/web/assistant.css">
 </head>
 <body>
 <header class="site-header">
@@ -31,6 +32,10 @@
       </button>
       <label class="tb-label" for="search-input">بحث:</label>
       <input type="text" id="search-input" class="search-input" placeholder="ابحث في النص..." autocomplete="off">
+      <button type="button" id="open-assistant-rows" class="tb-button" disabled
+              title="حدّد صفًا مترجمًا واحدًا على الأقل"><i class="fa-solid fa-wand-magic-sparkles"></i> المساعد الذكي</button>
+      <button type="button" id="merge-rows" class="tb-button" disabled
+              title="حدّد صفين متجاورين على الأقل للدمج"><i class="fa-solid fa-object-group"></i> دمج الصفوف</button>
     </div>
     <div class="panel-body table-wrap">
       <table class="table align-middle text-table" dir="rtl">
@@ -47,6 +52,20 @@
         <tbody id="block-rows"></tbody>
       </table>
     </div>
+
+    <div id="assistant-dock" class="assistant-dock" hidden>
+      <div class="assistant-header">
+        <strong><i class="fa-solid fa-wand-magic-sparkles"></i> المساعد الذكي</strong>
+        <button type="button" id="assistant-close" class="assistant-close" aria-label="إغلاق">&times;</button>
+      </div>
+      <div id="assistant-context" class="assistant-context"></div>
+      <div id="assistant-log" class="assistant-log"></div>
+      <div class="assistant-input-row">
+        <textarea id="assistant-instructions" rows="2" dir="auto"
+                  placeholder="اكتب ما تريده، مثل: اجعلها أكثر رسمية (Ctrl+Enter للإرسال)"></textarea>
+        <button type="button" id="assistant-send" class="btn btn-primary">إرسال</button>
+      </div>
+    </div>
   </section>
 
   <section class="panel panel-pdf">
@@ -60,6 +79,11 @@
     <div id="pdf-pages" class="panel-body"></div>
   </section>
 </main>
+
+<div id="selection-tooltip" class="selection-tooltip" hidden>
+  <button type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> اسأل المساعد الذكي</button>
+</div>
+<div id="toast" class="toast-message" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="/web/app.js"></script>
