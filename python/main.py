@@ -27,6 +27,7 @@ load_dotenv(ROOT / ".env")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from quran_detect import translate_paragraph_and_build_response  # noqa: E402
+from ocr import extract_pdf_segments  # noqa: E402
 
 app = FastAPI()
 
@@ -40,6 +41,12 @@ app.mount("/data", StaticFiles(directory=ROOT / "data"), name="data")
 @app.get("/")
 def serve_homepage():
     return FileResponse(ROOT / "web" / "index.html")
+
+
+@app.get("/ocr")
+def ocr(filename: str = "two-pages.pdf"):
+    """Run Datalab OCR on a PDF from the data/ folder and return the JSON."""
+    return extract_pdf_segments(filename)
 
 
 # This describes the JSON body the frontend must send to /translate.

@@ -94,7 +94,7 @@ function makeRow(b) {
       if (item.dataset.action === "translate") {
         const text = original.textContent.trim();
         if (!text) return;
-        translated.textContent = "جارٍ الترجمة...";
+        translated.textContent = "يجار الترجمة...";
         try {
           const res = await fetch("/translate", {
             method: "POST",
@@ -122,11 +122,13 @@ function makeRow(b) {
 async function main() {
   let data;
   try {
-    data = await (await fetch("../data/two-pages.json")).json();
+    const res = await fetch("/ocr");
+    if (!res.ok) throw new Error(`OCR failed: ${res.status}`);
+    data = await res.json();
   } catch (e) {
     blockRows.innerHTML =
-      '<tr><td colspan="3" style="color:#ff8a80">تعذّر تحميل ../data/two-pages.json. ' +
-      "قدّم مجلد المشروع عبر HTTP وافتح http://127.0.0.1:8000/</td></tr>";
+      '<tr><td colspan="3" style="color:#ff8a80">تعذّر تشغيل OCR. ' +
+      "افتح http://127.0.0.1:8000/ وتأكد من تشغيل الخادم.</td></tr>";
     return;
   }
 
