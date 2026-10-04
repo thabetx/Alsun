@@ -28,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from quran_detect import translate_paragraph_and_build_response  # noqa: E402
 from ocr import extract_pdf_segments  # noqa: E402
+from pypdf import PdfReader  # noqa: E402
 
 app = FastAPI()
 
@@ -45,8 +46,10 @@ def serve_homepage():
 
 @app.get("/ocr")
 def ocr(filename: str = "two-pages.pdf"):
-    """Run Datalab OCR on a PDF from the data/ folder and return the JSON."""
-    return extract_pdf_segments(filename)
+    """Run Datalab OCR on a whole PDF from data/ and return the JSON."""
+    pdf = ROOT / "data" / filename
+    n = len(PdfReader(str(pdf)).pages)
+    return extract_pdf_segments(filename, page_range=f"0-{n - 1}")
 
 
 # This describes the JSON body the frontend must send to /translate.

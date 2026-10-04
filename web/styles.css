@@ -2,14 +2,6 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #f5f6f8; col
 
 body { display: flex; flex-direction: column; }
 
-.header {
-  display: flex; align-items: center; background: #212529; flex-shrink: 0;
-}
-.header-title { margin-inline-start: 16px; }
-.header-spacer { flex: 1; }
-.header-avatar { padding: 6px; }
-.header-logo { height: 80px; }
-
 .app-main {
   flex: 1; min-height: 0; overflow: hidden;
   display: flex; flex-direction: row; direction: ltr; background: #f5f6f8;

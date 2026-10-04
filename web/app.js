@@ -119,10 +119,14 @@ function makeRow(b) {
   return tr;
 }
 
-async function main() {
+async function loadBook(filename) {
+  blockRows.innerHTML = "";
+  pdfPages.innerHTML = "";
+  checkAll.checked = false;
+
   let data;
   try {
-    const res = await fetch("/ocr");
+    const res = await fetch(`/ocr?filename=${encodeURIComponent(filename)}`);
     if (!res.ok) throw new Error(`OCR failed: ${res.status}`);
     data = await res.json();
   } catch (e) {
@@ -134,10 +138,10 @@ async function main() {
 
   let pdf;
   try {
-    pdf = await pdfjsLib.getDocument("../data/two-pages.pdf").promise;
+    pdf = await pdfjsLib.getDocument(`../data/${encodeURIComponent(filename)}`).promise;
   } catch (e) {
     pdfPages.innerHTML =
-      '<div class="block" style="color:#ff8a80">تعذّر تحميل ../data/two-pages.pdf (يجب تقديمه عبر HTTP).</div>';
+      `<div class="block" style="color:#ff8a80">تعذّر تحميل ../data/${filename} (يجب تقديمه عبر HTTP).</div>`;
     return;
   }
 
@@ -217,4 +221,7 @@ function addPolygon(svg, points) {
   return poly;
 }
 
-main();
+const bookSelect = document.getElementById("book-select");
+bookSelect.addEventListener("change", () => loadBook(bookSelect.value));
+
+loadBook(bookSelect.value);
