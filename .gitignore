@@ -3,3 +3,4 @@
 __pycache__
 data/ocr_cache
 
+.idea/
