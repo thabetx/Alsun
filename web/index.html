@@ -24,6 +24,10 @@
 
 <main class="app-main">
   <section class="panel panel-text">
+    <div class="toolbar toolbar-text">
+      <label class="tb-label" for="search-input">بحث:</label>
+      <input type="text" id="search-input" class="search-input" placeholder="ابحث في النص..." autocomplete="off">
+    </div>
     <div class="panel-body table-wrap">
       <table class="table align-middle text-table" dir="rtl">
         <thead>
@@ -42,6 +46,13 @@
   </section>
 
   <section class="panel panel-pdf">
+    <div class="toolbar toolbar-pdf">
+      <label class="page-indicator" for="page-input">
+        الصفحة
+        <input type="text" id="page-input" class="page-input" inputmode="numeric" value="1" aria-label="رقم الصفحة">
+        <span id="page-total" class="page-total">/ —</span>
+      </label>
+    </div>
     <div id="pdf-pages" class="panel-body"></div>
   </section>
 </main>

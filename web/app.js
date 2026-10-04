@@ -6,6 +6,36 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const blockRows = document.getElementById("block-rows");
 const pdfPages = document.getElementById("pdf-pages");
 const checkAll = document.getElementById("check-all");
+const pageInput = document.getElementById("page-input");
+const pageTotal = document.getElementById("page-total");
+const searchInput = document.getElementById("search-input");
+const pageSheets = [];
+let totalPages = 0;
+
+function applySearch() {
+  const q = searchInput.value.trim();
+  blockRows.querySelectorAll("tr.block-row").forEach((tr) => {
+    const hit = !q || tr.dataset.search.includes(q);
+    tr.style.display = hit ? "" : "none";
+  });
+}
+
+function setPageIndicator(page) {
+  if (pageInput && document.activeElement !== pageInput) {
+    pageInput.value = String(page);
+  }
+}
+
+function updatePageFromScroll() {
+  const container = pdfPages;
+  const mid = container.scrollTop + container.clientHeight / 2;
+  let current = 1;
+  pageSheets.forEach((sheet, i) => {
+    const top = sheet.offsetTop - container.scrollTop + sheet.offsetParent.scrollTop;
+    if (top <= mid) current = i + 1;
+  });
+  setPageIndicator(current);
+}
 
 function stripHtml(html) {
   const div = document.createElement("div");
@@ -28,6 +58,7 @@ function makeRow(b) {
 
   const text = stripHtml(b.html);
   const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  tr.dataset.search = text;
 
   tr.innerHTML = `
     <td class="col-check text-center">
@@ -146,6 +177,10 @@ async function loadBook(filename) {
   }
 
   const pages = (data.children || []).filter((c) => c.block_type === "Page");
+  totalPages = pages.length;
+  pageTotal.textContent = `/ ${totalPages}`;
+  pageSheets.length = 0;
+  setPageIndicator(1);
   const scale = 1.5;
 
   pages.forEach((page, pi) => {
@@ -153,6 +188,7 @@ async function loadBook(filename) {
     const sheet = document.createElement("div");
     sheet.className = "page-sheet";
     pdfPages.appendChild(sheet);
+    pageSheets.push(sheet);
 
     const canvas = document.createElement("canvas");
     canvas.className = "page-canvas";
@@ -220,6 +256,28 @@ function addPolygon(svg, points) {
   svg.appendChild(poly);
   return poly;
 }
+
+function jumpToPage(n) {
+  n = Math.max(1, Math.min(totalPages, n));
+  const sheet = pageSheets[n - 1];
+  if (sheet) {
+    sheet.scrollIntoView({ block: "start", behavior: "smooth" });
+    setPageIndicator(n);
+  }
+}
+
+pdfPages.addEventListener("scroll", updatePageFromScroll);
+searchInput.addEventListener("input", applySearch);
+
+pageInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const n = parseInt(pageInput.value, 10);
+    if (!Number.isNaN(n)) jumpToPage(n);
+    e.preventDefault();
+  }
+});
+pageInput.addEventListener("focus", () => pageInput.select());
+pageInput.addEventListener("blur", () => setPageIndicator(parseInt(pageInput.value, 10) || 1));
 
 const bookSelect = document.getElementById("book-select");
 bookSelect.addEventListener("change", () => loadBook(bookSelect.value));
