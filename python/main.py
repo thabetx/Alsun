@@ -28,9 +28,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from quran_detect import translate_paragraph_and_build_response  # noqa: E402
 from ocr import extract_pdf_segments  # noqa: E402
+from assistant_routes import router as assistant_router  # noqa: E402
 from pypdf import PdfReader  # noqa: E402
 
 app = FastAPI()
+
+# AI assistant, merge and re-translation endpoints.
+app.include_router(assistant_router)
 
 # Serve everything in web/ (index.html, css, js, images) at the root URL.
 app.mount("/web", StaticFiles(directory=ROOT / "web"), name="web")
@@ -63,4 +67,4 @@ class TranslateRequest(BaseModel):
 def translate(request: TranslateRequest):
     result = translate_paragraph_and_build_response(request.text)
     # the frontend shows result["paragraph"]; segments are kept for editing.
-    return {"translation": result["paragraph"], "segments": result["segments"]}
+    return {"translation": result["paragraph"], "parts": result["parts"], "segments": result["segments"]}

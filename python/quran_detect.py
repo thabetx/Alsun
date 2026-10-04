@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
-from paragraph_format import concatenate_paragraph_segements
+from paragraph_format import concatenate_paragraph_segements, build_paragraph_display_parts
 
 # reads OPENAI_API_KEY from a .env file (or the environment)
 load_dotenv()
@@ -92,20 +92,24 @@ def translate_paragraph_segments(paragraph, json_file=None):
         quran_json = json.load(f)
 
     translated_segments = []
-    for segment in split_quran_and_normal_paragraph(paragraph):
+    for segment_number, segment in enumerate(split_quran_and_normal_paragraph(paragraph), start=1):
         if segment["type"] == "quran":
             translated_text = translate_quran_paragraph(segment, quran_json)
         else:
             translated_text = translate_normal_paragraph(segment["text"])
-        # text = the translation, original = the arabic we got it from
-        translated_segments.append({**segment, "text": translated_text, "original": segment["text"]})
+        # id = stable name for the segment, text = the translation, original = the arabic we got it from
+        translated_segments.append({**segment, "id": f"seg_{segment_number}", "text": translated_text, "original": segment["text"]})
 
     return translated_segments
 
 
 def translate_paragraph_and_build_response(paragraph, json_file=None):
     segments = translate_paragraph_segments(paragraph, json_file)
-    return {"paragraph": concatenate_paragraph_segements(segments), "segments": segments}
+    return {
+        "paragraph": concatenate_paragraph_segements(segments),
+        "parts": build_paragraph_display_parts(segments),
+        "segments": segments,
+    }
 
 
 
