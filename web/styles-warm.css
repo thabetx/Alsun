@@ -1,0 +1,50 @@
+/* Warm theme for the viewer (index.html).
+   Loaded after styles.css, header-warm.css and Bootstrap, so it only overrides colors/surfaces. */
+
+html, body { background: #fbf6ea; color: #231a19; }
+
+/* ---------- main area: two rounded cards on a warm backdrop ---------- */
+.app-main { background: #fbf6ea; padding: 0 20px 16px; gap: 14px; }
+
+.panel {
+  background: #fffdf8; overflow: hidden;
+  border: 1px solid #e6d9bf; border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(120, 86, 20, .08);
+}
+.panel-text { flex: 7 1 0; border-right: 1px solid #e6d9bf; }
+.panel-pdf  { flex: 3 1 0; }
+
+/* ---------- table ---------- */
+.text-table {
+  --bs-table-bg: #fffdf8;
+  --bs-table-color: #231a19;
+  --bs-table-border-color: #e6d9bf;
+  --bs-table-hover-bg: #f8e6bf;
+}
+.text-table th { background: #f3ead4; color: #5c4f48; }
+.text-table .col-check { border-left: 2px solid #e0d2b2; }
+.text-table .col-original { border-left: 1px solid #e6d9bf; }
+
+.text-table tbody tr:nth-child(even) td { background: #faf3e2; }
+.text-table tbody tr:hover td, .text-table tbody tr.active td { background: #f8e6bf; }
+.text-table tbody tr.editing td { background: #f5dba8; }
+
+.original-text, .translated-text { color: #231a19; }
+.row-actions .btn-dots { color: #7a6d63; }
+.row-actions .dropdown-menu {
+  --bs-dropdown-bg: #fffdf8;
+  --bs-dropdown-color: #231a19;
+  --bs-dropdown-link-color: #231a19;
+  --bs-dropdown-link-hover-bg: #f6efdc;
+  --bs-dropdown-link-active-bg: #b8860b;
+  --bs-dropdown-border-color: #e6d9bf;
+}
+
+/* checkboxes: gold instead of Bootstrap blue */
+.form-check-input { border-color: #cdbf9f; }
+.form-check-input:checked { background-color: #b8860b; border-color: #b8860b; }
+.form-check-input:focus { border-color: #b8860b; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .25); }
+
+/* ---------- PDF side ---------- */
+.panel-pdf .panel-body { background: #c9bca3; }
+.page-sheet { border-color: #bfae8a; }

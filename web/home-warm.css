@@ -1,0 +1,48 @@
+/* Warm theme + floating header for home.html (loaded after home.css, so it only overrides) */
+:root {
+  --ink: #231a19;
+  --muted: #7a6d63;
+  --line: #e6d9bf;
+  --bg: #fbf6ea;
+  --card: #fffdf8;
+}
+
+.lead, .trust li, .step p, .feature p { color: #5c4f48; }
+.upload-card { box-shadow: 0 12px 32px rgba(120, 86, 20, .10); }
+.dropzone { border-color: #d9c9a3; }
+.lang-field select { background: var(--card); }
+.btn-start:disabled { background: #eadfc6; color: #a09483; }
+.file-chip { border-color: #ecd9ae; }
+
+/* ---------- floating header: logo | nav | avatar ---------- */
+.site-header {
+  top: 12px; margin: 12px 20px 0; padding: 0 22px; min-height: 64px;
+  border-radius: 18px; gap: 24px;
+  grid-template-columns: auto 1fr auto;
+  background: rgba(255, 253, 248, .88);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 24px rgba(120, 86, 20, .10);
+}
+.site-nav { justify-content: center; }
+.site-nav a { color: #5c4f48; }
+.site-nav a:hover, .site-nav a.active { color: var(--ink); }
+.site-logo img { height: 50px; }
+.site-avatar { justify-self: end; }
+
+/* ---------- light footer ---------- */
+.site-footer { background: #f1e7d0; color: #5c4f48; border-top: 1px solid var(--line); }
+.site-footer a:hover { color: var(--ink); }
+
+@media (max-width: 640px) {
+  .site-header { grid-template-columns: 1fr auto; margin: 8px 10px 0; padding: 0 14px; min-height: 56px; }
+  .site-logo img { height: 42px; }
+}
+
+/* ---------- pen mark at the far left of the header ---------- */
+.site-mark { justify-self: end; display: block; }
+.site-mark img { width: 46px; height: 46px; display: block; }
+@media (max-width: 640px) {
+  .site-mark { grid-column: 2; }
+  .site-mark img { width: 38px; height: 38px; }
+}
