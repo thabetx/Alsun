@@ -269,6 +269,14 @@ function jumpToPage(n) {
 pdfPages.addEventListener("scroll", updatePageFromScroll);
 searchInput.addEventListener("input", applySearch);
 
+const togglePdf = document.getElementById("toggle-pdf");
+const pdfPanel = document.querySelector(".panel-pdf");
+togglePdf.addEventListener("click", () => {
+  const hidden = pdfPanel.style.display === "none";
+  pdfPanel.style.display = hidden ? "" : "none";
+  togglePdf.setAttribute("aria-pressed", String(hidden));
+});
+
 pageInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     const n = parseInt(pageInput.value, 10);

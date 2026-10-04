@@ -75,6 +75,14 @@ html, body { background: #fbf6ea; color: #231a19; }
 }
 .page-input:focus { border-color: #b8860b; box-shadow: none; }
 .page-total { font-size: .95rem; color: #5c4f48; }
+.toggle-pdf {
+  font-size: 1rem; color: #5c4f48;
+  background: #f3ead4; border: 1px solid #e0d2b2;
+  border-radius: 9px; width: 36px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.toggle-pdf:hover { border-color: #b8860b; color: #231a19; }
+.toggle-pdf[aria-pressed="true"] { background: #e8d9b8; }
 
 /* ---------- PDF side ---------- */
 .panel-pdf .panel-body { background: #c9bca3; }
