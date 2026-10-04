@@ -78,12 +78,41 @@ function makeRow(b) {
   translated.addEventListener("blur", () => editClass(false));
 
   const dots = tr.querySelector(".btn-dots");
-  dots.addEventListener("click", (e) => e.stopPropagation());
+  const dropdown = tr.querySelector(".dropdown");
+  const menu = tr.querySelector(".dropdown-menu");
+
+  const closeMenu = () => {
+    dropdown.classList.remove("show");
+    menu.classList.remove("show");
+    dots.setAttribute("aria-expanded", "false");
+  };
 
   tr.querySelectorAll(".dropdown-item").forEach((item) => {
-    item.addEventListener("click", (e) => {
+    item.addEventListener("click", async (e) => {
       e.stopPropagation();
-      console.log(item.dataset.action, b.id);
+      closeMenu();
+      if (item.dataset.action === "translate") {
+        const text = original.textContent.trim();
+        if (!text) return;
+        translated.textContent = "جارٍ الترجمة...";
+        try {
+          const res = await fetch("/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, target_lang: "English" }),
+          });
+          if (!res.ok) {
+            translated.textContent = "حدث خطأ أثناء الترجمة";
+            return;
+          }
+          const data = await res.json();
+          translated.textContent = data.translation;
+        } catch (err) {
+          translated.textContent = "تعذّر الوصول إلى الخادم";
+        }
+      } else {
+        console.log(item.dataset.action, b.id);
+      }
     });
   });
 
@@ -97,7 +126,7 @@ async function main() {
   } catch (e) {
     blockRows.innerHTML =
       '<tr><td colspan="3" style="color:#ff8a80">تعذّر تحميل ../data/two-pages.json. ' +
-      "قدّم مجلد المشروع عبر HTTP وافتح http://localhost:8000/datalab/</td></tr>";
+      "قدّم مجلد المشروع عبر HTTP وافتح http://127.0.0.1:8000/</td></tr>";
     return;
   }
 
