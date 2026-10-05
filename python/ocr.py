@@ -1,13 +1,22 @@
-"""PDF -> structured JSON via Datalab API, cached per page (0-indexed)."""
+"""PDF -> structured JSON via Datalab API, cached per page (0-indexed).
+
+Each page is written twice: `0.json` is what Datalab returned, and `0_refined.json`
+is the same json after the llm fixed the text of every paragraph, one call each.
+The refined file is what the app reads; it is built on the first load and reused
+after that.
+"""
 
 import json
 from pathlib import Path
 
 from datalab_sdk import ConvertOptions, DatalabClient
 
+from refine_ocr import refine_page
+
 API_KEY = "hOqLUjJtLx8Os_ZPtG1toGsRBoOVgiBbjwCeJqk8X00"
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_DIR = ROOT / "data" / "ocr_cache"
+REFINED_SUFFIX = "_refined"
 
 
 def decompress_range(page_range):
@@ -81,7 +90,7 @@ def extract_pdf_segments(filename="two-pages.pdf", page_range="0-1"):
         result = DatalabClient(api_key=API_KEY).convert(
             str(pdf),
             options=ConvertOptions(
-                output_format="json", mode="fast", paginate=True,
+                output_format="json", mode="accurate", paginate=True,
                 page_range=compress_range(missing),
             ),
         )
@@ -99,8 +108,34 @@ def extract_pdf_segments(filename="two-pages.pdf", page_range="0-1"):
             meta["metadata"] = data["metadata"]
         meta_file.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    pages = [have[p] for p in wanted if p in have]
+    pages = [load_or_build_refined_page(book, p, have[p]) for p in wanted if p in have]
     return {"children": pages, "metadata": meta.get("metadata")}
+
+
+def load_or_build_refined_page(book, page_number, raw_page):
+    """The refined json of the page: `N_refined.json`. Built by the llm on the first
+    load and read from disk on every load after that, so only the first load waits.
+
+    The refined file goes stale when datalab writes the raw page again, which is the
+    only thing that can change the text it was built from. The whole book mtime in
+    meta.json is not enough: it stays behind as long as every page is cached, and
+    datalab is only asked for the pages that are missing."""
+    raw_file = book / f"{page_number}.json"
+    target = book / f"{page_number}{REFINED_SUFFIX}.json"
+    if target.exists():
+        try:
+            # an older refined file belongs to an older raw page. a raw page that is not
+            # there to compare with leaves the refined one alone: it is the only copy of
+            # that text left, and rebuilding it would throw the words away for nothing
+            if not raw_file.exists() or target.stat().st_mtime_ns >= raw_file.stat().st_mtime_ns:
+                return json.loads(target.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass  # a damaged cache is not worth keeping: refine the page again
+
+    refined = refine_page(raw_page)
+    book.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(refined, ensure_ascii=False, indent=2), encoding="utf-8")
+    return refined
 
 
 if __name__ == "__main__":

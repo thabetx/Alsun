@@ -332,3 +332,8 @@ body.assistant-expanded { overflow: hidden; }
   --bs-btn-focus-shadow-rgb: 184, 134, 11;
   font-weight: 700; border-radius: 10px; padding-inline: 22px;
 }
+
+/* a row the detector is still working on: dimmed until its ayas are marked */
+.block-row.is-busy .original-text { opacity: .45; transition: opacity .2s; }
+.block-row.is-busy .original-text:focus { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .block-row.is-busy .original-text { transition: none; } }
