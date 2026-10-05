@@ -318,11 +318,13 @@ body.assistant-expanded::before {
   box-shadow: 0 24px 60px rgba(35, 26, 25, .28);
   animation: confirm-in .18s ease-out;
 }
-.assistant-dock.is-expanded .assistant-header { padding: 12px 22px; font-size: 1.05rem; }
-.assistant-dock.is-expanded .assistant-context { padding: 8px 22px; }
-.assistant-dock.is-expanded .assistant-log { padding: 14px 22px; }
-.assistant-dock.is-expanded .bubble { font-size: 16px; max-width: 92%; }
-.assistant-dock.is-expanded .assistant-input-row { padding: 12px 22px 18px; align-items: flex-end; }
+.assistant-dock.is-expanded .assistant-header { padding: 10px 14px; font-size: 1.05rem; }
+.assistant-dock.is-expanded .assistant-context { padding: 6px 12px; }
+.assistant-dock.is-expanded .assistant-log { padding: 10px 10px 10px 6px; }
+.assistant-dock.is-expanded .bubble { font-size: 16px; max-width: 100%; }
+.assistant-dock.is-expanded .bubble.suggestion { padding: 10px 10px 12px; }
+.assistant-dock.is-expanded .diff-box { padding: 8px 10px 10px; }
+.assistant-dock.is-expanded .assistant-input-row { padding: 8px 12px 12px; align-items: flex-end; }
 .assistant-dock.is-expanded .assistant-input-row textarea { min-height: 88px; font-size: 16px; }
 @media (max-width: 640px) {
   .assistant-dock.is-expanded { width: calc(100vw - 16px); height: calc(100vh - 16px); border-radius: 14px; }
@@ -336,7 +338,8 @@ body.assistant-expanded::before {
   --bs-btn-active-bg: #7f5c07; --bs-btn-active-border-color: #7f5c07;
   --bs-btn-disabled-bg: #b8860b; --bs-btn-disabled-border-color: #b8860b;
   --bs-btn-focus-shadow-rgb: 184, 134, 11;
-  font-weight: 700; border-radius: 10px; padding-inline: 22px;
+  width: 46px; height: 46px; padding: 0; flex: none; font-size: 19px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
 }
 
 /* a row the detector is still working on: dimmed until its ayas are marked */
