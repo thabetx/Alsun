@@ -14,6 +14,9 @@ import { getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
 import { targetLanguageInArabic } from "./target-language.js";
+import {
+  fingerprintOf, loadSavedWork, clearSavedWork, enableSaving, pauseSaving, watchWork,
+} from "./saved-work.js";
 
 document.getElementById("translated-heading").textContent = `الترجمة إلى ${targetLanguageInArabic()}`;
 
@@ -290,7 +293,38 @@ function makeRow(b) {
   return tr;
 }
 
+// Puts back the work saved in the browser over the rows the OCR just gave:
+// translations and edits, merged rows, and without the rows the user deleted. Returns true if something was put back.
+function restoreSavedWork(filename, fingerprint) {
+  const saved = loadSavedWork(filename, fingerprint);
+  if (!saved) return false;
+
+  // a pdf block that no saved row shows was deleted: its polygon goes too
+  const shownBlockIds = new Set(saved.flatMap((state) => state.source_blocks.map((block) => block.id)));
+  for (const [blockId, polygon] of polygonsByBlockId) {
+    if (shownBlockIds.has(blockId)) continue;
+    polygon.remove();
+    polygonsByBlockId.delete(blockId);
+    rowByBlockId.delete(blockId);
+  }
+
+  const oldRows = new Map([...blockRows.children].map((tr) => [tr.dataset.id, tr]));
+  const rows = saved.map((state) => {
+    const tr = oldRows.get(state.id);
+    if (!tr || state.merged_from) return createRowFromState(state); // a merged row has to be built again
+    rowStates.set(state.id, state);
+    tr.querySelector(".original-text").textContent = state.originalText;
+    tr.dataset.search = state.originalText;
+    renderTranslated(tr);
+    return tr;
+  });
+  blockRows.replaceChildren(...rows);
+  notifySelectionChanged();
+  return true;
+}
+
 async function loadBook(filename) {
+  pauseSaving(); // the table is empty while it loads, that must not be saved
   blockRows.innerHTML = "";
   pdfPages.innerHTML = "";
   checkAll.checked = false;
@@ -376,6 +410,13 @@ async function loadBook(filename) {
     }
   });
 
+  // the rows are ready: put back the saved work, then start saving again
+  const fingerprint = fingerprintOf(
+    [...blockRows.children].map((tr) => ({ id: tr.dataset.id, text: rowStates.get(tr.dataset.id).originalText }))
+  );
+  if (restoreSavedWork(filename, fingerprint)) showToast("تم استرجاع عملك المحفوظ");
+  enableSaving(filename, fingerprint);
+
   checkAll.addEventListener("change", () => {
     blockRows.querySelectorAll(".block-check").forEach((c) => {
       c.checked = checkAll.checked;
@@ -424,6 +465,37 @@ pageInput.addEventListener("blur", () => setPageIndicator(parseInt(pageInput.val
 
 const bookSelect = document.getElementById("book-select");
 bookSelect.addEventListener("change", () => loadBook(bookSelect.value));
+
+// the work is saved in the browser (see saved-work.js)
+let warnedAboutSaving = false;
+window.addEventListener("pagehide", () => {
+  // a cell still being edited has not reached its state yet (that happens when it loses the focus)
+  const cell = document.activeElement?.closest?.(".translated-text");
+  if (cell) syncRowFromDom(cell.closest("tr"));
+});
+watchWork({
+  table: blockRows,
+  getRows: () => [...blockRows.querySelectorAll("tr.block-row")],
+  onFailed: () => {
+    if (warnedAboutSaving) return;
+    warnedAboutSaving = true;
+    showToast("تعذّر حفظ عملك في المتصفح، قد يضيع عند تحديث الصفحة", true);
+  },
+});
+
+document.getElementById("restart-work").addEventListener("click", async () => {
+  const confirmed = await askConfirmation({
+    title: "البدء من جديد",
+    message: "سيتم مسح الترجمات والتعديلات المحفوظة واسترجاع الصفوف المحذوفة والمدموجة، ولا يمكن التراجع عن ذلك.",
+    confirmLabel: "امسح وابدأ من جديد",
+    icon: "fa-rotate-left",
+    tone: "danger",
+  });
+  if (!confirmed) return;
+  clearSavedWork(bookSelect.value);
+  await loadBook(bookSelect.value);
+  showToast("تم مسح العمل المحفوظ");
+});
 
 loadBook(bookSelect.value);
 
