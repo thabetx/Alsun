@@ -6,7 +6,11 @@ import threading
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
-from paragraph_format import concatenate_paragraph_segements, build_paragraph_display_parts
+from paragraph_format import (
+    concatenate_paragraph_segements,
+    build_paragraph_display_parts,
+)
+from nltk.stem.isri import ISRIStemmer
 
 # reads OPENAI_API_KEY from a .env file (or the environment)
 load_dotenv()
@@ -17,6 +21,8 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 detector_lock = threading.Lock()
 quran_annotate = qdetect.qMatcherAnnotater() # built once, it takes ~6 seconds
+
+stemmer = ISRIStemmer()
 
 
 def quran_detector(paragraph):
@@ -63,18 +69,73 @@ def normalize_arabic(name):
     name = re.sub(r"[أإآٱ]", "ا", name)
     return name.replace("ة", "ه").replace("ى", "ي")
 
-def translate_normal_paragraph(paragraph, target_lang="English"):
+
+def stem_arabic(text):
+    text = normalize_arabic(text)
+    tokens = [stemmer.stem(t) for t in text.split() if stemmer.stem(t)]
+    return " ".join(tokens)
+
+
+def load_glossary(language="English"):
+    # TODO: Read this from a file/database
+    if language == "English":
+        glossary = [{"Arabic": "حى بن يقظان", language: "Hay bin Yaqdhan"}]
+    else:
+        glossary = []
+
+    if glossary:
+        # Stem the tokens to handle Arabic's morphological complexity
+        for d in glossary:
+            d["Arabic_stemmed"] = stem_arabic(d["Arabic"])
+
+    return glossary
+
+
+def find_glossary_items_in_text(stemmed_text, glossary):
+    # TODO: If the glossary grows larger then this function will need to be reimplemented
+    # such that the implementation is more efficient
+    glossary_items_in_text = [
+        d for d in glossary if re.findall(rf"\b{d['Arabic_stemmed']}\b", stemmed_text)
+    ]
+    return glossary_items_in_text
+
+
+def translate_normal_paragraph(paragraph, target_lang="English", use_glossary=True):
     # normal text goes to the llm
     system_prompt = (
         f"You are a translator. Translate the user's Arabic text into "
         f"{target_lang}. Reply with only the translation, "
         f"no explanations or extra text."
     )
+
+    if use_glossary:
+        # TODO: Load this once and cache it, instead of loading it for every paragraph
+        glossary = load_glossary(language=target_lang)
+
+        stemmed_text = stem_arabic(paragraph)
+        glossary_items = find_glossary_items_in_text(stem_arabic(paragraph), glossary)
+
+        prompt = ""
+        if glossary_items:
+            prompt += "\n* Use the following glossary items in translating the text (as is without any modification):\n"
+            prompt += (
+                "\n".join(
+                    [
+                        f"- {item['Arabic']} -> {item[target_lang]}"
+                        for item in glossary_items
+                    ]
+                )
+                + "\n\n"
+            )
+        prompt += paragraph
+    else:
+        prompt = paragraph
+
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": paragraph},
+            {"role": "user", "content": prompt},
         ],
     )
     return response.choices[0].message.content
