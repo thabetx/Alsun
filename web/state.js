@@ -3,7 +3,8 @@
 //   + originalText, aiEdited, history, mergedSnapshots?, mergedOriginalAtMerge?   <- only the front uses these
 export const rowStates = new Map();
 
-export const PLACEHOLDER = "Dummy translation text, to be replaced with the actual translation.";
+// shown in the translated cell of a row that is not translated yet: it tells the user what to do
+export const PLACEHOLDER = "لم تُترجم هذه الفقرة بعد. اضغط ⋮ ثم «ترجمة»، أو «ترجمة الكل» من الشريط العلوي.";
 
 // What the user sees for a segment. Same rule as paragraph_format.py in the backend:
 // the quote marks belong to the quran part, they are never inside segment.text.

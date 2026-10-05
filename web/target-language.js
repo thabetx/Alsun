@@ -2,6 +2,20 @@
 // Same names as QURAN_FILES in python/quran_detect.py.
 const DEFAULT_LANGUAGE = "English";
 
+// how the language is called in the screen (the keys are the names the backend knows)
+const ARABIC_NAMES = {
+  English: "الإنجليزية",
+  French: "الفرنسية",
+  German: "الألمانية",
+  Turkish: "التركية",
+  Spanish: "الإسبانية",
+  Indonesian: "الإندونيسية",
+};
+
+export function targetLanguageInArabic() {
+  return ARABIC_NAMES[targetLanguage()] ?? targetLanguage();
+}
+
 export function targetLanguage() {
   try {
     return JSON.parse(sessionStorage.getItem("alsun_upload"))?.lang || DEFAULT_LANGUAGE;

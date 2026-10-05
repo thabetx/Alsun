@@ -12,8 +12,13 @@ export function renderTranslated(tr, { animate = false } = {}) {
   const cell = tr.querySelector(".translated-text");
   cell.replaceChildren();
 
+  // nothing to edit before the row is translated: the cell only tells the user what to do
+  cell.contentEditable = state.segments.length ? "true" : "false";
   if (!state.segments.length) {
-    cell.textContent = PLACEHOLDER;
+    const hint = document.createElement("span");
+    hint.className = "translated-hint";
+    hint.textContent = PLACEHOLDER;
+    cell.append(hint);
   }
   let somethingBefore = false;
   displayParts(state.segments).forEach((part, index) => {

@@ -197,3 +197,9 @@
 
 /* text the user wrote in place of an ayah he deleted: a dotted line under it, so it isn't taken for the translation of the ayah */
 .translated-text .seg-replaced { border-bottom: 1px dashed #b8860b; }
+
+/* the message of a row that is not translated yet */
+.translated-hint {
+  display: block; direction: rtl; text-align: right;
+  font-size: 15px; font-style: italic; color: #8a7f6f; cursor: default;
+}

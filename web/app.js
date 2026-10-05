@@ -13,6 +13,9 @@ import { askConfirmation } from "./confirm-dialog.js";
 import { getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
+import { targetLanguageInArabic } from "./target-language.js";
+
+document.getElementById("translated-heading").textContent = `الترجمة إلى ${targetLanguageInArabic()}`;
 
 const SVGNS = "http://www.w3.org/2000/svg";
 const blockRows = document.getElementById("block-rows");
@@ -217,7 +220,7 @@ function makeRow(b) {
     </td>
     <td class="translated-cell">
       <div class="translated-text" contenteditable="true" dir="ltr"
-           data-id="${b.id}" aria-label="الترجمة">Dummy translation text, to be replaced with the actual translation.</div>
+           data-id="${b.id}" aria-label="الترجمة"></div>
       <span class="ai-chip" hidden>معدّل بالذكاء الاصطناعي</span>
     </td>
     <td class="col-actions text-center">
@@ -236,6 +239,7 @@ function makeRow(b) {
   const checkTd = tr.querySelector(".col-check");
   const original = tr.querySelector(".original-text");
   const translated = tr.querySelector(".translated-text");
+  renderTranslated(tr); // not translated yet: the cell shows the hint
   check.addEventListener("change", () => {
     tr.classList.toggle("active", check.checked);
     notifySelectionChanged();
