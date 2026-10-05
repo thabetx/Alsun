@@ -9,6 +9,7 @@ import { handleOriginalEdited } from "./retranslate-ui.js";
 import { initAssistant, refreshAssistantButton, forgetDeletedRow } from "./assistant.js";
 import { initMerge, refreshMergeButton } from "./merge-ui.js";
 import { rowMenuMarkup, refreshRowMenu, runRowMenuAction } from "./row-menu.js";
+import { detectAyahsInRows } from "./detect-ayas.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
@@ -425,6 +426,10 @@ async function loadBook(filename) {
     });
     notifySelectionChanged();
   });
+
+  // the text the server sent was already fixed by the llm. what is left is to find the
+  // ayahs in it and mark them, which is the detector alone, no llm and no cost
+  detectAyahsInRows([...blockRows.querySelectorAll("tr.block-row")]);
 }
 
 function addPolygon(svg, points) {

@@ -53,23 +53,31 @@ function describeAyahRange(segment) {
 }
 
 
+// The detector answers with the arabic in "text", but the marks in the original text are drawn
+// from "original" like the segments of a translation, and they need an id. Used by the actions
+// that find the ayahs without translating (the row menu and the ocr refinement).
+export function toHighlightSegments(segments) {
+  return segments.map((segment, index) => ({ ...segment, id: `seg_${index + 1}`, original: segment.text }));
+}
+
 // Marks in the ORIGINAL text what the detector took as quran, so a wrong detection is visible.
 // The text itself is not changed (same characters, same spaces), only wrapped in spans.
+// The segments to draw are the ones of the translation by default; the "detect ayas" action
+// passes its own, since it detects without translating.
 // If the words of the cell don't match the words the segments came from (the user changed the
 // text after the translation), nothing is marked: a wrong mark is worse than no mark.
-export function renderOriginalHighlights(tr) {
-  const state = rowStates.get(tr.dataset.id);
+export function renderOriginalHighlights(tr, segments = rowStates.get(tr.dataset.id).segments) {
   const cell = tr.querySelector(".original-text");
   const text = cell.textContent;
   cell.replaceChildren(text);
-  if (!state.segments.length) return;
+  if (!segments.length) return;
 
   const cellWords = [...text.matchAll(/\S+/g)].map((match) => ({
     word: match[0],
     start: match.index,
     end: match.index + match[0].length,
   }));
-  const segmentWords = state.segments.map((segment) => segment.original.split(/\s+/).filter(Boolean));
+  const segmentWords = segments.map((segment) => segment.original.split(/\s+/).filter(Boolean));
   const allSegmentWords = segmentWords.flat();
   const sameWords =
     allSegmentWords.length === cellWords.length &&
@@ -79,7 +87,7 @@ export function renderOriginalHighlights(tr) {
   const pieces = [];
   let cursor = 0;
   let wordNumber = 0;
-  state.segments.forEach((segment, index) => {
+  segments.forEach((segment, index) => {
     const count = segmentWords[index].length;
     if (segment.type === "quran" && count > 0) {
       const start = cellWords[wordNumber].start;

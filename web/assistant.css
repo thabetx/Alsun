@@ -252,3 +252,8 @@
 .glossary-remove:hover { background: #fde3df; color: #8a2a1d; }
 .glossary-empty { padding: 22px 14px; text-align: center; color: #7a6c63; }
 .glossary-footer { display: flex; gap: 8px; padding: 14px 26px 20px; }
+
+/* a row the detector is still working on: dimmed until its ayas are marked */
+.block-row.is-busy .original-text { opacity: .45; transition: opacity .2s; }
+.block-row.is-busy .original-text:focus { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .block-row.is-busy .original-text { transition: none; } }
