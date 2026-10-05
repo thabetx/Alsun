@@ -3,6 +3,7 @@ import { getAllRows, getSelectedRows } from "./selection.js";
 import { translateRow } from "./translate-ui.js";
 import { showToast } from "./toast.js";
 import { askConfirmation } from "./confirm-dialog.js";
+import { beginLoading, setLoadingProgress } from "./loading-overlay.js";
 
 const MAX_ERRORS_IN_A_ROW = 3; // a wrong key or a limit would otherwise fail every row
 
@@ -24,6 +25,12 @@ function showIdle() {
 function showProgress(done, total) {
   button().innerHTML = `<i class="fa-solid fa-stop"></i> إيقاف (${done}/${total})`;
   button().title = "إيقاف الترجمة بعد الصف الحالي";
+  setLoadingProgress(`${done} من ${total}`);
+}
+
+function requestStop() {
+  stopRequested = true;
+  button().title = "جارٍ الإيقاف...";
 }
 
 // one row at a time; every await gives the browser back, so the page stays usable
@@ -46,6 +53,8 @@ async function translateAll() {
   let errorsInARow = 0;
   let translated = 0;
   let stoppedByErrors = false;
+  // the page is covered by the loading until the last row is translated (or the user stops it)
+  const endLoading = beginLoading({ message: "جارٍ ترجمة الصفوف…", onStop: requestStop });
   showProgress(done, rows.length);
 
   for (const tr of rows) {
@@ -57,6 +66,7 @@ async function translateAll() {
       continue;
     }
 
+    tr.scrollIntoView({ block: "center", behavior: "smooth" }); // so the translation is written in front of the user
     const result = await translateRow(tr);
     done++;
     showProgress(done, rows.length);
@@ -68,6 +78,7 @@ async function translateAll() {
     }
   }
 
+  endLoading();
   const stopped = stopRequested;
   running = false;
   stopRequested = false;
@@ -82,8 +93,7 @@ async function translateAll() {
 export function initTranslateAll() {
   button().addEventListener("click", () => {
     if (running) {
-      stopRequested = true;
-      button().title = "جارٍ الإيقاف...";
+      requestStop();
     } else {
       translateAll();
     }

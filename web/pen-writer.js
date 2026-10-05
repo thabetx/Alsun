@@ -1,34 +1,34 @@
-// The pen of the logo (without the lines under it) writes for us, with ink the color of the text:
-//   - while we wait for the translation: it scribbles on the spot (mountPenScribble)
-//   - when the translation arrives: it writes it letter by letter and follows the end of the text (typeTranslation)
+// The pen of the logo (without the lines under it) and the writing of the translation:
+//   - the pen scribbles on the spot (mountPenScribble: the waiting bubble of the assistant)
+//   - when a translation arrives it is written letter by letter, fast, like a chat (typeTranslation)
+// While we wait for a translation the whole page shows the pen (see loading-overlay.js).
 
 const INK_COLOR = "#231a19"; // the color of the text
 const PEN_SCALE = 0.8;
-const PEN_WIDTH = 38 * PEN_SCALE;
-const PEN_HEIGHT = 44 * PEN_SCALE;
 // where the nib is inside the pen drawing (the viewBox below puts it at 2, 42)
 const NIB = { x: 2 * PEN_SCALE, y: 42 * PEN_SCALE };
 
-// The pen writes at a calm speed (about 28 characters in a second) and stops for a moment after
-// punctuation, like a person. A very long text speeds up smoothly after the calm part, so it never takes too long.
-const MS_PER_CHARACTER = 35;
-const PAUSE_AFTER_COMMA_MS = 120;
-const PAUSE_AFTER_SENTENCE_MS = 220;
-const CALM_MS = 6000; // the pen keeps the calm speed for the first 6 seconds
-const SPEED_UP_SHARE = 0.4; // what is left to write after the calm part is written in 40% of its calm time (or less)
-const MAX_TYPING_MS = 12000;
+// The text is written fast (about 250 characters in a second), so nobody waits for it.
+// A very long text speeds up smoothly after the first second and a half, so it never takes more than 3 seconds.
+const MS_PER_CHARACTER = 4;
+const PAUSE_AFTER_COMMA_MS = 0;
+const PAUSE_AFTER_SENTENCE_MS = 0;
+const CALM_MS = 1500; // the normal speed is kept for the first second and a half
+const SPEED_UP_SHARE = 0.4; // what is left to write after that is written in 40% of its normal time (or less)
+const MAX_TYPING_MS = 3000;
 
 const writers = new WeakMap(); // row -> {finish}
 
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function createPen() {
+// the pen of the logo as an element; the page loading uses a bigger one
+export function createPen(scale = PEN_SCALE) {
   const pen = document.createElement("span");
   pen.className = "pen-writer";
   pen.setAttribute("aria-hidden", "true");
   // same drawing as web/logo-mark.svg, only the pen; the nib is at the origin of the group
   pen.innerHTML = `
-    <svg viewBox="-2 -42 38 44" width="${PEN_WIDTH}" height="${PEN_HEIGHT}">
+    <svg viewBox="-2 -42 38 44" width="${38 * scale}" height="${44 * scale}">
       <g transform="rotate(38)">
         <path d="M0 0C-2.2 -6 -6.5 -11 -6.5 -17H6.5C6.5 -11 2.2 -6 0 0Z" fill="#d1a63c"/>
         <path d="M0 -3V-11" stroke="#231a19" stroke-width="1" stroke-linecap="round"/>
@@ -91,14 +91,9 @@ export function mountPenScribble(host, { sweep = 90 } = {}) {
   };
 }
 
-// the pen in the translated cell of a row
-export function startPenLoading(tr) {
-  return mountPenScribble(tr.querySelector(".translated-cell"));
-}
+// ---------- the translation arrives: it is written letter by letter ----------
 
-// ---------- the translation arrives: the pen writes it ----------
-
-// The calm schedule: for every character, the time (ms) at which the pen has finished writing it.
+// The normal schedule: for every character, the time (ms) at which it is written.
 export function buildTypingSchedule(text) {
   const ends = new Array(text.length);
   let time = 0;
@@ -139,7 +134,7 @@ function isOnScreen(element) {
 }
 
 // Call it right after the row was drawn from its segments. The text is already all there (the part
-// that is not written yet is transparent), so the page does not jump while the pen writes.
+// that is not written yet is transparent), so the page does not jump while it is written.
 export function typeTranslation(tr) {
   finishTyping(tr);
   const host = tr.querySelector(".translated-cell");
@@ -148,7 +143,6 @@ export function typeTranslation(tr) {
   // no animation for people who turned motion off, and for rows the user can't see anyway
   if (!total || prefersReducedMotion() || !isOnScreen(host)) return;
 
-  host.classList.add("pen-host");
   const cell = tr.querySelector(".translated-text");
   cell.classList.add("is-typing");
   const parts = spans.map((span) => {
@@ -164,33 +158,13 @@ export function typeTranslation(tr) {
     return { span, full, typed, caret, untyped };
   });
 
-  const pen = createPen();
-  pen.classList.add("pen-typing");
-
   const schedule = buildTypingSchedule(parts.map((part) => part.full).join(""));
   const duration = typingDuration(schedule.total);
   const interaction = new AbortController();
   let startTime = null;
   let frame = 0;
-  let lastInk = 0;
   let written = 0;
   let finished = false;
-
-  // the pen stands at the end of what is written so far
-  const placePen = () => {
-    const active = parts.find((part) => part.untyped.textContent.length > 0) ?? parts[parts.length - 1];
-    const caretBox = active.caret.getBoundingClientRect();
-    const hostBox = host.getBoundingClientRect();
-    const x = caretBox.left - hostBox.left;
-    const y = caretBox.bottom - hostBox.top;
-    pen.style.left = `${x - NIB.x}px`;
-    pen.style.top = `${y - NIB.y + 2}px`;
-    return { x, y };
-  };
-  placePen();
-  host.append(pen);
-  // it slides from letter to letter (not before the first one, so it doesn't fly in from the corner)
-  setTimeout(() => pen.classList.add("pen-gliding"), 60);
 
   const setProgress = (count) => {
     let left = count;
@@ -210,8 +184,6 @@ export function typeTranslation(tr) {
     cell.classList.remove("is-typing");
     // the exact text again, as one text node, the way it was before the animation
     parts.forEach((part) => part.span.replaceChildren(document.createTextNode(part.full)));
-    pen.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200 }).onfinish = () => pen.remove();
-    setTimeout(() => pen.remove(), 500); // if the page is hidden the fade may never finish
     writers.delete(tr);
   };
 
@@ -224,12 +196,6 @@ export function typeTranslation(tr) {
     const calmTime = calmTimeAt(elapsed, schedule.total);
     while (written < schedule.ends.length && schedule.ends[written] <= calmTime) written++;
     setProgress(written);
-
-    const { x, y } = placePen();
-    if (now - lastInk > 150) {
-      spitInk(host, x, y + 1);
-      lastInk = now;
-    }
     frame = requestAnimationFrame(step);
   };
 

@@ -1,7 +1,7 @@
 import { postJson } from "./api.js";
 import { rowStates } from "./state.js";
 import { renderTranslated } from "./translated-view.js";
-import { startPenLoading } from "./pen-writer.js";
+import { beginLoading } from "./loading-overlay.js";
 import { showToast } from "./toast.js";
 import { targetLanguage } from "./target-language.js";
 
@@ -15,8 +15,8 @@ export async function translateRow(tr) {
   if (!text || state.translating) return "skipped";
 
   state.translating = true;
-  tr.querySelector(".translated-text").replaceChildren();
-  const stopLoading = startPenLoading(tr);
+  // the whole page shows the loading (the row keeps what it had until the new translation arrives)
+  const stopLoading = beginLoading({ message: "جارٍ ترجمة الصف…" });
   try {
     const data = await postJson("/translate", { text, target_lang: targetLanguage() });
     stopLoading();

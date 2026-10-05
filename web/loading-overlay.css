@@ -1,0 +1,41 @@
+/* the loading of the whole page (see loading-overlay.js) */
+.loading-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  /* light enough to read the lines of the pen and still see the translations being written behind it */
+  background: rgba(255, 250, 240, .72);
+  opacity: 0; transition: opacity .3s ease;
+}
+.loading-overlay.is-visible { opacity: 1; }
+
+
+/* no card: the pen writes on the screen itself */
+.loading-card {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 32px 24px;
+  transform: translateY(8px) scale(.98); transition: transform .3s ease;
+}
+.loading-overlay.is-visible .loading-card { transform: none; }
+
+.loading-scene { position: relative; flex: none; }
+.loading-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.loading-line {
+  fill: none; stroke: #2b1d0e; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0;
+}
+.loading-pen { position: absolute; left: 0; top: 0; z-index: 2; will-change: transform; }
+.loading-pen svg { filter: drop-shadow(0 4px 5px rgba(35, 26, 25, .22)); }
+.loading-ink { position: absolute; z-index: 1; border-radius: 50%; pointer-events: none; }
+
+.loading-title { margin: 6px 0 0; font-size: 1.05rem; font-weight: 700; color: #3b2a14; }
+.loading-progress { margin: 0; font-size: .9rem; color: #7a6741; }
+.loading-actions { display: flex; gap: 8px; margin-top: 10px; }
+.loading-button {
+  border: 1px solid #8a6a1e; background: rgba(255, 248, 225, .7); color: #5e4408; border-radius: 10px;
+  padding: 5px 16px; font: inherit; font-size: .9rem; cursor: pointer;
+}
+.loading-button:hover:not(:disabled) { background: rgba(255, 244, 205, .95); }
+.loading-button:disabled { opacity: .6; cursor: default; }
+.loading-button[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-overlay, .loading-card { transition: none; }
+}

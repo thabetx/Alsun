@@ -2,7 +2,7 @@ import { postJson } from "./api.js";
 import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom, showReviewNote, removeReviewNote } from "./translated-view.js";
 import { showToast } from "./toast.js";
-import { startPenLoading } from "./pen-writer.js";
+import { beginLoading } from "./loading-overlay.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { targetLanguage } from "./target-language.js";
 
@@ -37,7 +37,7 @@ export async function handleOriginalEdited(tr, editedText) {
   syncRowFromDom(tr);
   const previous = { segments: state.segments, originalText: state.originalText, aiEdited: state.aiEdited };
   tr.querySelector(".translated-text").replaceChildren();
-  const stopLoading = startPenLoading(tr);
+  const stopLoading = beginLoading({ message: "جارٍ إعادة ترجمة الصف…" });
 
   try {
     const data = await postJson("/retranslate", {
