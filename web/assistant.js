@@ -92,12 +92,20 @@ function addBubble(kind, text) {
 }
 
 function showContext() {
-  const box = el("assistant-context");
+  const chip = document.createElement("span");
+  chip.className = "context-chip";
+  const icon = document.createElement("i");
+  const label = document.createElement("span");
+  label.className = "context-label";
   if (context.kind === "fragment") {
-    box.textContent = `النص المحدد: «${context.text}»`;
+    icon.className = "fa-solid fa-quote-right";
+    label.textContent = `النص المحدد: «${context.text}»`;
   } else {
-    box.textContent = `الصفوف المحددة: ${context.rowIds.length}`;
+    icon.className = "fa-solid fa-list-check";
+    label.textContent = `الصفوف المحددة: ${context.rowIds.length}`;
   }
+  chip.append(icon, label);
+  el("assistant-context").replaceChildren(chip);
 }
 
 function openDock(newContext) {
@@ -134,19 +142,126 @@ function setBusy(busy) {
 }
 
 // A suggestion is only applied after the user accepts it.
-function addSuggestion({ title, lines, onAccept }) {
+// ---------- word-level difference between the text before and after (to review a suggestion quickly) ----------
+const MAX_DIFF_CELLS = 400000; // words before x words after; above this the marks are skipped (it would be slow)
+
+function wordKey(word) {
+  return word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "").toLowerCase() || word;
+}
+
+// Which words of the two texts are the same in both (longest common subsequence of words).
+function sameWordMasks(beforeWords, afterWords) {
+  const a = beforeWords.map(wordKey);
+  const b = afterWords.map(wordKey);
+  const keepA = new Array(a.length).fill(true);
+  const keepB = new Array(b.length).fill(true);
+  if (a.length * b.length > MAX_DIFF_CELLS) return { keepA, keepB };
+
+  const table = Array.from({ length: a.length + 1 }, () => new Uint16Array(b.length + 1));
+  for (let i = a.length - 1; i >= 0; i--) {
+    for (let j = b.length - 1; j >= 0; j--) {
+      table[i][j] = a[i] === b[j] ? table[i + 1][j + 1] + 1 : Math.max(table[i + 1][j], table[i][j + 1]);
+    }
+  }
+  keepA.fill(false);
+  keepB.fill(false);
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      keepA[i] = keepB[j] = true;
+      i++;
+      j++;
+    } else if (table[i + 1][j] >= table[i][j + 1]) {
+      i++;
+    } else {
+      j++;
+    }
+  }
+  return { keepA, keepB };
+}
+
+// Writes the text into `target`; the words that are not in the common part are inside <span class="diff-mark">.
+function fillWithMarks(target, text, keep) {
+  const tokens = text.split(/(\s+)/);
+  let wordNumber = 0;
+  const flags = tokens.map((token) => (token === "" || /^\s+$/.test(token) ? null : !keep[wordNumber++]));
+  // the space between two changed words is marked too, so the mark is one block
+  flags.forEach((flag, k) => {
+    if (flag !== null || tokens[k] === "") return;
+    let before = null;
+    for (let p = k - 1; p >= 0 && before === null; p--) before = flags[p];
+    let after = null;
+    for (let n = k + 1; n < flags.length && after === null; n++) after = flags[n];
+    flags[k] = before === true && after === true;
+  });
+
+  let run = null;
+  const flush = () => {
+    if (!run) return;
+    if (run.changed) {
+      const mark = document.createElement("span");
+      mark.className = "diff-mark";
+      mark.textContent = run.text;
+      target.append(mark);
+    } else {
+      target.append(document.createTextNode(run.text));
+    }
+    run = null;
+  };
+  tokens.forEach((token, k) => {
+    if (token === "") return;
+    if (!run || run.changed !== flags[k]) {
+      flush();
+      run = { changed: flags[k], text: "" };
+    }
+    run.text += token;
+  });
+  flush();
+}
+
+function diffBox(label, className, text, keep) {
+  const boxElement = document.createElement("div");
+  boxElement.className = `diff-box ${className}`;
+  const tag = document.createElement("span");
+  tag.className = "diff-tag";
+  tag.textContent = label;
+  const body = document.createElement("p");
+  body.className = "diff-text";
+  body.dir = "auto"; // the text is in the target language (left to right); the label is not inside it
+  fillWithMarks(body, text, keep);
+  boxElement.append(tag, body);
+  return boxElement;
+}
+
+// items: [{ title: "الصف 1" (optional), before, after }]
+function addSuggestion({ title, items, onAccept }) {
   const box = document.createElement("div");
   box.className = "bubble bubble-assistant suggestion";
   const heading = document.createElement("strong");
+  heading.className = "suggestion-title";
   heading.textContent = title;
   box.append(heading);
 
-  lines.forEach(({ label, text, className }) => {
-    const row = document.createElement("div");
-    row.className = `suggestion-line ${className}`;
-    row.textContent = `${label} ${text}`;
-    box.append(row);
+  const list = document.createElement("div");
+  list.className = "suggestion-items";
+  items.forEach(({ title: rowTitle, before, after }) => {
+    const item = document.createElement("div");
+    item.className = "suggestion-item";
+    if (rowTitle) {
+      const rowTag = document.createElement("span");
+      rowTag.className = "suggestion-row-tag";
+      rowTag.textContent = rowTitle;
+      item.append(rowTag);
+    }
+    const { keepA, keepB } = sameWordMasks(
+      before.split(/\s+/).filter(Boolean),
+      after.split(/\s+/).filter(Boolean),
+    );
+    item.append(diffBox("قبل", "diff-before", before, keepA), diffBox("بعد", "diff-after", after, keepB));
+    list.append(item);
   });
+  box.append(list);
 
   const actions = document.createElement("div");
   actions.className = "suggestion-actions";
@@ -216,10 +331,7 @@ async function suggestForFragment(instructions) {
   const fragment = { ...context }; // the part this suggestion was made for
   addSuggestion({
     title: "اقتراح لتعديل الجزء المحدد",
-    lines: [
-      { label: "قبل:", text: fragment.text, className: "line-before" },
-      { label: "بعد:", text: replacement, className: "line-after" },
-    ],
+    items: [{ before: fragment.text, after: replacement }],
     onAccept: () => applyFragment(fragment, replacement),
   });
 }
@@ -281,7 +393,7 @@ async function suggestForRows(instructions) {
 
   if (answer.fallbacks?.length) addBubble("system", fallbackMessage(answer.fallbacks));
   const quranOnly = answer.quran_only_rows.length;
-  const lines = [];
+  const items = [];
   // rows the model could not edit without changing an approved term of the glossary: they stay as they are
   const blocked = new Set(answer.glossary_blocked_rows || []);
   answer.unchanged_rows = [];
@@ -292,8 +404,7 @@ async function suggestForRows(instructions) {
       answer.unchanged_rows.push(index);
       return;
     }
-    lines.push({ label: `الصف ${index + 1} قبل:`, text: oldText, className: "line-before" });
-    lines.push({ label: "بعد:", text: newRow.paragraph, className: "line-after" });
+    items.push({ title: `الصف ${index + 1}`, before: oldText, after: newRow.paragraph });
   });
   if (quranOnly) {
     addBubble("system", `${quranOnly} من الصفوف المحددة آيات فقط، والآيات لا تُعدَّل.`);
@@ -301,11 +412,11 @@ async function suggestForRows(instructions) {
   if (blocked.size) {
     addBubble("system", `${blocked.size} من الصفوف لم يُعدَّل (أو لم يُعدَّل كله) لأن التعديل كان سيغيّر مصطلحًا معتمدًا من قاموسك.`);
   }
-  if (!lines.length) return;
+  if (!items.length) return;
 
   addSuggestion({
     title: "اقتراح لتعديل الصفوف المحددة",
-    lines,
+    items,
     onAccept: () => applyToRows(translatedRows, sentSegments, answer),
   });
 }

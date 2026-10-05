@@ -1,0 +1,25 @@
+/* the page for an address that does not exist (loaded after home.css and home-warm.css) */
+.not-found-page { min-height: 100vh; display: flex; flex-direction: column; }
+.not-found {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 28px 20px 56px; text-align: center;
+  background:
+    radial-gradient(45% 50% at 50% 30%, rgba(184, 134, 11, .12), transparent 70%),
+    linear-gradient(180deg, var(--bg), #fbf6ea);
+}
+.not-found .hero-visual { width: min(86vw, 380px); }
+.not-found-code { margin: 4px 0 0; font-size: .95rem; font-weight: 800; letter-spacing: .4em; color: var(--gold); }
+.not-found h1 { margin: 2px 0 6px; font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 800; line-height: 1.3; }
+.not-found-text { margin: 0 0 12px; max-width: 30em; color: #5c4f48; font-size: 1.1rem; }
+.missing-path-box { margin: 0 0 22px; }
+.missing-path {
+  display: inline-block; max-width: min(92vw, 560px); direction: ltr; unicode-bidi: isolate; overflow-wrap: anywhere;
+  padding: 3px 12px; border-radius: 8px; background: #f3e9d2; color: #5c4f48; font-size: .9rem;
+}
+.missing-path:empty { display: none; }
+.btn-home {
+  display: inline-flex; align-items: center; gap: 10px; padding: 11px 24px; border-radius: 12px;
+  background: var(--gold-btn); color: #fff; font-weight: 700; font-size: 1.05rem; transition: background .15s;
+}
+.btn-home:hover { background: var(--gold-btn-hover); }
+.btn-home .arrow { font-style: normal; }

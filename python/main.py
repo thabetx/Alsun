@@ -15,9 +15,11 @@ from typing import List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.exception_handlers import http_exception_handler
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # Project root is one level up from this file (python/ -> project root).
 ROOT = Path(__file__).resolve().parent.parent
@@ -46,16 +48,48 @@ app = FastAPI()
 app.include_router(assistant_router)
 app.include_router(settings_router)
 
-# Serve everything in web/ (index.html, css, js, images) at the root URL.
+# ---------- the pages ----------
+#   /      the home page (upload the book, choose the language)
+#   /app   the viewer: the arabic text and the translation side by side
+# Any other address that does not exist gets the page web/404.html (see not_found_page below).
+# The old addresses of the two files still work: they go to the new ones.
+# These routes come before the mount of web/, which would answer for the same files.
+
+@app.get("/", include_in_schema=False)
+def serve_home_page():
+    return FileResponse(ROOT / "web" / "home.html")
+
+
+@app.get("/app", include_in_schema=False)
+def serve_viewer_page():
+    return FileResponse(ROOT / "web" / "index.html")
+
+
+@app.get("/web/home.html", include_in_schema=False)
+def old_home_address():
+    return RedirectResponse("/", status_code=307)
+
+
+@app.get("/web/index.html", include_in_schema=False)
+def old_viewer_address():
+    return RedirectResponse("/app", status_code=307)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def not_found_page(request, error):
+    # A browser that opens an address that does not exist sees our page; everything else (a script asking for
+    # a file, an api call) gets the usual short answer.
+    asks_for_a_page = request.method == "GET" and "text/html" in request.headers.get("accept", "")
+    if error.status_code == 404 and asks_for_a_page:
+        return FileResponse(ROOT / "web" / "404.html", status_code=404)
+    return await http_exception_handler(request, error)
+
+
+# Serve everything in web/ (css, js, images) at /web.
 app.mount("/web", StaticFiles(directory=ROOT / "web"), name="web")
 
 # Serve the data/ files (PDFs + JSON) used by the visualizer.
 app.mount("/data", StaticFiles(directory=ROOT / "data"), name="data")
-
-
-@app.get("/")
-def serve_homepage():
-    return FileResponse(ROOT / "web" / "index.html")
 
 
 @app.get("/ocr")

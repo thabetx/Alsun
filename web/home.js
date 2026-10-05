@@ -51,5 +51,5 @@ btnStart.addEventListener("click", () => {
     name: chosen.name, size: chosen.size, lang: langSelect.value,
   }));
   // Demo build: the viewer still shows the fixed sample book.
-  location.href = "/web/index.html";
+  location.href = "/app";
 });

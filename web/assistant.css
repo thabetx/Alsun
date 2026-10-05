@@ -297,7 +297,7 @@
 .settings-message { margin: 0; font-size: .9rem; color: #2f6b3a; }
 .settings-message.is-error { color: #8a2a1d; }
 
-/* ---------- assistant: full-screen button (like a canvas) + gold send button ---------- */
+/* ---------- assistant: expand button (opens a window like the glossary) + gold send button ---------- */
 .assistant-actions { display: flex; align-items: center; gap: 4px; }
 .assistant-expand {
   width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent;
@@ -306,22 +306,28 @@
 .assistant-expand:hover { background: #e8d9b8; color: #231a19; }
 .assistant-expand:focus-visible, .assistant-close:focus-visible { outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35); }
 
-/* expanded: the dock covers the page (the rest of the page is dimmed), the content stays in a readable column */
-.assistant-dock.is-expanded {
-  position: fixed; inset: 16px; z-index: 1500; max-height: none; overflow: hidden;
-  border: 1px solid #e6d9bf; border-top: 2px solid #b8860b; border-radius: 18px;
-  box-shadow: 0 0 0 100vmax rgba(35, 26, 25, .45), 0 24px 60px rgba(35, 26, 25, .35);
+/* expanded: a window in the middle of the page, like the glossary window; the page behind stays visible, blurred */
+body.assistant-expanded::before {
+  content: ""; position: fixed; inset: 0; z-index: 1499;
+  background: rgba(35, 26, 25, .45); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
 }
-body.assistant-expanded { overflow: hidden; }
+.assistant-dock.is-expanded {
+  position: fixed; inset: 0; margin: auto; z-index: 1500; overflow: hidden;
+  width: min(720px, calc(100vw - 32px)); height: min(680px, calc(100vh - 32px)); max-height: none;
+  border: 1px solid #e6d9bf; border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(35, 26, 25, .28);
+  animation: confirm-in .18s ease-out;
+}
 .assistant-dock.is-expanded .assistant-header { padding: 12px 22px; font-size: 1.05rem; }
-.assistant-dock.is-expanded .assistant-context,
-.assistant-dock.is-expanded .assistant-log,
-.assistant-dock.is-expanded .assistant-input-row { width: min(920px, 100%); margin-inline: auto; }
+.assistant-dock.is-expanded .assistant-context { padding: 8px 22px; }
 .assistant-dock.is-expanded .assistant-log { padding: 14px 22px; }
-.assistant-dock.is-expanded .bubble { font-size: 16px; max-width: 85%; }
+.assistant-dock.is-expanded .bubble { font-size: 16px; max-width: 92%; }
 .assistant-dock.is-expanded .assistant-input-row { padding: 12px 22px 18px; align-items: flex-end; }
-.assistant-dock.is-expanded .assistant-input-row textarea { min-height: 96px; font-size: 16px; }
-@media (max-width: 640px) { .assistant-dock.is-expanded { inset: 8px; border-radius: 14px; } }
+.assistant-dock.is-expanded .assistant-input-row textarea { min-height: 88px; font-size: 16px; }
+@media (max-width: 640px) {
+  .assistant-dock.is-expanded { width: calc(100vw - 16px); height: calc(100vh - 16px); border-radius: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .assistant-dock.is-expanded { animation: none; } }
 
 /* send button: the gold of the Alsun logo instead of Bootstrap blue */
 #assistant-send {
@@ -337,3 +343,45 @@ body.assistant-expanded { overflow: hidden; }
 .block-row.is-busy .original-text { opacity: .45; transition: opacity .2s; }
 .block-row.is-busy .original-text:focus { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .block-row.is-busy .original-text { transition: none; } }
+
+/* ---------- assistant suggestion: one card per row, "before" and "after" in white boxes ---------- */
+/* few colors on purpose: white boxes, the warm border, and the gold of the logo as the only accent */
+.assistant-context { direction: rtl; unicode-bidi: normal; }
+.context-chip {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%;
+  padding: 2px 12px; font-size: 13px; font-weight: 700; color: #5c4f48;
+  background: #f3ead4; border: 1px solid #e0d2b2; border-radius: 999px;
+}
+.context-chip i { flex: none; color: #b8860b; }
+.context-label { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; unicode-bidi: plaintext; }
+
+.bubble.suggestion { width: 100%; max-width: 100%; padding: 12px 14px; }
+.suggestion-title { display: block; margin-bottom: 4px; font-size: 15px; }
+.suggestion-item { padding: 12px 0; border-top: 1px solid rgba(35, 26, 25, .1); }
+.suggestion-item:first-child { border-top: 0; }
+.suggestion-row-tag {
+  display: inline-block; margin-bottom: 8px; padding: 1px 12px; font-size: 13px; font-weight: 700;
+  color: #5c4f48; background: #fff; border: 1px solid #e0d2b2; border-radius: 999px;
+}
+.diff-box { margin-top: 8px; padding: 8px 12px 10px; background: #fff; border: 1px solid #e6d9bf; border-radius: 10px; }
+.diff-box:first-of-type { margin-top: 0; }
+.diff-tag { display: block; margin-bottom: 2px; font-size: 12px; font-weight: 800; color: #7a6d63; }
+.diff-after .diff-tag { color: #b8860b; }
+.diff-text {
+  margin: 0; white-space: pre-wrap; unicode-bidi: plaintext; text-align: start;
+  font-size: 15px; line-height: 1.7; color: #231a19;
+}
+/* changed words: one soft gold highlight; the removed ones are also crossed out */
+.diff-mark { padding: 0 2px; border-radius: 4px; background: #f8e6bf; }
+.diff-before .diff-mark { color: #7a6d63; text-decoration: line-through; text-decoration-color: rgba(35, 26, 25, .4); }
+
+.suggestion-actions { margin-top: 4px; padding-top: 10px; border-top: 1px solid rgba(35, 26, 25, .1); }
+/* accept = gold like the send button, reject = quiet outline, undo = plain link (no green / blue) */
+.suggestion-actions .btn-success {
+  --bs-btn-bg: #b8860b; --bs-btn-border-color: #b8860b;
+  --bs-btn-hover-bg: #9a6f08; --bs-btn-hover-border-color: #9a6f08;
+  --bs-btn-active-bg: #7f5c07; --bs-btn-active-border-color: #7f5c07;
+  --bs-btn-disabled-bg: #b8860b; --bs-btn-disabled-border-color: #b8860b;
+  --bs-btn-focus-shadow-rgb: 184, 134, 11; font-weight: 700;
+}
+.suggestion-actions .btn-link { --bs-btn-color: #7a5a08; --bs-btn-hover-color: #b8860b; }
