@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from merge_rows import build_rows_response, explain_merge_problem, merge_rows, unmerge_row
 from modify_fragment import apply_fragment_replacement, suggest_fragment_replacement
 from modify_many_paragraphs import modify_many_paragraphs_and_build_response
+from glossary import clean_glossary
 from retranslate_original import retranslate_edited_original
 
 router = APIRouter()
@@ -35,10 +36,21 @@ class ModifyRowsRequest(BaseModel):
     instructions: str
 
 
+class GlossaryEntry(BaseModel):
+    arabic: str
+    translation: str
+
+
+def checked_glossary(entries):
+    # the glossary of the user comes with the translation request: checked here, ValueError -> 400
+    return clean_glossary([{"arabic": entry.arabic, "translation": entry.translation} for entry in entries])
+
+
 class RetranslateRequest(BaseModel):
     old_segments: List[Dict[str, Any]]
     new_original_text: str
     target_lang: str = "English"
+    glossary: List[GlossaryEntry] = []
 
 
 class MergeRequest(BaseModel):
@@ -91,7 +103,8 @@ def modify_rows(request: ModifyRowsRequest):
 def retranslate(request: RetranslateRequest):
     try:
         return retranslate_edited_original(
-            request.old_segments, request.new_original_text, target_lang=request.target_lang
+            request.old_segments, request.new_original_text,
+            target_lang=request.target_lang, glossary=checked_glossary(request.glossary),
         )
     except ValueError as error:
         raise refuse_with_message(error)

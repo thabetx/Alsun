@@ -203,3 +203,52 @@
   display: block; direction: rtl; text-align: right;
   font-size: 15px; font-style: italic; color: #8a7f6f; cursor: default;
 }
+
+/* ---------- the glossary window ---------- */
+.glossary-dialog {
+  width: min(640px, calc(100vw - 32px)); max-height: min(640px, calc(100vh - 32px)); padding: 0;
+  border: 1px solid #e6d9bf; border-radius: 18px; background: #fffdf8; color: #231a19; direction: rtl;
+  font-family: "Tajawal", system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 24px 60px rgba(35, 26, 25, .28); overflow: hidden;
+}
+.glossary-dialog[open] { display: flex; flex-direction: column; animation: confirm-in .18s ease-out; }
+.glossary-dialog::backdrop { background: rgba(35, 26, 25, .45); backdrop-filter: blur(3px); }
+.glossary-head { padding: 22px 26px 6px; }
+.glossary-title { margin: 0 0 4px; font-size: 1.2rem; font-weight: 800; }
+.glossary-sub { margin: 0; color: #7a6c63; font-size: .92rem; }
+
+.glossary-form { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 26px 4px; }
+.glossary-input {
+  flex: 1 1 180px; min-width: 0; font: inherit; padding: 7px 12px; border: 1px solid #e0d2b2; border-radius: 10px;
+  background: #fff; color: #231a19;
+}
+.glossary-input:focus { outline: none; border-color: #b8860b; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .25); }
+.glossary-primary, .glossary-secondary {
+  font: inherit; font-weight: 700; font-size: .92rem; padding: 7px 18px; border-radius: 10px; cursor: pointer;
+}
+.glossary-primary { color: #fff; background: #b8860b; border: 1px solid #b8860b; }
+.glossary-primary:hover { background: #9a6f08; border-color: #9a6f08; }
+.glossary-secondary { color: #5c4f48; background: #fffdf8; border: 1px solid #e0d2b2; }
+.glossary-secondary:hover { background: #f8f0dc; }
+.glossary-primary:focus-visible, .glossary-secondary:focus-visible { outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35); }
+.glossary-message { min-height: 1.4em; margin: 4px 26px 0; font-size: .9rem; color: #2f6b3a; }
+.glossary-message.is-error { color: #8a2a1d; }
+
+.glossary-list-head { display: flex; align-items: center; gap: 12px; padding: 4px 26px 8px; }
+.glossary-search { flex: 1 1 auto; }
+.glossary-counter { flex: none; color: #7a6c63; font-size: .88rem; }
+.glossary-list {
+  list-style: none; margin: 0 26px; padding: 0; overflow-y: auto; min-height: 90px; flex: 1 1 auto;
+  border: 1px solid #efe4cc; border-radius: 12px; background: #fff;
+}
+.glossary-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #f3ead6; }
+.glossary-item:last-child { border-bottom: 0; }
+.glossary-arabic { flex: 1 1 40%; min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
+.glossary-translation { flex: 1 1 40%; min-width: 0; color: #5c4f48; text-align: left; overflow-wrap: anywhere; }
+.glossary-icon {
+  flex: none; width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: #8a7f6f; cursor: pointer;
+}
+.glossary-icon:hover { background: #f8f0dc; color: #7a5a08; }
+.glossary-remove:hover { background: #fde3df; color: #8a2a1d; }
+.glossary-empty { padding: 22px 14px; text-align: center; color: #7a6c63; }
+.glossary-footer { display: flex; gap: 8px; padding: 14px 26px 20px; }

@@ -10,7 +10,13 @@ from paragraph_format import (
     concatenate_paragraph_segements,
     build_paragraph_display_parts,
 )
-from nltk.stem.isri import ISRIStemmer
+from arabic_text import normalize_arabic  # also imported from here by other modules
+from glossary import (
+    find_glossary_hits,
+    build_glossary_instructions,
+    build_glossary_correction,
+    translation_is_used,
+)
 
 # reads OPENAI_API_KEY from a .env file (or the environment)
 load_dotenv()
@@ -39,9 +45,6 @@ def find_quran_file(target_lang):
 
 detector_lock = threading.Lock()
 quran_annotate = qdetect.qMatcherAnnotater() # built once, it takes ~6 seconds
-
-stemmer = ISRIStemmer()
-
 
 def quran_detector(paragraph):
     # one matcher is shared by all the requests; only one request uses it at a time
@@ -81,82 +84,46 @@ def split_quran_and_normal_paragraph(paragraph):
     return ayah_or_sentence_list
 
 
-def normalize_arabic(name):
-    # make surah names comparable: no tashkeel, one form of alef / taa marbuta / yaa
-    name = re.sub(r"[ً-ٰٟـ]", "", name)
-    name = re.sub(r"[أإآٱ]", "ا", name)
-    return name.replace("ة", "ه").replace("ى", "ي")
+def ask_llm(messages):
+    response = client.chat.completions.create(model="gpt-4o-mini", messages=messages)
+    return response.choices[0].message.content
 
 
-def stem_arabic(text):
-    text = normalize_arabic(text)
-    tokens = [stemmer.stem(t) for t in text.split() if stemmer.stem(t)]
-    return " ".join(tokens)
-
-
-def load_glossary(language="English"):
-    # TODO: Read this from a file/database
-    if language == "English":
-        glossary = [{"Arabic": "حى بن يقظان", language: "Hay bin Yaqdhan"}]
-    else:
-        glossary = []
-
-    if glossary:
-        # Stem the tokens to handle Arabic's morphological complexity
-        for d in glossary:
-            d["Arabic_stemmed"] = stem_arabic(d["Arabic"])
-
-    return glossary
-
-
-def find_glossary_items_in_text(stemmed_text, glossary):
-    # TODO: If the glossary grows larger then this function will need to be reimplemented
-    # such that the implementation is more efficient
-    glossary_items_in_text = [
-        d for d in glossary if re.findall(rf"\b{d['Arabic_stemmed']}\b", stemmed_text)
-    ]
-    return glossary_items_in_text
-
-
-def translate_normal_paragraph(paragraph, target_lang="English", use_glossary=True):
-    # normal text goes to the llm
+def translate_normal_paragraph_with_report(paragraph, target_lang="English", glossary=None):
+    # normal text goes to the llm. The terms of the glossary that are in the text are told to it, and if its
+    # translation does not use one of them it is asked once more. Gives {"text", "glossary"}, where "glossary"
+    # has the terms found in the text and whether the translation uses each one ("used").
+    hits = find_glossary_hits(paragraph, glossary or [])
     system_prompt = (
         f"You are a translator. Translate the user's Arabic text into "
         f"{target_lang}. Reply with only the translation, "
         f"no explanations or extra text."
     )
+    if hits:
+        system_prompt += build_glossary_instructions(hits)
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": paragraph},
+    ]
 
-    if use_glossary:
-        # TODO: Load this once and cache it, instead of loading it for every paragraph
-        glossary = load_glossary(language=target_lang)
+    text = ask_llm(messages)
+    missing = [hit for hit in hits if not translation_is_used(text, hit["translation"])]
+    if missing:
+        retry_messages = messages + [
+            {"role": "assistant", "content": text},
+            {"role": "user", "content": build_glossary_correction(missing)},
+        ]
+        retried = ask_llm(retry_messages)
+        still_missing = [hit for hit in hits if not translation_is_used(retried, hit["translation"])]
+        if len(still_missing) < len(missing):  # the second translation is kept only if it is better
+            text, missing = retried, still_missing
 
-        stemmed_text = stem_arabic(paragraph)
-        glossary_items = find_glossary_items_in_text(stem_arabic(paragraph), glossary)
+    report = [{**hit, "used": hit not in missing} for hit in hits]
+    return {"text": text, "glossary": report}
 
-        prompt = ""
-        if glossary_items:
-            prompt += "\n* Use the following glossary items in translating the text (as is without any modification):\n"
-            prompt += (
-                "\n".join(
-                    [
-                        f"- {item['Arabic']} -> {item[target_lang]}"
-                        for item in glossary_items
-                    ]
-                )
-                + "\n\n"
-            )
-        prompt += paragraph
-    else:
-        prompt = paragraph
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
-        ],
-    )
-    return response.choices[0].message.content
+def translate_normal_paragraph(paragraph, target_lang="English", glossary=None):
+    return translate_normal_paragraph_with_report(paragraph, target_lang, glossary)["text"]
 
 
 def translate_quran_paragraph(segment, quran_json):
@@ -168,7 +135,7 @@ def translate_quran_paragraph(segment, quran_json):
     return segment["text"] # surah not found, keep the arabic as it is
 
 
-def translate_paragraph_segments(paragraph, json_file=None, target_lang="English"):
+def translate_paragraph_segments(paragraph, json_file=None, target_lang="English", glossary=None):
     if json_file is None:
         json_file = find_quran_file(target_lang)
     with open(json_file, encoding="utf-8") as f:
@@ -176,18 +143,24 @@ def translate_paragraph_segments(paragraph, json_file=None, target_lang="English
 
     translated_segments = []
     for segment_number, segment in enumerate(split_quran_and_normal_paragraph(paragraph), start=1):
+        glossary_report = {}
         if segment["type"] == "quran":
             translated_text = translate_quran_paragraph(segment, quran_json)
         else:
-            translated_text = translate_normal_paragraph(segment["text"], target_lang)
+            result = translate_normal_paragraph_with_report(segment["text"], target_lang, glossary)
+            translated_text = result["text"]
+            if result["glossary"]:
+                glossary_report = {"glossary": result["glossary"]}  # the terms of the user's glossary found in this part
         # id = stable name for the segment, text = the translation, original = the arabic we got it from
-        translated_segments.append({**segment, "id": f"seg_{segment_number}", "text": translated_text, "original": segment["text"]})
+        translated_segments.append({
+            **segment, "id": f"seg_{segment_number}", "text": translated_text, "original": segment["text"], **glossary_report,
+        })
 
     return translated_segments
 
 
-def translate_paragraph_and_build_response(paragraph, json_file=None, target_lang="English"):
-    segments = translate_paragraph_segments(paragraph, json_file, target_lang)
+def translate_paragraph_and_build_response(paragraph, json_file=None, target_lang="English", glossary=None):
+    segments = translate_paragraph_segments(paragraph, json_file, target_lang, glossary)
     return {
         "paragraph": concatenate_paragraph_segements(segments),
         "parts": build_paragraph_display_parts(segments),

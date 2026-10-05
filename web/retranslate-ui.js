@@ -5,6 +5,7 @@ import { showToast } from "./toast.js";
 import { beginLoading } from "./loading-overlay.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { targetLanguage } from "./target-language.js";
+import { getGlossary, notAppliedTerms, notAppliedMessage } from "./glossary-store.js";
 
 const CONFIRM_MESSAGE =
   "تعديل النص الأصلي سيعيد ترجمة هذا الصف، وستضيع تعديلاتك على الترجمة. " +
@@ -42,6 +43,7 @@ export async function handleOriginalEdited(tr, editedText) {
   try {
     const data = await postJson("/retranslate", {
       old_segments: state.segments, new_original_text: newText, target_lang: targetLanguage(),
+      glossary: getGlossary(targetLanguage()),
     });
     stopLoading();
     if (!rowStates.has(tr.dataset.id)) return; // deleted while we waited

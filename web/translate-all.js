@@ -1,4 +1,5 @@
 import { rowStates } from "./state.js";
+import { notAppliedTerms } from "./glossary-store.js";
 import { getAllRows, getSelectedRows } from "./selection.js";
 import { translateRow } from "./translate-ui.js";
 import { showToast } from "./toast.js";
@@ -52,6 +53,7 @@ async function translateAll() {
   let done = 0;
   let errorsInARow = 0;
   let translated = 0;
+  let glossaryMissed = 0; // terms of the glossary the model did not use
   let stoppedByErrors = false;
   // the page is covered by the loading until the last row is translated (or the user stops it)
   const endLoading = beginLoading({ message: "جارٍ ترجمة الصفوف…", onStop: requestStop });
@@ -67,10 +69,13 @@ async function translateAll() {
     }
 
     tr.scrollIntoView({ block: "center", behavior: "smooth" }); // so the translation is written in front of the user
-    const result = await translateRow(tr);
+    const result = await translateRow(tr, { quiet: true });
     done++;
     showProgress(done, rows.length);
-    if (result === "done") translated++;
+    if (result === "done") {
+      translated++;
+      glossaryMissed += notAppliedTerms(rowStates.get(tr.dataset.id).segments).length;
+    }
     errorsInARow = result === "error" ? errorsInARow + 1 : 0;
     if (errorsInARow >= MAX_ERRORS_IN_A_ROW) {
       stoppedByErrors = true;
@@ -87,7 +92,11 @@ async function translateAll() {
     showToast(`توقفت الترجمة بعد ${MAX_ERRORS_IN_A_ROW} أخطاء متتالية (تمت ترجمة ${translated} صفًا)`, true);
     return;
   }
-  showToast(stopped ? `تم الإيقاف بعد ترجمة ${translated} صفًا` : `تمت ترجمة ${translated} صفًا`);
+  const summary = stopped ? `تم الإيقاف بعد ترجمة ${translated} صفًا` : `تمت ترجمة ${translated} صفًا`;
+  showToast(
+    glossaryMissed ? `${summary}. لم تُطبَّق ${glossaryMissed} من مصطلحات قاموسك، راجعها يدويًا.` : summary,
+    glossaryMissed > 0
+  );
 }
 
 export function initTranslateAll() {

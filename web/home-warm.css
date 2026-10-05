@@ -33,6 +33,8 @@
 /* ---------- light footer ---------- */
 .site-footer { background: #f1e7d0; color: #5c4f48; border-top: 1px solid var(--line); }
 .site-footer a:hover { color: var(--ink); }
+.footer-brand { display: inline-flex; align-items: center; gap: 10px; }
+.footer-brand img { height: 34px; display: block; }
 
 @media (max-width: 640px) {
   .site-header { grid-template-columns: 1fr auto; margin: 8px 10px 0; padding: 0 14px; min-height: 56px; }

@@ -10,6 +10,7 @@
 
 import sys
 from pathlib import Path
+from typing import List
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -28,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from quran_detect import translate_paragraph_and_build_response  # noqa: E402
 from ocr import extract_pdf_segments  # noqa: E402
-from assistant_routes import router as assistant_router  # noqa: E402
+from assistant_routes import router as assistant_router, GlossaryEntry, checked_glossary  # noqa: E402
 from pypdf import PdfReader  # noqa: E402
 
 app = FastAPI()
@@ -61,12 +62,15 @@ def ocr(filename: str = "two-pages.pdf"):
 class TranslateRequest(BaseModel):
     text: str
     target_lang: str  # a key of QURAN_FILES in quran_detect.py: "English", "French", ...
+    glossary: List[GlossaryEntry] = []  # the terms of the user for target_lang (see glossary.py)
 
 
 @app.post("/translate")
 def translate(request: TranslateRequest):
     try:
-        result = translate_paragraph_and_build_response(request.text, target_lang=request.target_lang)
+        result = translate_paragraph_and_build_response(
+            request.text, target_lang=request.target_lang, glossary=checked_glossary(request.glossary)
+        )
     except ValueError as error:  # a language we have no quran translation for
         raise HTTPException(status_code=400, detail=str(error))
     # the frontend shows result["paragraph"]; segments are kept for editing.
