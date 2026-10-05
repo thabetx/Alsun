@@ -194,3 +194,6 @@
 .row-actions .dropdown-menu { min-width: 190px; }
 .row-actions .dropdown-header { padding: 4px 16px 2px; font-size: 12px; font-weight: 700; color: #b8860b; text-align: right; }
 .row-actions .dropdown-item:disabled { opacity: .5; }
+
+/* text the user wrote in place of an ayah he deleted: a dotted line under it, so it isn't taken for the translation of the ayah */
+.translated-text .seg-replaced { border-bottom: 1px dashed #b8860b; }

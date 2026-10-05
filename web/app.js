@@ -4,6 +4,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 
 import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
+import { protectAyahsInCell, EDIT_REFUSED_MESSAGE } from "./segment-sync.js";
 import { handleOriginalEdited } from "./retranslate-ui.js";
 import { initAssistant, refreshAssistantButton, forgetDeletedRow } from "./assistant.js";
 import { initMerge, refreshMergeButton } from "./merge-ui.js";
@@ -253,6 +254,7 @@ function makeRow(b) {
     // a changed original means the row is translated again (and the ayahs are checked again)
     handleOriginalEdited(tr, original.textContent);
   });
+  protectAyahsInCell(translated, { onRefused: () => showToast(EDIT_REFUSED_MESSAGE, true) });
   translated.addEventListener("focus", () => editClass(true));
   translated.addEventListener("blur", () => {
     editClass(false);

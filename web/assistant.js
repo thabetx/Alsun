@@ -1,5 +1,5 @@
 import { postJson } from "./api.js";
-import { rowStates, displayParts, copy } from "./state.js";
+import { rowStates, joinDisplayText, copy } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { getRowById, getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
@@ -260,7 +260,7 @@ async function suggestForRows(instructions) {
   const lines = [];
   answer.rows.forEach((newRow, index) => {
     if (answer.quran_only_rows.includes(index)) return;
-    const oldText = displayParts(sentSegments[index]).map((part) => part.text).join(" ");
+    const oldText = joinDisplayText(sentSegments[index]);
     lines.push({ label: `الصف ${index + 1} قبل:`, text: oldText, className: "line-before" });
     lines.push({ label: "بعد:", text: newRow.paragraph, className: "line-after" });
   });

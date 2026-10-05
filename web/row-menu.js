@@ -1,4 +1,4 @@
-import { rowStates, displayParts } from "./state.js";
+import { rowStates, joinDisplayText } from "./state.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { showToast } from "./toast.js";
 import { translateRow } from "./translate-ui.js";
@@ -103,7 +103,7 @@ export async function runRowMenuAction(tr, action) {
   if (shortcut) return askAssistantAboutRow(tr, shortcut.label, shortcut.instructions);
 
   if (action === "copy-translation") {
-    const text = displayParts(state.segments).map((part) => part.text).join(" ");
+    const text = joinDisplayText(state.segments);
     try {
       await copyToClipboard(text);
       showToast("تم نسخ الترجمة");

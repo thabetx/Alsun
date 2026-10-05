@@ -15,6 +15,15 @@ export function displayParts(segments) {
   }));
 }
 
+// The text of a row as one line: the parts with text, one space between them
+// (same as concatenate_paragraph_segements in the backend; a part with no text adds nothing).
+export function joinDisplayText(segments) {
+  return displayParts(segments)
+    .map((part) => part.text)
+    .filter(Boolean)
+    .join(" ");
+}
+
 export function toRawRow(state) {
   const row = { id: state.id, segments: state.segments, source_blocks: state.source_blocks };
   if (state.merged_from) row.merged_from = state.merged_from;

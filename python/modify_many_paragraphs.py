@@ -11,7 +11,7 @@ def collect_normal_texts(paragraphs):
     places = []
     for paragraph_number, paragraph in enumerate(paragraphs):
         for segment_number, segment in enumerate(paragraph):
-            if segment["type"] == "normal":
+            if segment["type"] == "normal" and segment["text"].strip():
                 items.append({"key": str(len(items)), "text": segment["text"]})
                 places.append((paragraph_number, segment_number))
 

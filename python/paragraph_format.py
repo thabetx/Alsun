@@ -17,4 +17,5 @@ def build_paragraph_display_parts(segments):
 def concatenate_paragraph_segements(segments):
     # one paragraph for the user; the segments list stays as the source of truth.
     parts = build_paragraph_display_parts(segments)
-    return " ".join(part["text"] for part in parts)
+    # a part with no text (an ayah the user deleted without writing anything) adds nothing, not even a space
+    return " ".join(part["text"] for part in parts if part["text"])

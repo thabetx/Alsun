@@ -1,6 +1,7 @@
 import { rowStates, displayParts, PLACEHOLDER } from "./state.js";
 import { showToast } from "./toast.js";
 import { finishTyping, typeTranslation } from "./pen-writer.js";
+import { rebuildSegmentsFromCell, EDIT_REFUSED_MESSAGE, AYAH_DELETED_MESSAGE } from "./segment-sync.js";
 
 // Draws the translation of a row from its segments: one <span> per segment (id + type),
 // so a selection can be matched to a segment without counting characters in the whole text.
@@ -14,14 +15,23 @@ export function renderTranslated(tr, { animate = false } = {}) {
   if (!state.segments.length) {
     cell.textContent = PLACEHOLDER;
   }
+  let somethingBefore = false;
   displayParts(state.segments).forEach((part, index) => {
-    if (index > 0) cell.append(" ");
+    // one space between two parts with text; a part with no text (a deleted ayah) is there but adds no space
+    if (part.text && somethingBefore) cell.append(" ");
+    const segment = state.segments[index];
     const span = document.createElement("span");
     span.className = `seg seg-${part.type}`;
     span.dataset.segId = part.id;
     span.textContent = part.text;
     if (part.type === "quran") span.contentEditable = "false";
+    // text the user wrote where an ayah was: marked, so it is clear it is not the translation of the ayah
+    if (segment.replaced_quran?.length) {
+      span.classList.add("seg-replaced");
+      span.title = `نص كتبه المستخدم بدل ترجمة آية: ${segment.replaced_quran.map(describeAyahRange).join("، ")}`;
+    }
     cell.append(span);
+    if (part.text) somethingBefore = true;
   });
 
   tr.querySelector(".ai-chip").hidden = !state.aiEdited;
@@ -36,6 +46,7 @@ function describeAyahRange(segment) {
   const range = segment.aya_end !== segment.aya_start ? `${segment.aya_start}-${segment.aya_end}` : `${segment.aya_start}`;
   return `${segment.aya_name} (${range})`;
 }
+
 
 // Marks in the ORIGINAL text what the detector took as quran, so a wrong detection is visible.
 // The text itself is not changed (same characters, same spaces), only wrapped in spans.
@@ -82,32 +93,25 @@ export function renderOriginalHighlights(tr) {
   cell.replaceChildren(...pieces);
 }
 
-// Copies what the user typed in the normal spans back to the segments.
-// If a quran span was deleted or changed, the row is drawn again from the segments.
+// Copies what the user typed in the cell back to the segments (see segment-sync.js for the rules).
 export function syncRowFromDom(tr) {
   finishTyping(tr); // never read a half written text
   const state = rowStates.get(tr.dataset.id);
   if (!state.segments.length) return;
 
-  const spans = new Map(
-    [...tr.querySelectorAll(".translated-text .seg")].map((span) => [span.dataset.segId, span])
-  );
-  const quranBroken = state.segments.some((segment) => {
-    if (segment.type !== "quran") return false;
-    const span = spans.get(segment.id);
-    return !span || span.textContent !== `"${segment.text}"`;
-  });
-  if (quranBroken) {
-    renderTranslated(tr);
-    showToast("الآيات لا يمكن تعديلها أو حذفها", true);
+  const rebuilt = rebuildSegmentsFromCell(state.segments, tr.querySelector(".translated-text"));
+  if (rebuilt.refused) {
+    renderTranslated(tr); // the ayah goes back to what we wrote
+    showToast(EDIT_REFUSED_MESSAGE, true);
     return;
   }
 
-  state.segments = state.segments.map((segment) =>
-    segment.type === "normal"
-      ? { ...segment, text: spans.has(segment.id) ? spans.get(segment.id).textContent : "" }
-      : segment
-  );
+  state.segments = rebuilt.segments;
+  if (rebuilt.changedStructure) {
+    // an ayah was deleted or text was typed outside the parts: draw the cell again from the segments
+    renderTranslated(tr);
+    if (rebuilt.deletedAyahs) showToast(AYAH_DELETED_MESSAGE);
+  }
 }
 
 function describeAyah(ayah) {
