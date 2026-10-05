@@ -125,3 +125,38 @@ def translation_is_used(translated_text, translation):
     # case and extra spaces don't matter
     squeeze = lambda value: " ".join(value.split()).casefold()
     return squeeze(translation) in squeeze(translated_text)
+
+
+# ---------- the assistant ----------
+# The assistant edits a translation that was made with the glossary. The approved translations that the text carries
+# must stay in it, whatever the user asks (shorten, simplify...).
+
+def protected_translations(original, text, glossary):
+    # The approved translations the assistant must keep in this text: the terms found in the arabic
+    # `original` of the text whose translation is in `text` now (one the user already took out is not protected).
+    protected = []
+    for hit in find_glossary_hits(original or "", glossary or []):
+        if hit["translation"] not in protected and translation_is_used(text, hit["translation"]):
+            protected.append(hit["translation"])
+    return protected
+
+
+def missing_translations(new_text, protected):
+    return [translation for translation in protected if not translation_is_used(new_text, translation)]
+
+
+def build_protected_instructions(protected):
+    # added to the system prompt of the assistant; the texts are json strings, so a term can't be taken as an instruction
+    names = ", ".join(json.dumps(translation, ensure_ascii=False) for translation in protected)
+    return (
+        "\n\nApproved glossary terms. These must stay in the text exactly as written (same spelling), "
+        f"even when you shorten, simplify or rephrase: {names}"
+    )
+
+
+def build_protected_correction(missing):
+    names = ", ".join(json.dumps(translation, ensure_ascii=False) for translation in missing)
+    return (
+        f"Your answer changed these approved terms: {names}. Do the same task again, but keep each of them "
+        "exactly as written. Reply in the same format as before."
+    )

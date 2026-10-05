@@ -6,6 +6,8 @@ import { beginLoading } from "./loading-overlay.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { targetLanguage } from "./target-language.js";
 import { getGlossary, notAppliedTerms, notAppliedMessage } from "./glossary-store.js";
+import { translationSettings } from "./settings-store.js";
+import { fallbackMessage } from "./model-notice.js";
 
 const CONFIRM_MESSAGE =
   "تعديل النص الأصلي سيعيد ترجمة هذا الصف، وستضيع تعديلاتك على الترجمة. " +
@@ -43,10 +45,11 @@ export async function handleOriginalEdited(tr, editedText) {
   try {
     const data = await postJson("/retranslate", {
       old_segments: state.segments, new_original_text: newText, target_lang: targetLanguage(),
-      glossary: getGlossary(targetLanguage()),
+      glossary: getGlossary(targetLanguage()), ...translationSettings(targetLanguage()),
     });
     stopLoading();
     if (!rowStates.has(tr.dataset.id)) return; // deleted while we waited
+    if (data.fallbacks?.length) showToast(fallbackMessage(data.fallbacks));
     state.segments = data.segments;
     state.originalText = newText;
     state.aiEdited = false;

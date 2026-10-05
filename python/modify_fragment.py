@@ -1,3 +1,10 @@
+from glossary import (
+    build_protected_correction,
+    build_protected_instructions,
+    missing_translations,
+    protected_translations,
+)
+from llm import chat_text
 from modify_paragraph import client
 
 
@@ -9,7 +16,7 @@ def check_fragment_range(segment, fragment_start, fragment_end):
         raise ValueError("the selected part is outside the segment text")
 
 
-def suggest_fragment_replacement(segment, fragment_start, fragment_end, instructions):
+def suggest_fragment_replacement(segment, fragment_start, fragment_end, instructions, model=None, glossary=None):
     # only a suggestion: nothing is changed until the user accepts it
     check_fragment_range(segment, fragment_start, fragment_end)
     selected_text = segment["text"][fragment_start:fragment_end]
@@ -19,19 +26,31 @@ def suggest_fragment_replacement(segment, fragment_start, fragment_end, instruct
         "to the selected part only. The full text is given only as context to read. "
         "Reply with only the new version of the selected part, no explanations or extra text."
     )
+    # the approved terms of the user's glossary that are in the selected part must stay in it
+    protected = protected_translations(segment.get("original"), selected_text, glossary)
+    if protected:
+        system_prompt += build_protected_instructions(protected)
     user_prompt = (
         f"Instructions: {instructions}\n\n"
         f"Full text (context only): {segment['text']}\n\n"
         f"Selected part: {selected_text}"
     )
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-    )
-    return response.choices[0].message.content.strip()
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+    replacement = chat_text(client, messages, model).strip()
+
+    missing = missing_translations(replacement, protected)
+    if missing:  # one more try, telling the model what it changed
+        retry_messages = messages + [
+            {"role": "assistant", "content": replacement},
+            {"role": "user", "content": build_protected_correction(missing)},
+        ]
+        replacement = chat_text(client, retry_messages, model).strip()
+        if missing_translations(replacement, protected):
+            raise ValueError("the assistant changed an approved glossary term")
+    return replacement
 
 
 def apply_fragment_replacement(segment, fragment_start, fragment_end, expected_text, replacement):

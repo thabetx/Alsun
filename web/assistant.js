@@ -4,6 +4,10 @@ import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { getRowById, getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
 import { mountPenScribble } from "./pen-writer.js";
+import { modelSettings } from "./settings-store.js";
+import { getGlossary } from "./glossary-store.js";
+import { fallbackMessage } from "./model-notice.js";
+import { targetLanguage } from "./target-language.js";
 
 // What the assistant works on:
 //   {kind: "fragment", rowId, segId, start, end, text}   a part of one normal segment (from the tooltip)
@@ -105,7 +109,21 @@ function openDock(newContext) {
   el("assistant-instructions").focus();
 }
 
+// Full screen (like a canvas) and back: the dock grows over the whole page and shrinks to its place.
+function setDockExpanded(expanded) {
+  const dock = el("assistant-dock");
+  const button = el("assistant-expand");
+  dock.classList.toggle("is-expanded", expanded);
+  document.body.classList.toggle("assistant-expanded", expanded);
+  button.setAttribute("aria-pressed", String(expanded));
+  button.setAttribute("aria-label", expanded ? "تصغير" : "تكبير");
+  button.title = expanded ? "تصغير" : "تكبير";
+  button.firstElementChild.className = expanded ? "fa-solid fa-compress" : "fa-solid fa-expand";
+  if (expanded) el("assistant-instructions").focus();
+}
+
 function closeDock() {
+  setDockExpanded(false);
   el("assistant-dock").hidden = true;
   context = null;
 }
@@ -185,13 +203,16 @@ async function suggestForFragment(instructions) {
     throw new Error("تغيّر النص بعد التحديد، حدّد الجزء مرة أخرى");
   }
 
-  const { replacement } = await postJson("/assistant/suggest-fragment", {
+  const { replacement, fallbacks } = await postJson("/assistant/suggest-fragment", {
     segment,
     fragment_start: context.start,
     fragment_end: context.end,
     instructions,
+    glossary: getGlossary(targetLanguage()), // the assistant keeps the approved terms
+    ...modelSettings(),
   });
 
+  if (fallbacks?.length) addBubble("system", fallbackMessage(fallbacks));
   const fragment = { ...context }; // the part this suggestion was made for
   addSuggestion({
     title: "اقتراح لتعديل الجزء المحدد",
@@ -254,18 +275,31 @@ async function suggestForRows(instructions) {
   if (!translatedRows.length) throw new Error("ترجم الصفوف المحددة أولاً");
 
   const sentSegments = translatedRows.map((tr) => copy(rowStates.get(tr.dataset.id).segments));
-  const answer = await postJson("/assistant/modify-rows", { paragraphs: sentSegments, instructions });
+  const answer = await postJson("/assistant/modify-rows", {
+    paragraphs: sentSegments, instructions, glossary: getGlossary(targetLanguage()), ...modelSettings(),
+  });
 
+  if (answer.fallbacks?.length) addBubble("system", fallbackMessage(answer.fallbacks));
   const quranOnly = answer.quran_only_rows.length;
   const lines = [];
+  // rows the model could not edit without changing an approved term of the glossary: they stay as they are
+  const blocked = new Set(answer.glossary_blocked_rows || []);
+  answer.unchanged_rows = [];
   answer.rows.forEach((newRow, index) => {
     if (answer.quran_only_rows.includes(index)) return;
     const oldText = joinDisplayText(sentSegments[index]);
+    if (blocked.has(index) && newRow.paragraph === oldText) {
+      answer.unchanged_rows.push(index);
+      return;
+    }
     lines.push({ label: `الصف ${index + 1} قبل:`, text: oldText, className: "line-before" });
     lines.push({ label: "بعد:", text: newRow.paragraph, className: "line-after" });
   });
   if (quranOnly) {
     addBubble("system", `${quranOnly} من الصفوف المحددة آيات فقط، والآيات لا تُعدَّل.`);
+  }
+  if (blocked.size) {
+    addBubble("system", `${blocked.size} من الصفوف لم يُعدَّل (أو لم يُعدَّل كله) لأن التعديل كان سيغيّر مصطلحًا معتمدًا من قاموسك.`);
   }
   if (!lines.length) return;
 
@@ -288,7 +322,7 @@ function applyToRows(trs, sentSegments, answer) {
 
   const before = [];
   trs.forEach((tr, index) => {
-    if (answer.quran_only_rows.includes(index)) return;
+    if (answer.quran_only_rows.includes(index) || answer.unchanged_rows.includes(index)) return;
     const state = rowStates.get(tr.dataset.id);
     before.push({ tr, segments: copy(state.segments), aiEdited: state.aiEdited });
     state.segments = answer.rows[index].segments;
@@ -388,6 +422,12 @@ export function initAssistant() {
     if (rowIds.length) openDock({ kind: "rows", rowIds });
   });
   el("assistant-close").addEventListener("click", closeDock);
+  el("assistant-expand").addEventListener("click", () => {
+    setDockExpanded(!el("assistant-dock").classList.contains("is-expanded"));
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && el("assistant-dock").classList.contains("is-expanded")) setDockExpanded(false);
+  });
   el("assistant-send").addEventListener("click", () => send());
   el("assistant-instructions").addEventListener("keydown", (event) => {
     if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {

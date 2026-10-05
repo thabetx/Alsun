@@ -2,7 +2,7 @@
 # They only call the functions of the other modules; no logic lives here.
 # The front keeps the rows / segments and sends them back, so the server keeps nothing.
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -11,9 +11,30 @@ from merge_rows import build_rows_response, explain_merge_problem, merge_rows, u
 from modify_fragment import apply_fragment_replacement, suggest_fragment_replacement
 from modify_many_paragraphs import modify_many_paragraphs_and_build_response
 from glossary import clean_glossary
+from llm import resolve_model, track_fallbacks
 from retranslate_original import retranslate_edited_original
 
 router = APIRouter()
+
+
+class ModelChoice(BaseModel):
+    provider: str
+    model: str
+
+
+def checked_model(choice):
+    # the model the user chose in the settings (None = the default one); ValueError -> 400
+    return resolve_model(None if choice is None else {"provider": choice.provider, "model": choice.model})
+
+
+class GlossaryEntry(BaseModel):
+    arabic: str
+    translation: str
+
+
+def checked_glossary(entries):
+    # the glossary of the user comes with the request: checked here, ValueError -> 400
+    return clean_glossary([{"arabic": entry.arabic, "translation": entry.translation} for entry in entries])
 
 
 class FragmentRequest(BaseModel):
@@ -21,6 +42,8 @@ class FragmentRequest(BaseModel):
     fragment_start: int
     fragment_end: int
     instructions: str
+    model: Optional[ModelChoice] = None
+    glossary: List[GlossaryEntry] = []  # the terms of the user: the assistant keeps their translations
 
 
 class ApplyFragmentRequest(BaseModel):
@@ -34,16 +57,8 @@ class ApplyFragmentRequest(BaseModel):
 class ModifyRowsRequest(BaseModel):
     paragraphs: List[List[Dict[str, Any]]]
     instructions: str
-
-
-class GlossaryEntry(BaseModel):
-    arabic: str
-    translation: str
-
-
-def checked_glossary(entries):
-    # the glossary of the user comes with the translation request: checked here, ValueError -> 400
-    return clean_glossary([{"arabic": entry.arabic, "translation": entry.translation} for entry in entries])
+    model: Optional[ModelChoice] = None
+    glossary: List[GlossaryEntry] = []
 
 
 class RetranslateRequest(BaseModel):
@@ -51,6 +66,8 @@ class RetranslateRequest(BaseModel):
     new_original_text: str
     target_lang: str = "English"
     glossary: List[GlossaryEntry] = []
+    quran_source: Optional[str] = None  # id of the quran translation (see QURAN_SOURCES in quran_detect.py)
+    model: Optional[ModelChoice] = None
 
 
 class MergeRequest(BaseModel):
@@ -71,12 +88,14 @@ def refuse_with_message(error):
 @router.post("/assistant/suggest-fragment")
 def suggest_fragment(request: FragmentRequest):
     try:
-        replacement = suggest_fragment_replacement(
-            request.segment, request.fragment_start, request.fragment_end, request.instructions
-        )
+        with track_fallbacks() as fallbacks:
+            replacement = suggest_fragment_replacement(
+                request.segment, request.fragment_start, request.fragment_end, request.instructions,
+                checked_model(request.model), checked_glossary(request.glossary),
+            )
     except ValueError as error:
         raise refuse_with_message(error)
-    return {"replacement": replacement}
+    return {"replacement": replacement, **({"fallbacks": fallbacks} if fallbacks else {})}
 
 
 @router.post("/assistant/apply-fragment")
@@ -94,20 +113,27 @@ def apply_fragment(request: ApplyFragmentRequest):
 @router.post("/assistant/modify-rows")
 def modify_rows(request: ModifyRowsRequest):
     try:
-        return modify_many_paragraphs_and_build_response(request.paragraphs, request.instructions)
+        with track_fallbacks() as fallbacks:
+            answer = modify_many_paragraphs_and_build_response(
+                request.paragraphs, request.instructions, checked_model(request.model), checked_glossary(request.glossary)
+            )
     except ValueError as error:
         raise refuse_with_message(error)
+    return {**answer, **({"fallbacks": fallbacks} if fallbacks else {})}
 
 
 @router.post("/retranslate")
 def retranslate(request: RetranslateRequest):
     try:
-        return retranslate_edited_original(
-            request.old_segments, request.new_original_text,
-            target_lang=request.target_lang, glossary=checked_glossary(request.glossary),
-        )
+        with track_fallbacks() as fallbacks:
+            answer = retranslate_edited_original(
+                request.old_segments, request.new_original_text,
+                target_lang=request.target_lang, glossary=checked_glossary(request.glossary),
+                quran_source=request.quran_source, model=checked_model(request.model),
+            )
     except ValueError as error:
         raise refuse_with_message(error)
+    return {**answer, **({"fallbacks": fallbacks} if fallbacks else {})}
 
 
 @router.post("/rows/merge-problem")

@@ -5,10 +5,13 @@ import { beginLoading } from "./loading-overlay.js";
 import { showToast } from "./toast.js";
 import { targetLanguage } from "./target-language.js";
 import { getGlossary, notAppliedTerms, notAppliedMessage } from "./glossary-store.js";
+import { translationSettings } from "./settings-store.js";
+import { fallbackMessage } from "./model-notice.js";
 
 // Translates one row: "done", "error" or "skipped" (nothing to translate, already being translated,
 // or the user changed the row while it was waiting, so the answer is thrown away).
-export async function translateRow(tr, { quiet = false } = {}) {
+// quiet = no toast ("translate all" writes one summary), onFallback(fallbacks) = told when another model answered
+export async function translateRow(tr, { quiet = false, onFallback = null } = {}) {
   const rowId = tr.dataset.id;
   const state = rowStates.get(rowId);
   const original = tr.querySelector(".original-text");
@@ -20,7 +23,9 @@ export async function translateRow(tr, { quiet = false } = {}) {
   const stopLoading = beginLoading({ message: "جارٍ ترجمة الصف…" });
   try {
     const language = targetLanguage();
-    const data = await postJson("/translate", { text, target_lang: language, glossary: getGlossary(language) });
+    const data = await postJson("/translate", {
+      text, target_lang: language, glossary: getGlossary(language), ...translationSettings(language),
+    });
     stopLoading();
 
     // the row was deleted while we waited
@@ -39,7 +44,14 @@ export async function translateRow(tr, { quiet = false } = {}) {
     renderTranslated(tr, { animate: true });
     // the backend asked the model for the terms of the glossary; tell the user about the ones it did not use
     const notApplied = notAppliedTerms(state.segments);
-    if (notApplied.length && !quiet) showToast(notAppliedMessage(notApplied), true);
+    if (data.fallbacks?.length) onFallback?.(data.fallbacks);
+    if (!quiet) {
+      const notes = [
+        data.fallbacks?.length ? fallbackMessage(data.fallbacks) : "",
+        notApplied.length ? notAppliedMessage(notApplied) : "",
+      ].filter(Boolean);
+      if (notes.length) showToast(notes.join(" "), notApplied.length > 0);
+    }
     return "done";
   } catch (error) {
     stopLoading();

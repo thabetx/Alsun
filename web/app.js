@@ -15,6 +15,7 @@ import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
 import { targetLanguageInArabic } from "./target-language.js";
 import { initGlossary } from "./glossary-ui.js";
+import { initSettings } from "./settings-ui.js";
 import {
   fingerprintOf, loadSavedWork, clearSavedWork, enableSaving, pauseSaving, watchWork,
 } from "./saved-work.js";
@@ -503,6 +504,7 @@ loadBook(bookSelect.value);
 initAssistant();
 initTranslateAll();
 initGlossary();
+initSettings();
 document.getElementById("delete-rows").addEventListener("click", () => deleteRows(getSelectedRows()));
 initMerge({ replaceRows });
 notifySelectionChanged();

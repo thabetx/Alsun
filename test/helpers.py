@@ -9,6 +9,13 @@ os.environ.setdefault("OPENAI_API_KEY", "test-key-not-used")
 # make the python/ modules importable (quran_detect, modify_paragraph, ...)
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "python"))
 
+# The tests must not depend on the real .env of whoever runs them: llm.py reads the keys from it, so it is pointed
+# to a file that does not exist, and the key of Cohere is empty (a test that needs one sets a fake key itself).
+import llm  # noqa: E402
+
+llm.ENV_FILE = Path(__file__).resolve().parent / "no-such-file.env"
+os.environ["COHERE_API_KEY"] = ""
+
 
 class FakeLlm:
     # stands in for client.chat.completions.create and remembers what was sent

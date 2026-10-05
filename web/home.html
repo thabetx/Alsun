@@ -62,8 +62,8 @@
               <option value="English" selected>English</option>
               <option value="French">Français</option>
               <option value="German">Deutsch</option>
-              <option value="Turkish" disabled>Türkçe — قريباً</option>
               <option value="Spanish">Español</option>
+              <option value="Turkish" disabled>Türkçe — قريباً</option>
               <option value="Indonesian" disabled>Bahasa Indonesia — قريباً</option>
             </select>
           </label>
@@ -155,9 +155,9 @@
 
       <span class="word w-ar" lang="ar" dir="rtl" style="left:68.75%;top:62.50%;--d:1.30s">العربية</span>
       <span class="word" lang="en" style="left:12.50%;top:54.81%;--d:1.48s">English</span>
-      <span class="word" lang="zh" style="left:82.29%;top:49.04%;--d:1.66s">中文</span>
+      <span class="word" lang="es" style="left:82.29%;top:49.04%;--d:1.66s">Español</span>
       <span class="word" lang="fr" style="left:18.33%;top:72.12%;--d:1.84s">Français</span>
-      <span class="word" lang="ur" dir="rtl" style="left:54.17%;top:86.54%;--d:2.02s">اردو</span>
+      <span class="word" lang="de" style="left:54.17%;top:86.54%;--d:2.02s">Deutsch</span>
       <span class="word" lang="tr" style="left:31.25%;top:89.42%;--d:2.20s">Türkçe</span>
     </div>
   </section>
@@ -189,9 +189,19 @@
     <h2>المميزات</h2>
     <div class="features">
       <article class="feature">
+        <i class="bi bi-book-half"></i>
+        <h3>آيات القرآن محفوظة</h3>
+        <p>نتعرّف على الآيات تلقائياً ونأخذ ترجمتها من ترجمات منشورة وليس من النموذج، ولا يمكن تعديلها بالخطأ.</p>
+      </article>
+      <article class="feature">
         <i class="bi bi-layout-split"></i>
         <h3>عرض متقابل</h3>
         <p>النص الأصلي والترجمة جنباً إلى جنب، وعند الإشارة إلى فقرة تُظلَّل مكانها في الصفحة.</p>
+      </article>
+      <article class="feature">
+        <i class="bi bi-upc-scan"></i>
+        <h3>استخراج النص (OCR)</h3>
+        <p>نستخرج النص من صفحات الـ PDF حتى المصوّرة منها، ونحفظ ترتيب الفقرات ومكانها في الصفحة.</p>
       </article>
       <article class="feature">
         <i class="bi bi-lightning-charge"></i>
@@ -201,7 +211,17 @@
       <article class="feature">
         <i class="bi bi-pencil-square"></i>
         <h3>تعديل مباشر</h3>
-        <p>عدّل أي فقرة مترجمة في مكانها، وامسح ما لا تريده أو استرجع النسخة السابقة، ويُحفظ عملك تلقائياً في متصفحك.</p>
+        <p>عدّل أي فقرة مترجمة في مكانها، وامسح ما لا تريده أو استرجع النسخة السابقة.</p>
+      </article>
+      <article class="feature">
+        <i class="bi bi-spellcheck"></i>
+        <h3>تصحيح النص الأصلي</h3>
+        <p>صحّح أخطاء الاستخراج في النص العربي فتُعاد ترجمة الفقرة بعد تأكيدك، مع إمكانية استعادة النسخة السابقة.</p>
+      </article>
+      <article class="feature">
+        <i class="bi bi-chat-dots"></i>
+        <h3>مساعد ذكي</h3>
+        <p>اطلب تلخيص فقرة أو تبسيطها أو صياغتها رسمياً، أو حدّد جزءاً من الترجمة واطلب تعديله. الاقتراح لا يُطبَّق إلا بموافقتك، ويمكنك التراجع عنه.</p>
       </article>
       <article class="feature">
         <i class="bi bi-union"></i>
@@ -209,24 +229,24 @@
         <p>ادمج فقرتين متجاورتين أو أكثر في فقرة واحدة، وفُكّ الدمج متى شئت.</p>
       </article>
       <article class="feature">
-        <i class="bi bi-chat-dots"></i>
-        <h3>مساعد ذكي</h3>
-        <p>اطلب تلخيص فقرة أو تبسيطها أو صياغتها رسمياً، أو اكتب تعليمتك بنفسك. الاقتراح لا يُطبَّق إلا بموافقتك، ويمكنك التراجع عنه.</p>
-      </article>
-      <article class="feature">
         <i class="bi bi-journal-bookmark"></i>
         <h3>قاموسك الخاص</h3>
-        <p>أضف مصطلحاتك وترجماتها المعتمدة أو استورد ملف CSV، وتُطبَّق في كل ترجمة.</p>
+        <p>أضف مصطلحاتك وترجماتها المعتمدة أو استورد ملف CSV، وتُطبَّق في كل ترجمة، وننبّهك إن لم يُطبَّق مصطلح لتراجعه يدوياً.</p>
       </article>
       <article class="feature">
-        <i class="bi bi-book-half"></i>
-        <h3>آيات القرآن محفوظة</h3>
-        <p>نتعرّف على الآيات تلقائياً ونأخذ ترجمتها من ترجمات منشورة وليس من النموذج، ولا يمكن تعديلها بالخطأ.</p>
+        <i class="bi bi-search"></i>
+        <h3>بحث وتنقّل</h3>
+        <p>ابحث في نص الكتاب، وانتقل إلى أي صفحة برقمها، وأخفِ عرض الـ PDF عند الحاجة.</p>
+      </article>
+      <article class="feature">
+        <i class="bi bi-save"></i>
+        <h3>حفظ تلقائي</h3>
+        <p>يُحفظ عملك في متصفحك (الترجمات والتعديلات والدمج والحذف)، فلا يضيع بعد تحديث الصفحة.</p>
       </article>
       <article class="feature">
         <i class="bi bi-translate"></i>
         <h3>لغات متعددة</h3>
-        <p>نترجم إلى الإنجليزية والفرنسية والألمانية والإسبانية، والتركية والإندونيسية قريباً.</p>
+        <p>نترجم إلى الإنجليزية والفرنسية والألمانية والإسبانية، ونضيف المزيد من اللغات قريباً.</p>
       </article>
     </div>
   </section>
@@ -234,9 +254,7 @@
 
 <footer class="site-footer">
   <span class="footer-brand"><img src="/web/logo-gold.png" alt="ألسن"> — لتصل المعرفة الشرعية بكل لسان</span>
-  <a href="https://github.com/MohamedA-M-Hassan/Alsun" target="_blank" rel="noopener">
-    <i class="bi bi-github"></i> GitHub
-  </a>
+  <span class="footer-copy">© 2026 فريق ألسن — جميع الحقوق محفوظة</span>
 </footer>
 
 <script src="/web/home.js"></script>

@@ -252,3 +252,83 @@
 .glossary-remove:hover { background: #fde3df; color: #8a2a1d; }
 .glossary-empty { padding: 22px 14px; text-align: center; color: #7a6c63; }
 .glossary-footer { display: flex; gap: 8px; padding: 14px 26px 20px; }
+
+/* ---------- the settings window (same look as the glossary window) ---------- */
+.settings-dialog {
+  width: min(600px, calc(100vw - 32px)); max-height: min(640px, calc(100vh - 32px)); padding: 0;
+  border: 1px solid #e6d9bf; border-radius: 18px; background: #fffdf8; color: #231a19; direction: rtl;
+  font-family: "Tajawal", system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 24px 60px rgba(35, 26, 25, .28); overflow: hidden;
+}
+.settings-dialog[open] { display: flex; flex-direction: column; animation: confirm-in .18s ease-out; }
+.settings-dialog::backdrop { background: rgba(35, 26, 25, .45); backdrop-filter: blur(3px); }
+.settings-head { padding: 22px 26px 6px; }
+.settings-title { margin: 0 0 4px; font-size: 1.2rem; font-weight: 800; }
+.settings-sub { margin: 0; color: #7a6c63; font-size: .92rem; }
+.settings-body { padding: 8px 26px; overflow-y: auto; flex: 1 1 auto; }
+.settings-section { padding: 14px 0; border-bottom: 1px solid #f0e6cf; }
+.settings-section:last-child { border-bottom: 0; }
+.settings-section-title { margin: 0 0 4px; font-size: 1.02rem; font-weight: 800; }
+.settings-hint { margin: 0 0 10px; color: #7a6c63; font-size: .88rem; line-height: 1.7; }
+.settings-error { margin: 0 0 8px; color: #8a2a1d; font-size: .9rem; }
+.settings-loading { color: #7a6c63; }
+.settings-name { font-weight: 600; overflow-wrap: anywhere; }
+.settings-fixed {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px;
+  border: 1px solid #efe4cc; border-radius: 12px; background: #faf5e8;
+}
+.settings-lock { margin-inline-start: auto; font-size: .82rem; color: #7a6c63; }
+.settings-lock::before { content: "\f023"; font-family: "Font Awesome 6 Free", "Font Awesome 5 Free"; font-weight: 900; margin-inline-end: 6px; }
+.settings-choices { display: flex; flex-direction: column; gap: 8px; }
+.settings-choice {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer;
+  border: 1px solid #efe4cc; border-radius: 12px; background: #fff;
+}
+.settings-choice:hover { background: #fbf6e8; }
+.settings-choice input { accent-color: #b8860b; }
+.settings-tag { margin-inline-start: auto; font-size: .78rem; color: #7a5a08; background: #f8e6bf; border-radius: 999px; padding: 1px 10px; }
+.settings-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.settings-select {
+  flex: 1 1 200px; min-width: 0; font: inherit; padding: 7px 12px; border: 1px solid #e0d2b2; border-radius: 10px;
+  background: #fff; color: #231a19;
+}
+.settings-select:focus { outline: none; border-color: #b8860b; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .25); }
+.settings-footer { display: flex; align-items: center; gap: 12px; padding: 12px 26px 20px; }
+.settings-message { margin: 0; font-size: .9rem; color: #2f6b3a; }
+.settings-message.is-error { color: #8a2a1d; }
+
+/* ---------- assistant: full-screen button (like a canvas) + gold send button ---------- */
+.assistant-actions { display: flex; align-items: center; gap: 4px; }
+.assistant-expand {
+  width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent;
+  font-size: 15px; line-height: 1; cursor: pointer; color: #7a6d63;
+}
+.assistant-expand:hover { background: #e8d9b8; color: #231a19; }
+.assistant-expand:focus-visible, .assistant-close:focus-visible { outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35); }
+
+/* expanded: the dock covers the page (the rest of the page is dimmed), the content stays in a readable column */
+.assistant-dock.is-expanded {
+  position: fixed; inset: 16px; z-index: 1500; max-height: none; overflow: hidden;
+  border: 1px solid #e6d9bf; border-top: 2px solid #b8860b; border-radius: 18px;
+  box-shadow: 0 0 0 100vmax rgba(35, 26, 25, .45), 0 24px 60px rgba(35, 26, 25, .35);
+}
+body.assistant-expanded { overflow: hidden; }
+.assistant-dock.is-expanded .assistant-header { padding: 12px 22px; font-size: 1.05rem; }
+.assistant-dock.is-expanded .assistant-context,
+.assistant-dock.is-expanded .assistant-log,
+.assistant-dock.is-expanded .assistant-input-row { width: min(920px, 100%); margin-inline: auto; }
+.assistant-dock.is-expanded .assistant-log { padding: 14px 22px; }
+.assistant-dock.is-expanded .bubble { font-size: 16px; max-width: 85%; }
+.assistant-dock.is-expanded .assistant-input-row { padding: 12px 22px 18px; align-items: flex-end; }
+.assistant-dock.is-expanded .assistant-input-row textarea { min-height: 96px; font-size: 16px; }
+@media (max-width: 640px) { .assistant-dock.is-expanded { inset: 8px; border-radius: 14px; } }
+
+/* send button: the gold of the Alsun logo instead of Bootstrap blue */
+#assistant-send {
+  --bs-btn-bg: #b8860b; --bs-btn-border-color: #b8860b;
+  --bs-btn-hover-bg: #9a6f08; --bs-btn-hover-border-color: #9a6f08;
+  --bs-btn-active-bg: #7f5c07; --bs-btn-active-border-color: #7f5c07;
+  --bs-btn-disabled-bg: #b8860b; --bs-btn-disabled-border-color: #b8860b;
+  --bs-btn-focus-shadow-rgb: 184, 134, 11;
+  font-weight: 700; border-radius: 10px; padding-inline: 22px;
+}
