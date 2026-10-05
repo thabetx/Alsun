@@ -3,6 +3,7 @@ import { rowStates, displayParts, copy } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { getRowById, getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
+import { mountPenScribble } from "./pen-writer.js";
 
 // What the assistant works on:
 //   {kind: "fragment", rowId, segId, start, end, text}   a part of one normal segment (from the tooltip)
@@ -40,6 +41,7 @@ function readSelection() {
   const tr = cell.closest("tr");
   const state = rowStates.get(tr.dataset.id);
   if (!state || !state.segments.length) return null;
+  if (cell.querySelector(".untyped")) return null; // the pen is still writing this text
 
   for (const quranSpan of cell.querySelectorAll(".seg-quran")) {
     if (range.intersectsNode(quranSpan)) return null;
@@ -309,13 +311,16 @@ async function send() {
   addBubble("user", instructions);
   el("assistant-instructions").value = "";
   setBusy(true);
-  const waiting = addBubble("system", "جارٍ التفكير...");
+  const waiting = addBubble("system", "");
+  waiting.classList.add("bubble-waiting");
+  const stopPen = mountPenScribble(waiting, { sweep: 60 });
   try {
     if (context.kind === "fragment") await suggestForFragment(instructions);
     else await suggestForRows(instructions);
   } catch (error) {
     addBubble("error", error.message);
   } finally {
+    stopPen();
     waiting.remove();
     setBusy(false);
     el("assistant-instructions").focus();

@@ -2,6 +2,7 @@ import { postJson } from "./api.js";
 import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom, showReviewNote, removeReviewNote } from "./translated-view.js";
 import { showToast } from "./toast.js";
+import { startPenLoading } from "./pen-writer.js";
 
 const CONFIRM_MESSAGE =
   "تعديل النص الأصلي سيعيد ترجمة هذا الصف، وستضيع تعديلاتك على الترجمة " +
@@ -27,14 +28,16 @@ export async function handleOriginalEdited(tr, editedText) {
 
   syncRowFromDom(tr);
   const previous = { segments: state.segments, originalText: state.originalText, aiEdited: state.aiEdited };
-  tr.querySelector(".translated-text").textContent = "جارٍ إعادة الترجمة...";
+  tr.querySelector(".translated-text").replaceChildren();
+  const stopLoading = startPenLoading(tr);
 
   try {
     const data = await postJson("/retranslate", { old_segments: state.segments, new_original_text: newText });
+    stopLoading();
     state.segments = data.segments;
     state.originalText = newText;
     state.aiEdited = false;
-    renderTranslated(tr);
+    renderTranslated(tr, { animate: true });
     removeReviewNote(tr);
 
     if (data.needs_review) {
@@ -48,6 +51,7 @@ export async function handleOriginalEdited(tr, editedText) {
       });
     }
   } catch (error) {
+    stopLoading();
     state.segments = previous.segments;
     original.textContent = state.originalText;
     renderTranslated(tr);

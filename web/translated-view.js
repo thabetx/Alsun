@@ -1,10 +1,12 @@
 import { rowStates, displayParts, PLACEHOLDER } from "./state.js";
 import { showToast } from "./toast.js";
+import { finishTyping, typeTranslation } from "./pen-writer.js";
 
 // Draws the translation of a row from its segments: one <span> per segment (id + type),
 // so a selection can be matched to a segment without counting characters in the whole text.
 // A quran span is not editable, so the quran can't be changed by hand.
-export function renderTranslated(tr) {
+export function renderTranslated(tr, { animate = false } = {}) {
+  finishTyping(tr);
   const state = rowStates.get(tr.dataset.id);
   const cell = tr.querySelector(".translated-text");
   cell.replaceChildren();
@@ -26,6 +28,8 @@ export function renderTranslated(tr) {
   tr.querySelector(".merged-only").hidden = !state.merged_from;
   tr.classList.toggle("is-merged", Boolean(state.merged_from));
   renderOriginalHighlights(tr);
+  // only for a fresh translation (not for the assistant, undo or merge)
+  if (animate) typeTranslation(tr);
 }
 
 function describeAyahRange(segment) {
@@ -81,6 +85,7 @@ export function renderOriginalHighlights(tr) {
 // Copies what the user typed in the normal spans back to the segments.
 // If a quran span was deleted or changed, the row is drawn again from the segments.
 export function syncRowFromDom(tr) {
+  finishTyping(tr); // never read a half written text
   const state = rowStates.get(tr.dataset.id);
   if (!state.segments.length) return;
 

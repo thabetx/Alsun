@@ -1,0 +1,42 @@
+import { postJson } from "./api.js";
+import { rowStates } from "./state.js";
+import { renderTranslated } from "./translated-view.js";
+import { startPenLoading } from "./pen-writer.js";
+import { showToast } from "./toast.js";
+
+// Translates one row: "done", "error" or "skipped" (nothing to translate, already being translated,
+// or the user changed the row while it was waiting, so the answer is thrown away).
+export async function translateRow(tr) {
+  const state = rowStates.get(tr.dataset.id);
+  const original = tr.querySelector(".original-text");
+  const text = original.textContent.trim();
+  if (!text || state.translating) return "skipped";
+
+  state.translating = true;
+  tr.querySelector(".translated-text").replaceChildren();
+  const stopLoading = startPenLoading(tr);
+  try {
+    const data = await postJson("/translate", { text, target_lang: "English" });
+    stopLoading();
+
+    // the original was changed while we waited: this translation is of an old text
+    if (original.textContent.trim() !== text || !document.contains(tr)) {
+      renderTranslated(tr);
+      return "skipped";
+    }
+
+    // keep the segments: they tell us what is quran and what is normal text
+    state.segments = data.segments;
+    state.originalText = text;
+    state.aiEdited = false;
+    renderTranslated(tr, { animate: true });
+    return "done";
+  } catch (error) {
+    stopLoading();
+    renderTranslated(tr);
+    showToast(error.message, true);
+    return "error";
+  } finally {
+    state.translating = false;
+  }
+}

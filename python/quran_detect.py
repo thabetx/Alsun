@@ -2,6 +2,7 @@ import QDetect.qdetect as qdetect
 import codecs
 import json
 import re
+import threading
 from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -14,11 +15,14 @@ client = OpenAI()
 # the quran translation jsons live in the data/ folder at the project root
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
+detector_lock = threading.Lock()
 quran_annotate = qdetect.qMatcherAnnotater() # built once, it takes ~6 seconds
 
 
 def quran_detector(paragraph):
-    quran_detector_result = quran_annotate.matchAll(paragraph)
+    # one matcher is shared by all the requests; only one request uses it at a time
+    with detector_lock:
+        quran_detector_result = quran_annotate.matchAll(paragraph)
     #print(quran_detector_result)
     return quran_detector_result
 

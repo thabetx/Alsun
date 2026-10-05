@@ -2,13 +2,13 @@ import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs";
 
-import { postJson } from "./api.js";
 import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { handleOriginalEdited } from "./retranslate-ui.js";
 import { initAssistant, refreshAssistantButton } from "./assistant.js";
 import { initMerge, refreshMergeButton, unmergeRow } from "./merge-ui.js";
-import { showToast } from "./toast.js";
+import { translateRow } from "./translate-ui.js";
+import { initTranslateAll } from "./translate-all.js";
 
 const SVGNS = "http://www.w3.org/2000/svg";
 const blockRows = document.getElementById("block-rows");
@@ -213,21 +213,7 @@ function makeRow(b) {
       e.stopPropagation();
       closeMenu();
       if (item.dataset.action === "translate") {
-        const text = original.textContent.trim();
-        if (!text) return;
-        const state = rowStates.get(tr.dataset.id);
-        translated.textContent = "يتم الترجمة ...";
-        try {
-          const data = await postJson("/translate", { text, target_lang: "English" });
-          // keep the segments: they tell us what is quran and what is normal text
-          state.segments = data.segments;
-          state.originalText = text;
-          state.aiEdited = false;
-          renderTranslated(tr);
-        } catch (err) {
-          renderTranslated(tr);
-          showToast(err.message, true);
-        }
+        translateRow(tr);
       } else if (item.dataset.action === "unmerge") {
         unmergeRow(tr);
       } else {
@@ -377,5 +363,6 @@ bookSelect.addEventListener("change", () => loadBook(bookSelect.value));
 loadBook(bookSelect.value);
 
 initAssistant();
+initTranslateAll();
 initMerge({ replaceRows });
 notifySelectionChanged();

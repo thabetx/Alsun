@@ -95,3 +95,46 @@
 
 /* ---------- the header checkbox when only some rows are selected (Bootstrap draws the dash) ---------- */
 .form-check-input[type="checkbox"]:indeterminate { background-color: #b8860b; border-color: #b8860b; }
+
+/* ---------- the pen of the logo: waiting and writing ---------- */
+.pen-host { position: relative; }
+.pen-writer { position: absolute; z-index: 5; line-height: 0; pointer-events: none; }
+.pen-writer svg { display: block; overflow: visible; }
+.ink-dot { position: absolute; z-index: 4; border-radius: 50%; pointer-events: none; }
+
+/* waiting: the pen scribbles on the spot */
+.pen-scribbling { left: 12px; top: 6px; animation: pen-scribble 1.1s ease-in-out infinite alternate; }
+@keyframes pen-scribble {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(calc(var(--pen-sweep) * .25), -4px); }
+  50%  { transform: translate(calc(var(--pen-sweep) * .5), 1px); }
+  75%  { transform: translate(calc(var(--pen-sweep) * .75), -4px); }
+  100% { transform: translate(var(--pen-sweep), 0); }
+}
+.bubble-waiting { min-height: 46px; width: 150px; }
+
+/* writing: a very small, slow shake while it follows the text, and it slides from letter to letter */
+.pen-typing { animation: pen-shake .5s ease-in-out infinite alternate; }
+.pen-gliding { transition: left .09s linear, top .09s linear; }
+@keyframes pen-shake {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(.5px, -1px); }
+}
+/* the part not written yet keeps its place in the layout but can't be seen */
+.untyped { color: transparent; }
+/* while the pen writes, the green of the quran grows with the letters instead of showing as empty blocks */
+.translated-text.is-typing .seg-quran { background: none; box-shadow: none; }
+.translated-text.is-typing .seg-quran .typed {
+  background: #d3e4bf; box-shadow: inset 0 -2px 0 #9dbb7a; border-radius: 4px; padding: 0 3px;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.type-caret { display: inline-block; width: 0; height: 1em; vertical-align: baseline; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pen-scribbling, .pen-typing { animation: none; }
+}
+.translated-text.is-typing .seg-quran .typed:empty { display: none; }
+
+/* ---------- the text toolbar has more buttons now: let it wrap instead of cutting them ---------- */
+.toolbar-text { flex-wrap: wrap; row-gap: 6px; padding-top: 6px; padding-bottom: 6px; }
+.toolbar-text .search-input { flex: 1 1 140px; max-width: 260px; width: auto; }
