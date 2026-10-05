@@ -49,8 +49,29 @@ export async function refreshMergeButton() {
   }
 }
 
+// The row before / after this one, and why they can't be merged (null = they can).
+// They are next to each other by definition, so only the other rules are left.
+export function explainNeighborMergeProblem(tr, direction) {
+  const neighbor = direction === "previous" ? tr.previousElementSibling : tr.nextElementSibling;
+  if (!neighbor || !neighbor.classList.contains("block-row")) {
+    return { neighbor: null, problem: direction === "previous" ? "هذا هو الصف الأول" : "هذا هو الصف الأخير" };
+  }
+  if (neighbor.style.display === "none") {
+    return { neighbor, problem: "الصف المجاور مخفي بنتيجة البحث" };
+  }
+  const translated = [tr, neighbor].map((row) => rowStates.get(row.dataset.id).segments.length > 0);
+  if (translated[0] !== translated[1]) {
+    return { neighbor, problem: "ترجم الصفين أولاً، أو ادمجهما قبل الترجمة" };
+  }
+  return { neighbor, problem: null };
+}
+
 async function mergeSelectedRows() {
-  const rows = getSelectedRows();
+  return mergeRowsNow(getSelectedRows());
+}
+
+// rows = the rows to merge, next to each other, in the order of the table
+export async function mergeRowsNow(rows) {
   const ids = rows.map((tr) => tr.dataset.id);
   rows.forEach(syncRowFromDom);
 

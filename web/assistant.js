@@ -308,11 +308,12 @@ function applyToRows(trs, sentSegments, answer) {
 
 // ---------- the chat ----------
 
-async function send() {
-  const instructions = el("assistant-instructions").value.trim();
-  if (!instructions || !context) return;
+async function send(ready = null) {
+  // ready = {instructions, shown}: an instruction from the row menu (the user sees the label, the model gets the instruction)
+  const instructions = ready ? ready.instructions : el("assistant-instructions").value.trim();
+  if (!instructions || !context || el("assistant-send").disabled) return;
 
-  addBubble("user", instructions);
+  addBubble("user", ready ? ready.shown : instructions);
   el("assistant-instructions").value = "";
   setBusy(true);
   const waiting = addBubble("system", "");
@@ -329,6 +330,13 @@ async function send() {
     setBusy(false);
     el("assistant-instructions").focus();
   }
+}
+
+// From the row menu: the assistant opens on this row and answers a ready instruction.
+// The answer is still only a suggestion that the user accepts or rejects.
+export function askAssistantAboutRow(tr, label, instructions) {
+  openDock({ kind: "rows", rowIds: [tr.dataset.id] });
+  return send({ instructions, shown: label });
 }
 
 // A row was deleted: if the assistant was working on it, it stops.
@@ -380,7 +388,7 @@ export function initAssistant() {
     if (rowIds.length) openDock({ kind: "rows", rowIds });
   });
   el("assistant-close").addEventListener("click", closeDock);
-  el("assistant-send").addEventListener("click", send);
+  el("assistant-send").addEventListener("click", () => send());
   el("assistant-instructions").addEventListener("keydown", (event) => {
     if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();

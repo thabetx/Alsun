@@ -6,8 +6,8 @@ import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { handleOriginalEdited } from "./retranslate-ui.js";
 import { initAssistant, refreshAssistantButton, forgetDeletedRow } from "./assistant.js";
-import { initMerge, refreshMergeButton, unmergeRow } from "./merge-ui.js";
-import { translateRow } from "./translate-ui.js";
+import { initMerge, refreshMergeButton } from "./merge-ui.js";
+import { rowMenuMarkup, refreshRowMenu, runRowMenuAction } from "./row-menu.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
@@ -225,13 +225,7 @@ function makeRow(b) {
           <button class="btn btn-dots" type="button"
                   data-bs-toggle="dropdown" aria-expanded="false"
                   aria-label="إجراءات" title="إجراءات">&#8942;</button>
-          <ul class="dropdown-menu">
-            <li><button class="dropdown-item" type="button" data-action="translate">ترجمة</button></li>
-            <li><button class="dropdown-item" type="button" data-action="summarize">تلخيص</button></li>
-            <li><button class="dropdown-item" type="button" data-action="revert">استعادة التغييرات</button></li>
-            <li class="merged-only" hidden><button class="dropdown-item" type="button" data-action="unmerge">فك الدمج</button></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><button class="dropdown-item text-danger" type="button" data-action="delete">حذف</button></li>
+          <ul class="dropdown-menu">${rowMenuMarkup()}
           </ul>
         </div>
       </div>
@@ -275,19 +269,15 @@ function makeRow(b) {
     dots.setAttribute("aria-expanded", "false");
   };
 
+  // the items show what is possible for this row at the moment the menu opens
+  dots.addEventListener("click", () => refreshRowMenu(tr));
+
   tr.querySelectorAll(".dropdown-item").forEach((item) => {
     item.addEventListener("click", async (e) => {
       e.stopPropagation();
       closeMenu();
-      if (item.dataset.action === "translate") {
-        translateRow(tr);
-      } else if (item.dataset.action === "unmerge") {
-        unmergeRow(tr);
-      } else if (item.dataset.action === "delete") {
-        deleteRows([tr]);
-      } else {
-        console.log(item.dataset.action, b.id);
-      }
+      if (item.dataset.action === "delete") deleteRows([tr]);
+      else runRowMenuAction(tr, item.dataset.action);
     });
   });
 
