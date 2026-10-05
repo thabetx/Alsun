@@ -84,3 +84,6 @@
 }
 .toast-message.toast-error { background: #8a2a1d; }
 [hidden] { display: none !important; }
+
+/* ---------- the header checkbox when only some rows are selected (Bootstrap draws the dash) ---------- */
+.form-check-input[type="checkbox"]:indeterminate { background-color: #b8860b; border-color: #b8860b; }

@@ -25,7 +25,16 @@ let totalPages = 0;
 const polygonsByBlockId = new Map();
 const rowByBlockId = new Map();
 
+// the checkbox in the header: empty = no row selected, dash = some rows, tick = all rows
+function updateCheckAllState() {
+  const checks = [...blockRows.querySelectorAll(".block-check")];
+  const selected = checks.filter((check) => check.checked).length;
+  checkAll.checked = checks.length > 0 && selected === checks.length;
+  checkAll.indeterminate = selected > 0 && selected < checks.length;
+}
+
 function notifySelectionChanged() {
+  updateCheckAllState();
   refreshAssistantButton();
   refreshMergeButton();
 }
