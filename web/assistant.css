@@ -388,3 +388,18 @@ body.assistant-expanded::before {
   --bs-btn-focus-shadow-rgb: 184, 134, 11; font-weight: 700;
 }
 .suggestion-actions .btn-link { --bs-btn-color: #7a5a08; --bs-btn-hover-color: #b8860b; }
+
+/* ---------- assistant context: the selected text in its own box + an empty-state message ---------- */
+.assistant-context { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.context-quote {
+  margin: 0; width: 100%; padding: 6px 10px; font-size: 14px; line-height: 1.6; color: #231a19;
+  background: #fff; border: 1px solid #e6d9bf; border-radius: 10px; text-align: start; unicode-bidi: plaintext;
+  /* the whole selected text is shown; only a very long one scrolls inside the box (never cut with "...") */
+  max-height: 150px; overflow-y: auto;
+}
+.assistant-dock.is-expanded .context-quote { max-height: min(260px, 38vh); }
+.assistant-log:empty { display: flex; align-items: center; justify-content: center; }
+.assistant-log:empty::before {
+  content: "اكتب ما تريده في الأسفل، وسيظهر الاقتراح هنا."; padding: 16px 0; text-align: center; font-size: 14px; color: #8a7f6f;
+}
+

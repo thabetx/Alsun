@@ -99,13 +99,21 @@ function showContext() {
   label.className = "context-label";
   if (context.kind === "fragment") {
     icon.className = "fa-solid fa-quote-right";
-    label.textContent = `النص المحدد: «${context.text}»`;
+    label.textContent = "النص المحدد";
   } else {
     icon.className = "fa-solid fa-list-check";
     label.textContent = `الصفوف المحددة: ${context.rowIds.length}`;
   }
   chip.append(icon, label);
   el("assistant-context").replaceChildren(chip);
+  if (context.kind === "fragment") {
+    // the selected text is in its own box (not mixed with the Arabic label), cut at the end if it is long
+    const quote = document.createElement("p");
+    quote.className = "context-quote";
+    quote.dir = "auto";
+    quote.textContent = context.text;
+    el("assistant-context").append(quote);
+  }
 }
 
 function openDock(newContext) {
