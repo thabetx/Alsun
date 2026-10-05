@@ -207,7 +207,7 @@ function makeRow(b) {
         const text = original.textContent.trim();
         if (!text) return;
         const state = rowStates.get(tr.dataset.id);
-        translated.textContent = "يجار الترجمة...";
+        translated.textContent = "يتم الترجمة ...";
         try {
           const data = await postJson("/translate", { text, target_lang: "English" });
           // keep the segments: they tell us what is quran and what is normal text
