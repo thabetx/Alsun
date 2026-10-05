@@ -5,9 +5,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { handleOriginalEdited } from "./retranslate-ui.js";
-import { initAssistant, refreshAssistantButton } from "./assistant.js";
+import { initAssistant, refreshAssistantButton, forgetDeletedRow } from "./assistant.js";
 import { initMerge, refreshMergeButton, unmergeRow } from "./merge-ui.js";
 import { translateRow } from "./translate-ui.js";
+import { askConfirmation } from "./confirm-dialog.js";
+import { getSelectedRows } from "./selection.js";
+import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
 
 const SVGNS = "http://www.w3.org/2000/svg";
@@ -35,6 +38,7 @@ function updateCheckAllState() {
 
 function notifySelectionChanged() {
   updateCheckAllState();
+  updateDeleteButton();
   refreshAssistantButton();
   refreshMergeButton();
 }
@@ -66,6 +70,69 @@ function createRowFromState(state) {
   renderTranslated(tr);
   registerRowBlocks(tr);
   return tr;
+}
+
+// "صف", "صفين", "3 صفوف", "12 صفًا"
+function rowsPhrase(count) {
+  if (count === 1) return "صف واحد";
+  if (count === 2) return "صفين";
+  return count <= 10 ? `${count} صفوف` : `${count} صفًا`;
+}
+
+// Deletes rows for good: the table rows, their state, and everything that points to them on the pdf side.
+// Nothing is kept, so the final extraction can't find them.
+async function deleteRows(trs) {
+  const rows = trs.filter((tr) => rowStates.has(tr.dataset.id));
+  if (!rows.length) return;
+
+  let message;
+  if (rows.length === 1) {
+    const text = rows[0].querySelector(".original-text").textContent.trim().replace(/\s+/g, " ");
+    const preview = text.length > 80 ? `${text.slice(0, 80)}…` : text;
+    const mergedNote = rowStates.get(rows[0].dataset.id).merged_from ? " وهو صف مدموج، فسيُحذف بكل أجزائه." : "";
+    message = `سيتم حذف هذا الصف نهائيًا ولن يظهر في الاستخراج النهائي.${mergedNote} «${preview}»`;
+  } else {
+    message = `سيتم حذف ${rowsPhrase(rows.length)} نهائيًا، ولن تظهر في الاستخراج النهائي.`;
+  }
+
+  const confirmed = await askConfirmation({
+    title: rows.length === 1 ? "حذف الصف" : "حذف الصفوف",
+    message,
+    confirmLabel: "احذف نهائيًا",
+    icon: "fa-trash-can",
+    tone: "danger",
+  });
+  if (!confirmed) return;
+
+  let deleted = 0;
+  rows.forEach((tr) => {
+    const rowId = tr.dataset.id;
+    const state = rowStates.get(rowId);
+    if (!state) return; // gone while the window was open (merged, or deleted twice)
+
+    state.source_blocks.forEach((block) => {
+      polygonsByBlockId.get(block.id)?.remove();
+      polygonsByBlockId.delete(block.id);
+      rowByBlockId.delete(block.id);
+    });
+    rowStates.delete(rowId);
+    tr.remove();
+    forgetDeletedRow(rowId);
+    deleted++;
+  });
+  notifySelectionChanged();
+  if (deleted) showToast(deleted === 1 ? "تم حذف الصف" : `تم حذف ${rowsPhrase(deleted)}`);
+}
+
+// the trash button of the toolbar: only for checked rows
+function updateDeleteButton() {
+  const button = document.getElementById("delete-rows");
+  const count = getSelectedRows().length;
+  button.disabled = count === 0;
+  if (!count) button.title = "حدّد صفًا أو أكثر للحذف";
+  else if (count === 1) button.title = "حذف الصف المحدد نهائيًا";
+  else if (count === 2) button.title = "حذف الصفين المحددين نهائيًا";
+  else button.title = `حذف الصفوف المحددة (${count}) نهائيًا`;
 }
 
 function replaceRows(oldRows, newStates) {
@@ -216,6 +283,8 @@ function makeRow(b) {
         translateRow(tr);
       } else if (item.dataset.action === "unmerge") {
         unmergeRow(tr);
+      } else if (item.dataset.action === "delete") {
+        deleteRows([tr]);
       } else {
         console.log(item.dataset.action, b.id);
       }
@@ -364,5 +433,6 @@ loadBook(bookSelect.value);
 
 initAssistant();
 initTranslateAll();
+document.getElementById("delete-rows").addEventListener("click", () => deleteRows(getSelectedRows()));
 initMerge({ replaceRows });
 notifySelectionChanged();

@@ -7,7 +7,8 @@ import { showToast } from "./toast.js";
 // Translates one row: "done", "error" or "skipped" (nothing to translate, already being translated,
 // or the user changed the row while it was waiting, so the answer is thrown away).
 export async function translateRow(tr) {
-  const state = rowStates.get(tr.dataset.id);
+  const rowId = tr.dataset.id;
+  const state = rowStates.get(rowId);
   const original = tr.querySelector(".original-text");
   const text = original.textContent.trim();
   if (!text || state.translating) return "skipped";
@@ -18,6 +19,9 @@ export async function translateRow(tr) {
   try {
     const data = await postJson("/translate", { text, target_lang: "English" });
     stopLoading();
+
+    // the row was deleted while we waited
+    if (!rowStates.has(rowId)) return "skipped";
 
     // the original was changed while we waited: this translation is of an old text
     if (original.textContent.trim() !== text || !document.contains(tr)) {
@@ -33,7 +37,7 @@ export async function translateRow(tr) {
     return "done";
   } catch (error) {
     stopLoading();
-    renderTranslated(tr);
+    if (rowStates.has(rowId)) renderTranslated(tr);
     showToast(error.message, true);
     return "error";
   } finally {

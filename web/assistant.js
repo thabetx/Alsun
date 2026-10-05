@@ -178,6 +178,7 @@ function addSuggestion({ title, lines, onAccept }) {
 async function suggestForFragment(instructions) {
   const row = getRowById(context.rowId);
   const state = rowStates.get(context.rowId);
+  if (!row || !state) throw new Error("هذا الصف تم حذفه");
   syncRowFromDom(row);
   const segment = state.segments.find((item) => item.id === context.segId);
   if (!segment || segment.text.slice(context.start, context.end) !== context.text) {
@@ -205,6 +206,7 @@ async function suggestForFragment(instructions) {
 async function applyFragment(fragment, replacement) {
   const row = getRowById(fragment.rowId);
   const state = rowStates.get(fragment.rowId);
+  if (!row || !state) throw new Error("هذا الصف تم حذفه");
   syncRowFromDom(row);
   const segment = state.segments.find((item) => item.id === fragment.segId);
   if (!segment) throw new Error("تغيّر النص بعد التحديد، حدّد الجزء مرة أخرى");
@@ -246,6 +248,7 @@ async function applyFragment(fragment, replacement) {
 
 async function suggestForRows(instructions) {
   const rows = context.rowIds.map(getRowById).filter(Boolean);
+  if (!rows.length) throw new Error("الصفوف المحددة تم حذفها");
   rows.forEach(syncRowFromDom);
   const translatedRows = rows.filter((tr) => rowStates.get(tr.dataset.id).segments.length);
   if (!translatedRows.length) throw new Error("ترجم الصفوف المحددة أولاً");
@@ -274,6 +277,7 @@ async function suggestForRows(instructions) {
 }
 
 function applyToRows(trs, sentSegments, answer) {
+  if (trs.some((tr) => !rowStates.has(tr.dataset.id))) throw new Error("تم حذف أحد الصفوف بعد الاقتراح");
   // refuse if a row changed after the suggestion was made
   trs.forEach((tr, index) => {
     syncRowFromDom(tr);
@@ -324,6 +328,17 @@ async function send() {
     waiting.remove();
     setBusy(false);
     el("assistant-instructions").focus();
+  }
+}
+
+// A row was deleted: if the assistant was working on it, it stops.
+export function forgetDeletedRow(rowId) {
+  if (!context) return;
+  if (context.kind === "fragment" && context.rowId === rowId) return closeDock();
+  if (context.kind === "rows") {
+    context.rowIds = context.rowIds.filter((id) => id !== rowId);
+    if (context.rowIds.length) showContext();
+    else closeDock();
   }
 }
 

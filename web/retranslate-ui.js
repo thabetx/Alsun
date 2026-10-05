@@ -3,10 +3,11 @@ import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom, showReviewNote, removeReviewNote } from "./translated-view.js";
 import { showToast } from "./toast.js";
 import { startPenLoading } from "./pen-writer.js";
+import { askConfirmation } from "./confirm-dialog.js";
 
 const CONFIRM_MESSAGE =
-  "تعديل النص الأصلي سيعيد ترجمة هذا الصف، وستضيع تعديلاتك على الترجمة " +
-  "(يمكنك استعادة النسخة السابقة بعد ذلك). هل تريد المتابعة؟";
+  "تعديل النص الأصلي سيعيد ترجمة هذا الصف، وستضيع تعديلاتك على الترجمة. " +
+  "يمكنك استعادة النسخة السابقة بعد ذلك.";
 
 // Called when the user leaves the original text of a row.
 export async function handleOriginalEdited(tr, editedText) {
@@ -21,7 +22,13 @@ export async function handleOriginalEdited(tr, editedText) {
     return;
   }
 
-  if (!window.confirm(CONFIRM_MESSAGE)) {
+  const confirmed = await askConfirmation({
+    title: "إعادة ترجمة الصف",
+    message: CONFIRM_MESSAGE,
+    confirmLabel: "أعد الترجمة",
+    icon: "fa-triangle-exclamation",
+  });
+  if (!confirmed) {
     original.textContent = state.originalText;
     return;
   }
@@ -34,6 +41,7 @@ export async function handleOriginalEdited(tr, editedText) {
   try {
     const data = await postJson("/retranslate", { old_segments: state.segments, new_original_text: newText });
     stopLoading();
+    if (!rowStates.has(tr.dataset.id)) return; // deleted while we waited
     state.segments = data.segments;
     state.originalText = newText;
     state.aiEdited = false;
@@ -52,6 +60,7 @@ export async function handleOriginalEdited(tr, editedText) {
     }
   } catch (error) {
     stopLoading();
+    if (!rowStates.has(tr.dataset.id)) return;
     state.segments = previous.segments;
     original.textContent = state.originalText;
     renderTranslated(tr);

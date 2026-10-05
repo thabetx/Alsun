@@ -2,6 +2,7 @@ import { rowStates } from "./state.js";
 import { getAllRows, getSelectedRows } from "./selection.js";
 import { translateRow } from "./translate-ui.js";
 import { showToast } from "./toast.js";
+import { askConfirmation } from "./confirm-dialog.js";
 
 const MAX_ERRORS_IN_A_ROW = 3; // a wrong key or a limit would otherwise fail every row
 
@@ -31,7 +32,13 @@ async function translateAll() {
   const checked = getSelectedRows();
   const rows = (checked.length ? checked : getAllRows()).filter(needsTranslation);
   if (!rows.length) return showToast("لا توجد صفوف تحتاج إلى ترجمة");
-  if (!window.confirm(`سيتم ترجمة ${rows.length} صفًا. هل تريد المتابعة؟`)) return;
+  const confirmed = await askConfirmation({
+    title: "ترجمة الصفوف",
+    message: `سيتم ترجمة ${rows.length} صفًا واحدًا تلو الآخر، ويمكنك إيقاف العملية في أي وقت.`,
+    confirmLabel: "ابدأ الترجمة",
+    icon: "fa-language",
+  });
+  if (!confirmed) return;
 
   running = true;
   stopRequested = false;

@@ -138,3 +138,54 @@
 /* ---------- the text toolbar has more buttons now: let it wrap instead of cutting them ---------- */
 .toolbar-text { flex-wrap: wrap; row-gap: 6px; padding-top: 6px; padding-bottom: 6px; }
 .toolbar-text .search-input { flex: 1 1 140px; max-width: 260px; width: auto; }
+
+/* ---------- confirmation window ---------- */
+.confirm-dialog {
+  width: min(440px, calc(100vw - 32px)); padding: 0; border: 1px solid #e6d9bf; border-radius: 18px;
+  background: #fffdf8; color: #231a19; direction: rtl; overflow: hidden;
+  font-family: "Tajawal", system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 24px 60px rgba(35, 26, 25, .28);
+}
+.confirm-dialog::backdrop { background: rgba(35, 26, 25, .45); backdrop-filter: blur(3px); }
+.confirm-dialog[open] { animation: confirm-in .18s ease-out; }
+@keyframes confirm-in {
+  from { opacity: 0; transform: translateY(8px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+.confirm-body { display: flex; gap: 16px; padding: 24px 26px 6px; }
+.confirm-icon {
+  flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; color: #b8860b; background: #f8e6bf;
+}
+.confirm-text { min-width: 0; }
+.confirm-title { margin: 2px 0 6px; font-size: 1.15rem; font-weight: 800; color: #231a19; }
+.confirm-message { margin: 0; line-height: 1.8; color: #5c4f48; }
+.confirm-actions { display: flex; gap: 10px; padding: 18px 26px 22px; }
+.confirm-actions button {
+  font: inherit; font-weight: 700; font-size: .95rem; padding: 8px 20px; border-radius: 10px;
+  cursor: pointer; transition: background .15s, border-color .15s;
+}
+.confirm-primary { color: #fff; background: #b8860b; border: 1px solid #b8860b; }
+.confirm-primary:hover { background: #9a6f08; border-color: #9a6f08; }
+.confirm-secondary { color: #5c4f48; background: #fffdf8; border: 1px solid #e0d2b2; }
+.confirm-secondary:hover { background: #f8f0dc; }
+.confirm-actions button:focus-visible { outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35); }
+@media (prefers-reduced-motion: reduce) { .confirm-dialog[open] { animation: none; } }
+
+/* a confirmation for something that can't be undone (delete) */
+.confirm-danger .confirm-icon { color: #8a2a1d; background: #fde3df; }
+.confirm-danger .confirm-primary { background: #8a2a1d; border-color: #8a2a1d; }
+.confirm-danger .confirm-primary:hover { background: #6f2016; border-color: #6f2016; }
+.confirm-danger .confirm-actions button:focus-visible { box-shadow: 0 0 0 .2rem rgba(138, 42, 29, .3); }
+
+/* ---------- toolbar button with only an icon (same look as the show / hide pdf button) ---------- */
+.tb-icon {
+  font-size: 1rem; color: #5c4f48; background: #f3ead4; border: 1px solid #e0d2b2;
+  border-radius: 9px; width: 36px; height: 32px; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.tb-icon:hover:not(:disabled) { border-color: #b8860b; color: #231a19; }
+.tb-icon:disabled { opacity: .45; cursor: not-allowed; }
+.tb-icon-danger:hover:not(:disabled) { border-color: #8a2a1d; color: #8a2a1d; background: #fde3df; }
+.tb-icon:focus-visible { outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35); }
