@@ -38,6 +38,7 @@ class ModifyRowsRequest(BaseModel):
 class RetranslateRequest(BaseModel):
     old_segments: List[Dict[str, Any]]
     new_original_text: str
+    target_lang: str = "English"
 
 
 class MergeRequest(BaseModel):
@@ -88,7 +89,12 @@ def modify_rows(request: ModifyRowsRequest):
 
 @router.post("/retranslate")
 def retranslate(request: RetranslateRequest):
-    return retranslate_edited_original(request.old_segments, request.new_original_text)
+    try:
+        return retranslate_edited_original(
+            request.old_segments, request.new_original_text, target_lang=request.target_lang
+        )
+    except ValueError as error:
+        raise refuse_with_message(error)
 
 
 @router.post("/rows/merge-problem")

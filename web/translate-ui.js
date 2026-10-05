@@ -3,6 +3,7 @@ import { rowStates } from "./state.js";
 import { renderTranslated } from "./translated-view.js";
 import { startPenLoading } from "./pen-writer.js";
 import { showToast } from "./toast.js";
+import { targetLanguage } from "./target-language.js";
 
 // Translates one row: "done", "error" or "skipped" (nothing to translate, already being translated,
 // or the user changed the row while it was waiting, so the answer is thrown away).
@@ -17,7 +18,7 @@ export async function translateRow(tr) {
   tr.querySelector(".translated-text").replaceChildren();
   const stopLoading = startPenLoading(tr);
   try {
-    const data = await postJson("/translate", { text, target_lang: "English" });
+    const data = await postJson("/translate", { text, target_lang: targetLanguage() });
     stopLoading();
 
     // the row was deleted while we waited

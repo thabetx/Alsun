@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -60,11 +60,14 @@ def ocr(filename: str = "two-pages.pdf"):
 # FastAPI uses it to validate the request automatically.
 class TranslateRequest(BaseModel):
     text: str
-    target_lang: str  # "English" or "French"
+    target_lang: str  # a key of QURAN_FILES in quran_detect.py: "English", "French", ...
 
 
 @app.post("/translate")
 def translate(request: TranslateRequest):
-    result = translate_paragraph_and_build_response(request.text)
+    try:
+        result = translate_paragraph_and_build_response(request.text, target_lang=request.target_lang)
+    except ValueError as error:  # a language we have no quran translation for
+        raise HTTPException(status_code=400, detail=str(error))
     # the frontend shows result["paragraph"]; segments are kept for editing.
     return {"translation": result["paragraph"], "parts": result["parts"], "segments": result["segments"]}

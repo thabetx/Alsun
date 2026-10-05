@@ -15,6 +15,24 @@ client = OpenAI()
 # the quran translation jsons live in the data/ folder at the project root
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
+# the quran translation we use for every language (the files are made by download_quran_translation.py
+# and convert_qul_translation.py in translation_pipeline/). The text of the quran is never made by the llm.
+QURAN_FILES = {
+    "English": "quran_en_hilali_khan.json",
+    "French": "quran_fr_hamidullah.json",    # Hamidullah, revised by the King Fahd Complex
+    "German": "quran_de_bubenheim.json",     # Bubenheim and Elyas
+    "Turkish": "quran_tr_diyanet.json",      # Diyanet. NOT READY: it translates a few ayahs together, so the same text is repeated on 843 consecutive ayahs
+    "Spanish": "quran_es_garcia.json",       # Isa Garcia, the latin america edition ("ustedes")
+    "Indonesian": "quran_id_kemenag.json",   # Ministry of Religious Affairs; the edition is not confirmed yet
+}
+
+
+def find_quran_file(target_lang):
+    if target_lang not in QURAN_FILES:
+        raise ValueError(f"No quran translation for the language: {target_lang}")
+    return DATA_DIR / QURAN_FILES[target_lang]
+
+
 detector_lock = threading.Lock()
 quran_annotate = qdetect.qMatcherAnnotater() # built once, it takes ~6 seconds
 
@@ -89,9 +107,9 @@ def translate_quran_paragraph(segment, quran_json):
     return segment["text"] # surah not found, keep the arabic as it is
 
 
-def translate_paragraph_segments(paragraph, json_file=None):
+def translate_paragraph_segments(paragraph, json_file=None, target_lang="English"):
     if json_file is None:
-        json_file = DATA_DIR / "quran_en_hilali_khan.json"
+        json_file = find_quran_file(target_lang)
     with open(json_file, encoding="utf-8") as f:
         quran_json = json.load(f)
 
@@ -100,15 +118,15 @@ def translate_paragraph_segments(paragraph, json_file=None):
         if segment["type"] == "quran":
             translated_text = translate_quran_paragraph(segment, quran_json)
         else:
-            translated_text = translate_normal_paragraph(segment["text"])
+            translated_text = translate_normal_paragraph(segment["text"], target_lang)
         # id = stable name for the segment, text = the translation, original = the arabic we got it from
         translated_segments.append({**segment, "id": f"seg_{segment_number}", "text": translated_text, "original": segment["text"]})
 
     return translated_segments
 
 
-def translate_paragraph_and_build_response(paragraph, json_file=None):
-    segments = translate_paragraph_segments(paragraph, json_file)
+def translate_paragraph_and_build_response(paragraph, json_file=None, target_lang="English"):
+    segments = translate_paragraph_segments(paragraph, json_file, target_lang)
     return {
         "paragraph": concatenate_paragraph_segements(segments),
         "parts": build_paragraph_display_parts(segments),

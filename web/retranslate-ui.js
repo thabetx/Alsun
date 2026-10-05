@@ -4,6 +4,7 @@ import { renderTranslated, syncRowFromDom, showReviewNote, removeReviewNote } fr
 import { showToast } from "./toast.js";
 import { startPenLoading } from "./pen-writer.js";
 import { askConfirmation } from "./confirm-dialog.js";
+import { targetLanguage } from "./target-language.js";
 
 const CONFIRM_MESSAGE =
   "تعديل النص الأصلي سيعيد ترجمة هذا الصف، وستضيع تعديلاتك على الترجمة. " +
@@ -39,7 +40,9 @@ export async function handleOriginalEdited(tr, editedText) {
   const stopLoading = startPenLoading(tr);
 
   try {
-    const data = await postJson("/retranslate", { old_segments: state.segments, new_original_text: newText });
+    const data = await postJson("/retranslate", {
+      old_segments: state.segments, new_original_text: newText, target_lang: targetLanguage(),
+    });
     stopLoading();
     if (!rowStates.has(tr.dataset.id)) return; // deleted while we waited
     state.segments = data.segments;
