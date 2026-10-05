@@ -11,8 +11,16 @@
 .tb-button:disabled { opacity: .45; cursor: not-allowed; }
 
 /* ---------- the translation, part by part ---------- */
+/* the quran is green (growth and good), a soft sage that sits well on the warm cream and gold of the theme */
 .translated-text .seg-quran {
-  background: #efd78f; border-radius: 4px; padding: 0 3px;
+  background: #d3e4bf; border-radius: 4px; padding: 0 3px;
+  box-shadow: inset 0 -2px 0 #9dbb7a;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+/* what the detector took as quran, marked in the original text (same green as the translation) */
+.original-text .orig-quran {
+  background: #d3e4bf; border-radius: 4px; padding: 0 2px;
+  box-shadow: inset 0 -2px 0 #9dbb7a;
   box-decoration-break: clone; -webkit-box-decoration-break: clone;
 }
 .ai-chip {

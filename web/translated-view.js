@@ -25,6 +25,57 @@ export function renderTranslated(tr) {
   tr.querySelector(".ai-chip").hidden = !state.aiEdited;
   tr.querySelector(".merged-only").hidden = !state.merged_from;
   tr.classList.toggle("is-merged", Boolean(state.merged_from));
+  renderOriginalHighlights(tr);
+}
+
+function describeAyahRange(segment) {
+  const range = segment.aya_end !== segment.aya_start ? `${segment.aya_start}-${segment.aya_end}` : `${segment.aya_start}`;
+  return `${segment.aya_name} (${range})`;
+}
+
+// Marks in the ORIGINAL text what the detector took as quran, so a wrong detection is visible.
+// The text itself is not changed (same characters, same spaces), only wrapped in spans.
+// If the words of the cell don't match the words the segments came from (the user changed the
+// text after the translation), nothing is marked: a wrong mark is worse than no mark.
+export function renderOriginalHighlights(tr) {
+  const state = rowStates.get(tr.dataset.id);
+  const cell = tr.querySelector(".original-text");
+  const text = cell.textContent;
+  cell.replaceChildren(text);
+  if (!state.segments.length) return;
+
+  const cellWords = [...text.matchAll(/\S+/g)].map((match) => ({
+    word: match[0],
+    start: match.index,
+    end: match.index + match[0].length,
+  }));
+  const segmentWords = state.segments.map((segment) => segment.original.split(/\s+/).filter(Boolean));
+  const allSegmentWords = segmentWords.flat();
+  const sameWords =
+    allSegmentWords.length === cellWords.length &&
+    allSegmentWords.every((word, index) => word === cellWords[index].word);
+  if (!sameWords) return;
+
+  const pieces = [];
+  let cursor = 0;
+  let wordNumber = 0;
+  state.segments.forEach((segment, index) => {
+    const count = segmentWords[index].length;
+    if (segment.type === "quran" && count > 0) {
+      const start = cellWords[wordNumber].start;
+      const end = cellWords[wordNumber + count - 1].end;
+      pieces.push(text.slice(cursor, start));
+      const span = document.createElement("span");
+      span.className = "orig-quran";
+      span.title = describeAyahRange(segment);
+      span.textContent = text.slice(start, end);
+      pieces.push(span);
+      cursor = end;
+    }
+    wordNumber += count;
+  });
+  pieces.push(text.slice(cursor));
+  cell.replaceChildren(...pieces);
 }
 
 // Copies what the user typed in the normal spans back to the segments.
