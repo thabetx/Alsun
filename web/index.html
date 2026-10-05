@@ -27,6 +27,25 @@
 </header>
 
 <main class="app-main">
+  <section class="panel panel-preview">
+    <div class="toolbar toolbar-preview">
+      <strong class="preview-title"><i class="fa-solid fa-file-lines"></i> المعاينة</strong>
+      <span id="export-count" class="preview-count"></span>
+      <div class="preview-download">
+        <select id="export-format" class="export-format" aria-label="صيغة الحفظ">
+          <option value="pdf">PDF</option>
+          <option value="doc">Word</option>
+          <option value="md">Markdown</option>
+        </select>
+        <button type="button" id="export-download" class="tb-button"
+                title="حفظ الكتاب المترجم"><i class="fa-solid fa-download"></i> تنزيل</button>
+      </div>
+    </div>
+    <div class="panel-body preview-body">
+      <iframe id="export-preview" class="export-preview" title="معاينة الكتاب المترجم"></iframe>
+    </div>
+  </section>
+
   <section class="panel panel-text">
     <div class="toolbar toolbar-text">
       <button type="button" id="toggle-pdf" class="toggle-pdf" aria-pressed="true" title="إظهار / إخفاء عرض PDF">
@@ -48,6 +67,8 @@
               aria-label="حذف الصفوف المحددة" title="حدّد صفًا أو أكثر للحذف"><i class="fa-solid fa-trash-can"></i></button>
       <button type="button" id="restart-work" class="tb-icon"
               aria-label="البدء من جديد" title="مسح العمل المحفوظ والبدء من جديد"><i class="fa-solid fa-rotate-left"></i></button>
+      <button type="button" id="toggle-preview" class="toggle-pdf" aria-pressed="true"
+              title="إظهار / إخفاء معاينة الكتاب"><i class="fa-solid fa-file-lines"></i></button>
     </div>
     <div class="panel-body table-wrap">
       <table class="table align-middle text-table" dir="rtl">

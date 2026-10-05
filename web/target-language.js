@@ -12,8 +12,22 @@ const ARABIC_NAMES = {
   Indonesian: "الإندونيسية",
 };
 
+// the code of the language, for the documents we write out (the lang attribute of the html)
+const CODES = {
+  English: "en",
+  French: "fr",
+  German: "de",
+  Turkish: "tr",
+  Spanish: "es",
+  Indonesian: "id",
+};
+
 export function targetLanguageInArabic() {
   return ARABIC_NAMES[targetLanguage()] ?? targetLanguage();
+}
+
+export function targetLanguageCode() {
+  return CODES[targetLanguage()] ?? "en";
 }
 
 export function targetLanguage() {
