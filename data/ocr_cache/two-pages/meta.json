@@ -1,0 +1,17 @@
+{
+  "_source_mtime": 1791116813.1124527,
+  "page_count": 2,
+  "metadata": {
+    "page_stats": [
+      {
+        "page_id": 0,
+        "num_blocks": 5
+      },
+      {
+        "page_id": 1,
+        "num_blocks": 7
+      }
+    ],
+    "failed_pages": []
+  }
+}

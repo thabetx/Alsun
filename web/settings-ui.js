@@ -31,10 +31,21 @@ function nameLabel(text, className = "") {
   return label;
 }
 
-function section(title, hint) {
+// The explanation of a section is a tooltip on a small info icon (hover or focus), so the window stays short and
+// what the user sees is the choices.
+function section(title, tip) {
   const box = element("section", "settings-section");
-  box.append(element("h3", "settings-section-title", title));
-  if (hint) box.append(element("p", "settings-hint", hint));
+  const head = element("div", "settings-section-head");
+  head.append(element("h3", "settings-section-title", title));
+  if (tip) {
+    const info = element("span", "settings-info");
+    info.tabIndex = 0;
+    info.dataset.tip = tip;
+    info.setAttribute("role", "img");
+    info.setAttribute("aria-label", tip);
+    head.append(info);
+  }
+  box.append(head);
   return box;
 }
 
@@ -189,8 +200,8 @@ function buildQuranSection(language, sources, saved) {
 function buildTrustedTermsSection(language, info, saved) {
   const box = section(
     "القاموس الشرعي",
-    "مصطلحات شرعية بمقابلاتها من موسوعة موثوقة. عند تفعيله يلتزم النموذج بمقابل المصطلح حين يكون له المعنى نفسه في النص، " +
-      "وإذا كان المصطلح في قاموسك الخاص فترجمتك هي المعتمدة. يسري هذا على الترجمات القادمة."
+    "مصطلحات شرعية بمقابلاتها من موسوعة موثوقة. عند تفعيله يلتزم النموذج بالمقابل حين يكون للمصطلح المعنى نفسه في النص. " +
+      "وقاموسك الخاص له الأولوية. يسري على الترجمات القادمة."
   );
 
   const count = info.terms[language] ?? 0;
@@ -213,7 +224,7 @@ function buildTrustedTermsSection(language, info, saved) {
   source.href = info.url;
   source.target = "_blank";
   source.rel = "noopener noreferrer";
-  const sourceLine = element("p", "settings-hint settings-source-line", "المصدر: ");
+  const sourceLine = element("p", "settings-source-line", "المصدر: ");
   sourceLine.append(source);
 
   box.append(label, sourceLine);

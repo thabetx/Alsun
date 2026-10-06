@@ -266,9 +266,23 @@
 .settings-title { margin: 0 0 4px; font-size: 1.2rem; font-weight: 800; }
 .settings-sub { margin: 0; color: #7a6c63; font-size: .92rem; }
 .settings-body { padding: 8px 26px; overflow-y: auto; flex: 1 1 auto; }
-.settings-section { padding: 14px 0; border-bottom: 1px solid #f0e6cf; }
+.settings-section { padding: 12px 0; border-bottom: 1px solid #f0e6cf; }
 .settings-section:last-child { border-bottom: 0; }
-.settings-section-title { margin: 0 0 4px; font-size: 1.02rem; font-weight: 800; }
+.settings-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.settings-section-title { margin: 0; font-size: 1.02rem; font-weight: 800; }
+/* the info icon of a section: its explanation shows on hover or focus (display none when hidden: a hidden box
+   that is still there would make the body of the window scroll) */
+.settings-info { position: relative; color: #b3a07a; cursor: help; font-size: .92rem; line-height: 1; outline: none; }
+.settings-info::before { content: "\f05a"; font-family: "Font Awesome 6 Free", "Font Awesome 5 Free"; font-weight: 900; }
+.settings-info:hover, .settings-info:focus-visible { color: #946a08; }
+.settings-info::after {
+  content: attr(data-tip); display: none; position: absolute; top: calc(100% + 8px); inset-inline-start: -6px; z-index: 5;
+  width: max-content; max-width: 290px; padding: 9px 13px; border-radius: 12px; background: #231a19; color: #fffdf8;
+  font-family: inherit; font-size: .86rem; font-weight: 500; line-height: 1.7; text-align: start; white-space: normal;
+  box-shadow: 0 10px 28px rgba(35, 26, 25, .3); pointer-events: none;
+}
+.settings-info:hover::after, .settings-info:focus-visible::after { display: block; }
+.settings-section:last-child .settings-info::after { top: auto; bottom: calc(100% + 8px); }
 .settings-hint { margin: 0 0 10px; color: #7a6c63; font-size: .88rem; line-height: 1.7; }
 .settings-error { margin: 0 0 8px; color: #8a2a1d; font-size: .9rem; }
 .settings-loading { color: #7a6c63; }
@@ -287,7 +301,7 @@
 .settings-choice:hover { background: #fbf6e8; }
 .settings-choice input { accent-color: #b8860b; }
 .settings-source { color: #7a5a08; text-decoration: underline; }
-.settings-source-line { margin: 8px 0 0; }
+.settings-source-line { margin: 6px 0 0; color: #7a6c63; font-size: .85rem; }
 .settings-tag { margin-inline-start: auto; font-size: .78rem; color: #7a5a08; background: #f8e6bf; border-radius: 999px; padding: 1px 10px; }
 .settings-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .settings-select {
