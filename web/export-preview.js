@@ -27,7 +27,8 @@ let onRowHover = null;
 
 // "yaqzan.pdf" -> "yaqzan"
 function bookName() {
-  return (el("book-select")?.value || "book").replace(/\.pdf$/i, "");
+  // the text of the option is the name of the book (the value of an uploaded book is only its id)
+  return (el("book-select")?.selectedOptions[0]?.textContent || "book").trim().replace(/\.pdf$/i, "");
 }
 
 // the options the book is written with, whatever the format is

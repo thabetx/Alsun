@@ -13,7 +13,7 @@ export function renderTranslated(tr, { animate = false } = {}) {
   cell.replaceChildren();
 
   // nothing to edit before the row is translated: the cell only tells the user what to do
-  cell.contentEditable = state.segments.length ? "true" : "false";
+  cell.contentEditable = state.segments.length && !state.locked ? "true" : "false";
   if (!state.segments.length) {
     const hint = document.createElement("span");
     hint.className = "translated-hint";

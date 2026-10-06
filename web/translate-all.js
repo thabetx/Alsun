@@ -16,7 +16,7 @@ const button = () => document.getElementById("translate-all");
 
 function needsTranslation(tr) {
   const state = rowStates.get(tr.dataset.id);
-  return state && !state.segments.length && !state.translating && tr.querySelector(".original-text").textContent.trim();
+  return state && !state.locked && !state.segments.length && !state.translating && tr.querySelector(".original-text").textContent.trim();
 }
 
 function showIdle() {

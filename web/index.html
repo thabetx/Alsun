@@ -26,7 +26,7 @@
 </header>
 
 <main class="app-main">
-  <section class="panel panel-preview">
+  <section class="panel panel-preview" style="display: none"> <!-- closed when the app opens; the button of the toolbar opens it -->
     <div class="toolbar toolbar-preview">
       <strong class="preview-title"><i class="fa-solid fa-file-lines"></i> المعاينة</strong>
       <span id="export-count" class="preview-count"></span>
@@ -68,7 +68,7 @@
               aria-label="حذف الصفوف المحددة" title="حدّد صفًا أو أكثر للحذف"><i class="fa-solid fa-trash-can"></i></button>
       <button type="button" id="restart-work" class="tb-icon"
               aria-label="البدء من جديد" title="مسح العمل المحفوظ والبدء من جديد"><i class="fa-solid fa-rotate-left"></i></button>
-      <button type="button" id="toggle-preview" class="toggle-pdf" aria-pressed="true"
+      <button type="button" id="toggle-preview" class="toggle-pdf" aria-pressed="false"
               title="إظهار / إخفاء معاينة الكتاب"><i class="fa-solid fa-file-lines"></i></button>
     </div>
     <div class="panel-body table-wrap">
@@ -78,6 +78,7 @@
             <th class="col-check">
               <input class="form-check-input" type="checkbox" id="check-all" title="تحديد الكل">
             </th>
+            <th class="col-lock" title="علامة الانتهاء: الصف المنتهي يُقفل"><i class="fa-solid fa-check-double"></i></th>
             <th class="col-original">النص الأصلي</th>
             <th class="col-translated" id="translated-heading">الترجمة</th>
             <th class="col-actions"></th>

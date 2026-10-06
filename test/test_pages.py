@@ -46,7 +46,8 @@ class TestPages(unittest.TestCase):
     def test_the_pages_link_to_each_other_with_the_new_addresses(self):
         home_js = self.get("/web/home.js").text
         viewer = self.get("/app").text
-        self.assertIn('location.href = "/app"', home_js)
+        self.assertIn("/app?book=", home_js)  # the book that was uploaded
+        self.assertIn("/books?name=", home_js)  # the upload
         self.assertNotIn("/web/index.html", home_js)
         self.assertIn('href="/"', viewer)
         self.assertNotIn("/web/home.html", viewer)

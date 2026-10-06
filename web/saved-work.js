@@ -97,7 +97,7 @@ export function watchWork({ table, getRows, onFailed }) {
   findRows = getRows;
   onSaveFailed = onFailed;
   new MutationObserver(scheduleSave).observe(table, {
-    childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["hidden"],
+    childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["hidden", "data-locked"],
   });
   table.addEventListener("focusout", scheduleSave);
   window.addEventListener("pagehide", saveNowIfWaiting);

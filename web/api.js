@@ -8,6 +8,11 @@ const ERROR_MESSAGES = [
   ["can't be unmerged anymore", "لا يمكن فك الدمج: تغيّرت أجزاء الصف بعد الدمج"],
   ["not a merged row", "هذا الصف ليس صفًا مدموجًا"],
   ["the llm", "ردّ المساعد غير صالح، حاول مرة أخرى"],
+  ["there is no such book", "هذا الكتاب غير موجود، ارفعه من الصفحة الرئيسية"],
+  ["the book name is not valid", "اسم الكتاب غير صالح"],
+  ["the ocr failed", "تعذّرت قراءة الكتاب (OCR)، حاول مرة أخرى بعد قليل"],
+  ["page range", "نطاق الصفحات غير صالح"],
+  ["pages in one request", "نطاق الصفحات غير صالح"],
   ["the models are not answering", "لم يرد أي موديل على الطلب، حاول بعد قليل أو اختر موديلًا آخر من الإعدادات"],
   ["no api key for", "مفتاح هذا المزوّد غير موجود في ملف .env على الخادم، اختر موديلًا آخر من الإعدادات"],
   ["is not available for", "هذا الموديل غير متاح لحسابك، اختر موديلًا آخر من الإعدادات"],
@@ -24,6 +29,18 @@ export function translateError(message) {
   return found ? found[1] : message;
 }
 
+// the message of an answer that is not ok (the "detail" of the server, in arabic if we know it)
+async function readError(response) {
+  let detail = "حدث خطأ";
+  try {
+    const data = await response.json();
+    if (typeof data.detail === "string") detail = data.detail;
+  } catch (error) {
+    // the body is not json, keep the default message
+  }
+  return new Error(translateError(detail));
+}
+
 export async function getJson(url) {
   let response;
   try {
@@ -31,7 +48,7 @@ export async function getJson(url) {
   } catch (error) {
     throw new Error("تعذّر الوصول إلى الخادم");
   }
-  if (!response.ok) throw new Error("حدث خطأ");
+  if (!response.ok) throw await readError(response);
   return response.json();
 }
 
@@ -47,15 +64,6 @@ export async function postJson(url, body) {
     throw new Error("تعذّر الوصول إلى الخادم");
   }
 
-  if (!response.ok) {
-    let detail = "حدث خطأ";
-    try {
-      const data = await response.json();
-      if (typeof data.detail === "string") detail = data.detail;
-    } catch (error) {
-      // the body is not json, keep the default message
-    }
-    throw new Error(translateError(detail));
-  }
+  if (!response.ok) throw await readError(response);
   return response.json();
 }

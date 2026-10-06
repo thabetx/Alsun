@@ -4,3 +4,6 @@ __pycache__
 data/ocr_cache
 
 .idea/
+
+# the pdfs the users upload, and their ocr
+uploads/

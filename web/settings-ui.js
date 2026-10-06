@@ -41,9 +41,12 @@ function section(title, hint) {
 // (an ayah without a mark was written with the first translation of the language, the default one).
 function rowsWithOtherQuranSource(sources, chosenId) {
   const defaultId = sources.find((source) => source.default).id;
-  return getAllRows().filter((tr) =>
-    rowStates.get(tr.dataset.id)?.segments.some((segment) => segment.type === "quran" && (segment.quran_source ?? defaultId) !== chosenId)
-  );
+  return getAllRows().filter((tr) => {
+    const state = rowStates.get(tr.dataset.id);
+    // a locked row keeps its ayahs as they are
+    return state && !state.locked &&
+      state.segments.some((segment) => segment.type === "quran" && (segment.quran_source ?? defaultId) !== chosenId);
+  });
 }
 
 // report(text, isError) writes in the window (a toast would be behind it)
@@ -175,10 +178,14 @@ function buildQuranSection(language, sources, saved) {
   return box;
 }
 
+// the names people know (the backend sends the company names)
+const PROVIDER_NAMES = { openai: "ChatGPT", cohere: "Cohere (Command)" };
+const providerName = (provider) => PROVIDER_NAMES[provider.provider] ?? provider.label;
+
 function buildModelSection(providers, saved) {
   const box = section(
     "نموذج الذكاء الاصطناعي",
-    "يُستخدم في الترجمة وفي المساعد الذكي، بنفس التعليمات لكل نموذج. المفاتيح تُضاف في ملف \u2066.env\u2069 على الخادم (\u2066OPENAI_API_KEY\u2069 و \u2066COHERE_API_KEY\u2069) ولا تظهر ولا تُحفظ هنا. وإذا لم يرد النموذج المختار، ينتقل الطلب تلقائيًا إلى نموذج آخر ويُخبرك البرنامج."
+    "اختر النموذج الذي تتم به الترجمة ويعمل به المساعد الذكي. وإذا لم يستجب النموذج المختار، ننتقل تلقائيًا إلى نموذج آخر ونُخبرك بذلك."
   );
 
   const stored = getModelChoice();
@@ -192,9 +199,9 @@ function buildModelSection(providers, saved) {
   }
 
   const providerSelect = element("select", "settings-select");
-  providerSelect.setAttribute("aria-label", "المزوّد");
+  providerSelect.setAttribute("aria-label", "الشركة");
   providers.forEach((provider) => {
-    const option = element("option", "", provider.has_key ? provider.label : `${provider.label} — المفتاح غير موجود في \u2066.env\u2069`);
+    const option = element("option", "", provider.has_key ? providerName(provider) : `${providerName(provider)} — غير متاح حاليًا`);
     option.value = provider.provider;
     option.disabled = !provider.has_key;
     providerSelect.append(option);
@@ -242,7 +249,7 @@ function buildModelSection(providers, saved) {
 
   const row = element("div", "settings-row");
   row.append(providerSelect, modelSelect);
-  box.append(row, note, failedNote);
+  box.append(row, failedNote);
   return box;
 }
 

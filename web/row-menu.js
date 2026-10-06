@@ -61,6 +61,13 @@ export function refreshRowMenu(tr) {
   setItem("copy-original", { disabledReason: hasOriginal ? "" : "لا يوجد نص أصلي" });
 
   setItem("merge-next", { disabledReason: explainNeighborMergeProblem(tr, "next").problem ?? "" });
+
+  // a locked row can only be copied
+  if (state.locked) {
+    ["translate", ...ASSISTANT_SHORTCUTS.map(({ action }) => action), "merge-next", "unmerge", "delete"].forEach((action) =>
+      setItem(action, { disabledReason: "الصف مقفل" })
+    );
+  }
 }
 
 async function copyToClipboard(text) {

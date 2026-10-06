@@ -3,6 +3,7 @@ import { rowStates, toRawRow, copy } from "./state.js";
 import { syncRowFromDom } from "./translated-view.js";
 import { getAllRows, getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
+import { isLocked, LOCKED_MESSAGE } from "./row-lock.js";
 
 // app.js gives us the one function we need from it: replaceRows(oldRows, newStates)
 let replaceRows = null;
@@ -59,6 +60,9 @@ export function explainNeighborMergeProblem(tr, direction) {
   if (neighbor.style.display === "none") {
     return { neighbor, problem: "الصف المجاور مخفي بنتيجة البحث" };
   }
+  if (isLocked(tr.dataset.id) || isLocked(neighbor.dataset.id)) {
+    return { neighbor, problem: "افتح قفل الصف أولًا" };
+  }
   const translated = [tr, neighbor].map((row) => rowStates.get(row.dataset.id).segments.length > 0);
   if (translated[0] !== translated[1]) {
     return { neighbor, problem: "ترجم الصفين أولاً، أو ادمجهما قبل الترجمة" };
@@ -72,6 +76,7 @@ async function mergeSelectedRows() {
 
 // rows = the rows to merge, next to each other, in the order of the table
 export async function mergeRowsNow(rows) {
+  if (rows.some((tr) => isLocked(tr.dataset.id))) return showToast(LOCKED_MESSAGE, true);
   const ids = rows.map((tr) => tr.dataset.id);
   rows.forEach(syncRowFromDom);
 
@@ -99,6 +104,7 @@ export async function mergeRowsNow(rows) {
 }
 
 export async function unmergeRow(tr) {
+  if (isLocked(tr.dataset.id)) return showToast(LOCKED_MESSAGE, true);
   const state = rowStates.get(tr.dataset.id);
   syncRowFromDom(tr);
 

@@ -3,6 +3,7 @@ import { rowStates, joinDisplayText, copy } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { getRowById, getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
+import { isLocked, LOCKED_MESSAGE } from "./row-lock.js";
 import { mountPenScribble } from "./pen-writer.js";
 import { modelSettings } from "./settings-store.js";
 import { getGlossary } from "./glossary-store.js";
@@ -44,7 +45,7 @@ function readSelection() {
   if (!cell) return null;
   const tr = cell.closest("tr");
   const state = rowStates.get(tr.dataset.id);
-  if (!state || !state.segments.length) return null;
+  if (!state || !state.segments.length || state.locked) return null; // a locked row gets no tooltip
   if (cell.querySelector(".untyped")) return null; // the pen is still writing this text
 
   for (const quranSpan of cell.querySelectorAll(".seg-quran")) {
@@ -348,6 +349,7 @@ async function applyFragment(fragment, replacement) {
   const row = getRowById(fragment.rowId);
   const state = rowStates.get(fragment.rowId);
   if (!row || !state) throw new Error("هذا الصف تم حذفه");
+  if (state.locked) throw new Error(LOCKED_MESSAGE);
   syncRowFromDom(row);
   const segment = state.segments.find((item) => item.id === fragment.segId);
   if (!segment) throw new Error("تغيّر النص بعد التحديد، حدّد الجزء مرة أخرى");
@@ -431,6 +433,7 @@ async function suggestForRows(instructions) {
 
 function applyToRows(trs, sentSegments, answer) {
   if (trs.some((tr) => !rowStates.has(tr.dataset.id))) throw new Error("تم حذف أحد الصفوف بعد الاقتراح");
+  if (trs.some((tr) => isLocked(tr.dataset.id))) throw new Error(LOCKED_MESSAGE);
   // refuse if a row changed after the suggestion was made
   trs.forEach((tr, index) => {
     syncRowFromDom(tr);
@@ -506,7 +509,7 @@ export function forgetDeletedRow(rowId) {
 export function refreshAssistantButton() {
   const rows = getSelectedRows();
   const button = el("open-assistant-rows");
-  const translated = rows.filter((tr) => rowStates.get(tr.dataset.id).segments.length);
+  const translated = rows.filter((tr) => rowStates.get(tr.dataset.id).segments.length && !isLocked(tr.dataset.id));
   button.disabled = translated.length === 0;
   button.title = translated.length
     ? "المساعد الذكي على الصفوف المحددة"
@@ -537,7 +540,7 @@ export function initAssistant() {
   window.addEventListener("scroll", hideTooltip, true);
 
   el("open-assistant-rows").addEventListener("click", () => {
-    const rowIds = getSelectedRows().map((tr) => tr.dataset.id);
+    const rowIds = getSelectedRows().filter((tr) => !isLocked(tr.dataset.id)).map((tr) => tr.dataset.id);
     if (rowIds.length) openDock({ kind: "rows", rowIds });
   });
   el("assistant-close").addEventListener("click", closeDock);

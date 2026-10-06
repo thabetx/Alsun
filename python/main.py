@@ -14,11 +14,12 @@ from pathlib import Path
 from typing import List, Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from starlette.concurrency import run_in_threadpool
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # Project root is one level up from this file (python/ -> project root).
@@ -36,13 +37,15 @@ from quran_detect import (  # noqa: E402
     translate_paragraph_and_build_response,
     warm_up_detector_in_background,
 )
-from ocr import extract_pdf_segments  # noqa: E402
+from books import (  # noqa: E402
+    MAX_PAGES_PER_REQUEST, MAX_UPLOAD_BYTES, check_page_range, find_book, save_upload,
+)
+from ocr import extract_segments_of_pdf  # noqa: E402
 from assistant_routes import (  # noqa: E402
     router as assistant_router, GlossaryEntry, ModelChoice, checked_glossary, checked_model,
 )
 from settings_routes import router as settings_router  # noqa: E402
 from llm import track_fallbacks  # noqa: E402
-from pypdf import PdfReader  # noqa: E402
 
 app = FastAPI()
 
@@ -108,12 +111,64 @@ app.mount("/web", StaticFiles(directory=ROOT / "web"), name="web")
 app.mount("/data", StaticFiles(directory=ROOT / "data"), name="data")
 
 
+# ---------- the books: the samples of data/ and the pdfs the users upload (see books.py) ----------
+
+@app.post("/books")
+async def upload_book(request: Request, name: str = "book.pdf"):
+    """The pdf is the body of the request (no form). Gives the book: {id, name, pages, size}."""
+    declared = request.headers.get("content-length", "")
+    too_big = HTTPException(status_code=413, detail=f"the file is bigger than {MAX_UPLOAD_BYTES // (1024 * 1024)} MB")
+    if declared.isdigit() and int(declared) > MAX_UPLOAD_BYTES:
+        raise too_big
+    data = bytearray()
+    async for chunk in request.stream():  # the size is checked while the file arrives, not after
+        data.extend(chunk)
+        if len(data) > MAX_UPLOAD_BYTES:
+            raise too_big
+    try:
+        book = await run_in_threadpool(save_upload, bytes(data), name)
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+    return book.as_dict()
+
+
+def book_or_error(book_id):
+    try:
+        return find_book(book_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="there is no such book")
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+
+
+@app.get("/books/{book_id}")
+def book_info(book_id: str):
+    return book_or_error(book_id).as_dict()
+
+
+@app.get("/books/{book_id}/pdf")
+def book_pdf(book_id: str):
+    return FileResponse(book_or_error(book_id).path, media_type="application/pdf")  # shown in the page, not saved
+
+
 @app.get("/ocr")
-def ocr(filename: str = "two-pages.pdf"):
-    """Run Datalab OCR on a whole PDF from data/ and return the JSON."""
-    pdf = ROOT / "data" / filename
-    n = len(PdfReader(str(pdf)).pages)
-    return extract_pdf_segments(filename, page_range=f"0-{n - 1}")
+def ocr(book: Optional[str] = None, page_range: Optional[str] = None, filename: Optional[str] = None):
+    """The Datalab blocks json of some pages of a book, fixed by the llm (kept per page, see ocr.py).
+
+    page_range is 0-indexed ("0-4,7"), at most MAX_PAGES_PER_REQUEST pages: the front reads a long book
+    a few pages at a time. A short book can be asked without it. `filename` is the old name of `book`.
+    """
+    found = book_or_error(book or filename or "two-pages.pdf")
+    if page_range is None and found.pages > MAX_PAGES_PER_REQUEST:
+        raise HTTPException(status_code=400, detail="the page range is not valid")
+    try:
+        wanted = check_page_range(page_range or f"0-{found.pages - 1}", found.pages)
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+    try:
+        return extract_segments_of_pdf(found.path, found.cache_dir, wanted)
+    except Exception as error:  # noqa: BLE001 - the ocr service is outside, whatever it raises is "the ocr failed"
+        raise HTTPException(status_code=502, detail=f"the ocr failed: {type(error).__name__}")
 
 
 # This describes the JSON body the frontend must send to /translate.

@@ -7,6 +7,7 @@ after that.
 """
 
 import json
+import os
 from pathlib import Path
 
 from datalab_sdk import ConvertOptions, DatalabClient
@@ -14,6 +15,14 @@ from datalab_sdk import ConvertOptions, DatalabClient
 from refine_ocr import refine_page
 
 API_KEY = "hOqLUjJtLx8Os_ZPtG1toGsRBoOVgiBbjwCeJqk8X00"
+
+
+def datalab_api_key():
+    # DATALAB_API_KEY in the .env file wins; the key written above is only what is used if there is none, so
+    # nothing stops working. Put the key in .env and take it out of this file.
+    return os.environ.get("DATALAB_API_KEY", "").strip() or API_KEY
+
+
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_DIR = ROOT / "data" / "ocr_cache"
 REFINED_SUFFIX = "_refined"
@@ -50,16 +59,20 @@ def compress_range(pages):
 
 
 def extract_pdf_segments(filename="two-pages.pdf", page_range="0-1"):
-    """Convert a pdf from data/ and return its blocks json (cached per page).
+    """Convert a pdf from data/ and return its blocks json (cached per page)."""
+    pdf = ROOT / "data" / filename
+    if not pdf.exists():
+        raise FileNotFoundError(f"PDF not found: {pdf}")
+    return extract_segments_of_pdf(pdf, CACHE_DIR / pdf.stem, page_range)
+
+
+def extract_segments_of_pdf(pdf, book, page_range):
+    """Convert a pdf and return its blocks json (cached per page, in the folder `book`).
 
     page_range is 0-indexed ('0,2-4'). Only pages missing from the cache are
     sent to Datalab; e.g. a request for 0-5 with pages 1-3 cached queries
     datalab for '0,4-5'.
     """
-    pdf = ROOT / "data" / filename
-    if not pdf.exists():
-        raise FileNotFoundError(f"PDF not found: {pdf}")
-    book = CACHE_DIR / pdf.stem
     wanted = decompress_range(page_range)
 
     # whole-book cache is invalid if the pdf changed since it was cached
@@ -87,7 +100,7 @@ def extract_pdf_segments(filename="two-pages.pdf", page_range="0-1"):
 
     # query datalab only for the missing pages (already 0-indexed)
     if missing:
-        result = DatalabClient(api_key=API_KEY).convert(
+        result = DatalabClient(api_key=datalab_api_key()).convert(
             str(pdf),
             options=ConvertOptions(
                 output_format="json", mode="accurate", paginate=True,

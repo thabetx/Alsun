@@ -3,6 +3,7 @@ import { rowStates } from "./state.js";
 import { renderTranslated } from "./translated-view.js";
 import { beginLoading } from "./loading-overlay.js";
 import { showToast } from "./toast.js";
+import { LOCKED_MESSAGE } from "./row-lock.js";
 import { targetLanguage } from "./target-language.js";
 import { getGlossary, notAppliedTerms, notAppliedMessage } from "./glossary-store.js";
 import { translationSettings } from "./settings-store.js";
@@ -16,6 +17,10 @@ export async function translateRow(tr, { quiet = false, onFallback = null } = {}
   const state = rowStates.get(rowId);
   const original = tr.querySelector(".original-text");
   const text = original.textContent.trim();
+  if (state.locked) {
+    if (!quiet) showToast(LOCKED_MESSAGE, true);
+    return "skipped";
+  }
   if (!text || state.translating) return "skipped";
 
   state.translating = true;

@@ -15,12 +15,14 @@ import { detectAyahsInRows } from "./detect-ayas.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { getRowById, getSelectedRows } from "./selection.js";
 import { normalizeArabic, matchesSearch } from "./arabic-text.js";
+import { applyLock, toggleLock, isLocked, LOCKED_MESSAGE } from "./row-lock.js";
 import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
 import { targetLanguageInArabic } from "./target-language.js";
 import { initGlossary } from "./glossary-ui.js";
 import { initSettings } from "./settings-ui.js";
-import { beginLoading } from "./loading-overlay.js";
+import { beginLoading, setLoadingProgress } from "./loading-overlay.js";
+import { getJson } from "./api.js";
 import {
   fingerprintOf, loadSavedWork, clearSavedWork, enableSaving, pauseSaving, watchWork,
 } from "./saved-work.js";
@@ -102,6 +104,7 @@ function createRowFromState(state) {
   const tr = makeRow({ id: state.id, text: state.originalText });
   rowStates.set(state.id, state);
   renderTranslated(tr);
+  applyLock(tr);
   registerRowBlocks(tr);
   return tr;
 }
@@ -116,7 +119,11 @@ function rowsPhrase(count) {
 // Deletes rows for good: the table rows, their state, and everything that points to them on the pdf side.
 // Nothing is kept, so the final extraction can't find them.
 async function deleteRows(trs) {
-  const rows = trs.filter((tr) => rowStates.has(tr.dataset.id));
+  const lockedCount = trs.filter((tr) => isLocked(tr.dataset.id)).length;
+  const rows = trs.filter((tr) => rowStates.has(tr.dataset.id) && !isLocked(tr.dataset.id));
+  if (lockedCount) {
+    showToast(rows.length ? `لن يُحذف ${lockedCount === 1 ? "الصف المقفل" : `${lockedCount} صفوف مقفلة`}، افتح القفل أولًا.` : LOCKED_MESSAGE, true);
+  }
   if (!rows.length) return;
 
   let message;
@@ -227,6 +234,10 @@ function updatePageFromScroll() {
   setPageIndicator(current);
 }
 
+function escapeHtml(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function stripHtml(html) {
   const div = document.createElement("div");
   div.innerHTML = html || "";
@@ -267,6 +278,10 @@ function makeRow(b) {
     <td class="col-check text-center">
       <input class="form-check-input block-check" type="checkbox" data-id="${b.id}">
     </td>
+    <td class="col-lock text-center">
+      <button class="lock-btn" type="button" aria-pressed="false" aria-label="علّم الصف كمنتهٍ واقفله"
+              title="علّم الصف كمنتهٍ (يُقفل حتى لا يتغيّر)"><i class="fa-solid fa-check"></i></button>
+    </td>
     <td class="col-original">
       <div class="original-text" contenteditable="true" dir="rtl"
            data-id="${b.id}" aria-label="النص الأصلي">${escaped}</div>
@@ -298,6 +313,10 @@ function makeRow(b) {
     notifySelectionChanged();
   });
   check.addEventListener("click", (e) => e.stopPropagation());
+  tr.querySelector(".lock-btn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleLock(tr);
+  });
   checkTd.addEventListener("click", () => {
     check.checked = !check.checked;
     tr.classList.toggle("active", check.checked);
@@ -366,6 +385,7 @@ function restoreSavedWork(filename, fingerprint) {
     tr.querySelector(".original-text").textContent = state.originalText;
     tr.dataset.search = normalizeArabic(state.originalText);
     renderTranslated(tr);
+    applyLock(tr);
     return tr;
   });
   blockRows.replaceChildren(...rows);
@@ -393,6 +413,40 @@ async function loadBook(filename) {
   }
 }
 
+// A book is read a few pages at a time: a long book is one request after the other (each one is short, and the
+// pages the server already has are not paid for again), and the pen says how far it is.
+const OCR_PAGES_PER_REQUEST = 5;
+
+function showBookInTheSelect(info) {
+  // an uploaded book is not one of the options of the page: it is added, with the name of its file
+  let option = [...bookSelect.options].find((candidate) => candidate.value === info.id);
+  if (!option) {
+    option = new Option(info.name, info.id);
+    bookSelect.append(option);
+  }
+  option.textContent = info.name;
+  bookSelect.value = info.id;
+  document.title = `${info.name} — ألسن`;
+}
+
+// Gives {children: the pages read, error: the message if the reading stopped}. If the first request fails there is
+// nothing to show, so the error is thrown; if a later one fails the pages that were read are still worth showing.
+async function readPages(info) {
+  const children = [];
+  for (let first = 0; first < info.pages; first += OCR_PAGES_PER_REQUEST) {
+    const last = Math.min(first + OCR_PAGES_PER_REQUEST, info.pages) - 1;
+    setLoadingProgress(info.pages > 1 ? `${first} من ${info.pages} صفحة` : "");
+    try {
+      const data = await getJson(`/ocr?book=${encodeURIComponent(info.id)}&page_range=${first}-${last}`);
+      children.push(...(data.children || []));
+    } catch (error) {
+      if (!children.length) throw error;
+      return { children, error: `توقفت القراءة عند الصفحة ${first + 1}: ${error.message}` };
+    }
+  }
+  return { children, error: null };
+}
+
 async function readBook(filename) {
   pauseSaving(); // the table is empty while it loads, that must not be saved
   blockRows.innerHTML = "";
@@ -403,23 +457,23 @@ async function readBook(filename) {
   rowByBlockId.clear();
 
   let data;
+  let info;
   try {
-    const res = await fetch(`/ocr?filename=${encodeURIComponent(filename)}`);
-    if (!res.ok) throw new Error(`OCR failed: ${res.status}`);
-    data = await res.json();
+    info = await getJson(`/books/${encodeURIComponent(filename)}`);
+    showBookInTheSelect(info);
+    data = await readPages(info);
   } catch (e) {
     blockRows.innerHTML =
-      '<tr><td colspan="3" style="color:#ff8a80">تعذّر تشغيل OCR. ' +
-      "افتح http://127.0.0.1:8000/ وتأكد من تشغيل الخادم.</td></tr>";
+      `<tr><td colspan="4" style="color:#b3402e">تعذّرت قراءة الكتاب: ${escapeHtml(e.message)}</td></tr>`;
     return;
   }
+  if (data.error) showToast(data.error, true);
 
   let pdf;
   try {
-    pdf = await pdfjsLib.getDocument(`../data/${encodeURIComponent(filename)}`).promise;
+    pdf = await pdfjsLib.getDocument(`/books/${encodeURIComponent(filename)}/pdf`).promise;
   } catch (e) {
-    pdfPages.innerHTML =
-      `<div class="block" style="color:#ff8a80">تعذّر تحميل ../data/${filename} (يجب تقديمه عبر HTTP).</div>`;
+    pdfPages.innerHTML = '<div class="block" style="color:#b3402e">تعذّر تحميل ملف الـ PDF.</div>';
     return;
   }
 
@@ -549,6 +603,7 @@ function jumpToPage(n) {
 
 pdfPages.addEventListener("scroll", updatePageFromScroll);
 searchInput.addEventListener("input", applySearch);
+document.addEventListener("row-lock-changed", notifySelectionChanged); // the toolbar buttons depend on the locks
 
 const togglePdf = document.getElementById("toggle-pdf");
 const pdfPanel = document.querySelector(".panel-pdf");
@@ -570,7 +625,11 @@ pageInput.addEventListener("focus", () => pageInput.select());
 pageInput.addEventListener("blur", () => setPageIndicator(parseInt(pageInput.value, 10) || 1));
 
 const bookSelect = document.getElementById("book-select");
-bookSelect.addEventListener("change", () => loadBook(bookSelect.value));
+// The book is in the address (/app?book=...): the sample books of the page, or the id of an uploaded one.
+const currentBook = new URLSearchParams(location.search).get("book") || bookSelect.value;
+bookSelect.addEventListener("change", () => {
+  location.href = `/app?book=${encodeURIComponent(bookSelect.value)}`;
+});
 
 // the work is saved in the browser (see saved-work.js)
 let warnedAboutSaving = false;
@@ -598,8 +657,8 @@ document.getElementById("restart-work").addEventListener("click", async () => {
     tone: "danger",
   });
   if (!confirmed) return;
-  clearSavedWork(bookSelect.value);
-  await loadBook(bookSelect.value);
+  clearSavedWork(currentBook);
+  await loadBook(currentBook);
   showToast("تم مسح العمل المحفوظ");
 });
 
@@ -615,7 +674,7 @@ blockRows.addEventListener("alsun:translated-changed", () => {
   }, 0);
 });
 
-loadBook(bookSelect.value);
+loadBook(currentBook);
 
 initAssistant();
 initTranslateAll();
