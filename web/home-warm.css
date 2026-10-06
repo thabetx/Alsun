@@ -46,3 +46,30 @@
 
 /* the word «ألسن» as a logo inside a heading */
 .inline-logo { height: 1.25em; width: auto; vertical-align: -0.28em; margin-inline: .1em; }
+
+/* ---------- "how it works": the number sits in the middle of the top edge of the card (like the project pdf),
+   the text is centered, and a small arrow shows the way from one card to the next ---------- */
+.steps { --gap: 44px; gap: var(--gap); margin-top: 18px; }
+.step { position: relative; padding-top: 38px; text-align: center; }
+.step-no {
+  position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+  width: 44px; height: 44px; font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(148, 106, 8, .25);
+}
+.step h3 { margin-top: 4px; }
+/* the arrow: a chevron pointing left (the reading direction), in the gap on the left side of each card but the last */
+.step:not(:last-child)::after {
+  content: ""; position: absolute; top: 50%; left: calc(var(--gap) / -2);
+  width: 16px; height: 16px; border-left: 5px solid #a3a9ae; border-bottom: 5px solid #a3a9ae;
+  border-radius: 2px; transform: translate(-30%, -50%) rotate(45deg); pointer-events: none;
+}
+@media (max-width: 900px) {
+  .steps { --gap: 70px; }
+  /* one card under the other: the arrow points down, in the free part of the gap
+     (the number of the next card takes the last 22px of it) */
+  .step:not(:last-child)::after {
+    top: calc(100% + (var(--gap) - 22px) / 2); left: 50%;
+    border-left: 0; border-right: 5px solid #a3a9ae;
+    transform: translate(-50%, -70%) rotate(45deg);
+  }
+}

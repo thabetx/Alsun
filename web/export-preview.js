@@ -177,19 +177,56 @@ function download() {
 
 // the show / hide button, the same way the pdf one works: the panel is the state, aria-pressed
 // is only its mirror for the reader
-function initToggle() {
+function initToggle(collapse) {
   const toggle = el("toggle-preview");
   const panel = document.querySelector(".panel-preview");
   toggle.addEventListener("click", () => {
     const hidden = panel.style.display === "none";
+    if (!hidden) collapse(); // a panel that is hidden is not left enlarged
     panel.style.display = hidden ? "" : "none";
     toggle.setAttribute("aria-pressed", String(hidden));
   });
 }
 
+// Enlarged and back, the same as the assistant (setDockExpanded in assistant.js): the panel becomes a window in the
+// middle of the page over a blurred backdrop, and Esc or the same button brings it back. While it is a window a
+// spacer keeps its place in the row, so the other panels don't move behind it. Gives the function that sets it.
+function initExpand() {
+  const panel = document.querySelector(".panel-preview");
+  const button = el("preview-expand");
+  let spacer = null;
+
+  const setExpanded = (expanded) => {
+    if (expanded === panel.classList.contains("is-expanded")) return;
+    if (expanded) {
+      spacer = document.createElement("section");
+      spacer.className = "preview-spacer";
+      spacer.setAttribute("aria-hidden", "true");
+      spacer.style.flex = getComputedStyle(panel).flex;
+      panel.before(spacer);
+    } else {
+      spacer?.remove();
+      spacer = null;
+    }
+    panel.classList.toggle("is-expanded", expanded);
+    document.body.classList.toggle("preview-expanded", expanded);
+    button.setAttribute("aria-pressed", String(expanded));
+    button.setAttribute("aria-label", expanded ? "تصغير" : "تكبير");
+    button.title = expanded ? "تصغير" : "تكبير";
+    button.firstElementChild.className = expanded ? "fa-solid fa-compress" : "fa-solid fa-expand";
+  };
+
+  button.addEventListener("click", () => setExpanded(!panel.classList.contains("is-expanded")));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && panel.classList.contains("is-expanded")) setExpanded(false);
+  });
+  return setExpanded;
+}
+
 export function initExportPreview({ onHoverRow = null } = {}) {
   onRowHover = onHoverRow;
-  initToggle();
+  const setExpanded = initExpand();
+  initToggle(() => setExpanded(false));
   el("export-download").addEventListener("click", download);
   refreshExportPreview();
 }

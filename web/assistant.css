@@ -299,15 +299,17 @@
 
 /* ---------- assistant: expand button (opens a window like the glossary) + gold send button ---------- */
 .assistant-actions { display: flex; align-items: center; gap: 4px; }
-.assistant-expand {
+.assistant-expand, .preview-expand {
   width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent;
   font-size: 15px; line-height: 1; cursor: pointer; color: #7a6d63;
 }
-.assistant-expand:hover { background: #e8d9b8; color: #231a19; }
-.assistant-expand:focus-visible, .assistant-close:focus-visible { outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35); }
+.assistant-expand:hover, .preview-expand:hover { background: #e8d9b8; color: #231a19; }
+.assistant-expand:focus-visible, .assistant-close:focus-visible, .preview-expand:focus-visible {
+  outline: none; box-shadow: 0 0 0 .2rem rgba(184, 134, 11, .35);
+}
 
 /* expanded: a window in the middle of the page, like the glossary window; the page behind stays visible, blurred */
-body.assistant-expanded::before {
+body.assistant-expanded::before, body.preview-expanded::before {
   content: ""; position: fixed; inset: 0; z-index: 1499;
   background: rgba(35, 26, 25, .45); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
 }
@@ -330,6 +332,19 @@ body.assistant-expanded::before {
   .assistant-dock.is-expanded { width: calc(100vw - 16px); height: calc(100vh - 16px); border-radius: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .assistant-dock.is-expanded { animation: none; } }
+
+/* the preview, enlarged the same way: a window in the middle of the page (a bigger one, it is a book) */
+.panel-preview.is-expanded {
+  position: fixed; inset: 0; margin: auto; z-index: 1500; flex: none;
+  width: min(900px, calc(100vw - 32px)); height: min(760px, calc(100vh - 32px));
+  border: 1px solid #e6d9bf; border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(35, 26, 25, .28);
+  animation: confirm-in .18s ease-out;
+}
+@media (max-width: 640px) {
+  .panel-preview.is-expanded { width: calc(100vw - 16px); height: calc(100vh - 16px); border-radius: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .panel-preview.is-expanded { animation: none; } }
 
 /* send button: the gold of the Alsun logo instead of Bootstrap blue */
 #assistant-send {
