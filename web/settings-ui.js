@@ -1,4 +1,5 @@
-// The settings window: the quran translation (for the language of the book) and the model (OpenAI or Cohere).
+// The settings window: the quran translation (for the language of the book), the trusted Islamic terms
+// and the model (OpenAI or Cohere).
 // What can be chosen comes from the server (GET /settings/options); the choices are kept in the browser (settings-store.js).
 
 import { getJson, postJson } from "./api.js";
@@ -7,7 +8,9 @@ import { rowStates } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { getAllRows } from "./selection.js";
 import { targetLanguage, targetLanguageInArabic } from "./target-language.js";
-import { getModelChoice, setModelChoice, getQuranSource, setQuranSource } from "./settings-store.js";
+import {
+  getModelChoice, setModelChoice, getQuranSource, setQuranSource, getTrustedTerms, setTrustedTerms,
+} from "./settings-store.js";
 
 let openDialog = null;
 
@@ -136,8 +139,11 @@ export async function openSettings() {
     message.classList.toggle("is-error", isError);
   };
   body.replaceChildren(
-    buildQuranSection(language, options.quran_sources[language] || [], saved),
-    buildModelSection(options.models, saved)
+    ...[
+      buildQuranSection(language, options.quran_sources[language] || [], saved),
+      options.trusted_terms && buildTrustedTermsSection(language, options.trusted_terms, saved),
+      buildModelSection(options.models, saved),
+    ].filter(Boolean)
   );
 }
 
@@ -175,6 +181,42 @@ function buildQuranSection(language, sources, saved) {
     group.append(label);
   });
   box.append(group);
+  return box;
+}
+
+// ---------- the trusted Islamic terms ----------
+
+function buildTrustedTermsSection(language, info, saved) {
+  const box = section(
+    "القاموس الشرعي",
+    "مصطلحات شرعية بمقابلاتها من موسوعة موثوقة. عند تفعيله يلتزم النموذج بمقابل المصطلح حين يكون له المعنى نفسه في النص، " +
+      "وإذا كان المصطلح في قاموسك الخاص فترجمتك هي المعتمدة. يسري هذا على الترجمات القادمة."
+  );
+
+  const count = info.terms[language] ?? 0;
+  if (!count) {
+    box.append(element("p", "settings-hint", "القاموس الشرعي غير متاح لهذه اللغة بعد."));
+    return box;
+  }
+
+  const label = element("label", "settings-choice");
+  const checkbox = element("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = getTrustedTerms();
+  checkbox.addEventListener("change", () => {
+    setTrustedTerms(checkbox.checked);
+    saved("تم الحفظ");
+  });
+  label.append(checkbox, element("span", "", "استخدام القاموس الشرعي في الترجمة"), element("span", "settings-tag", `${count} مصطلح`));
+
+  const source = element("a", "settings-source", info.source);
+  source.href = info.url;
+  source.target = "_blank";
+  source.rel = "noopener noreferrer";
+  const sourceLine = element("p", "settings-hint settings-source-line", "المصدر: ");
+  sourceLine.append(source);
+
+  box.append(label, sourceLine);
   return box;
 }
 

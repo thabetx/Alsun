@@ -18,6 +18,7 @@ from glossary import (
     build_glossary_correction,
     translation_is_used,
 )
+from trusted_terms import find_trusted_terms, build_trusted_instructions, build_trusted_correction, is_used
 
 # reads OPENAI_API_KEY from a .env file (or the environment)
 load_dotenv()
@@ -152,11 +153,14 @@ def ask_llm(messages, model=None):
     return chat_text(client, messages, model)
 
 
-def translate_chunk_with_report(paragraph, target_lang, glossary, model):
+def translate_chunk_with_report(paragraph, target_lang, glossary, model, use_trusted_terms=True):
     # One question to the llm. The terms of the glossary that are in the text are told to it, and if its
     # translation does not use one of them it is asked once more. Gives {"text", "glossary"}, where "glossary"
-    # has the terms found in the text and whether the translation uses each one ("used").
+    # has the terms found in the text and whether the translation uses each one ("used"). The trusted Islamic terms
+    # (see trusted_terms.py) are told and asked again like the terms of the user, if the user did not turn them off;
+    # they are not reported to the front.
     hits = find_glossary_hits(paragraph, glossary or [])
+    trusted = find_trusted_terms(paragraph, target_lang, [hit["arabic"] for hit in hits]) if use_trusted_terms else []
     system_prompt = (
         f"You are a translator. Translate the user's Arabic text into "
         f"{target_lang}. Reply with only the translation, "
@@ -164,21 +168,35 @@ def translate_chunk_with_report(paragraph, target_lang, glossary, model):
     )
     if hits:
         system_prompt += build_glossary_instructions(hits)
+    if trusted:
+        system_prompt += build_trusted_instructions(trusted, target_lang)
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": paragraph},
     ]
 
+    def not_used(translation):
+        return (
+            [hit for hit in hits if not translation_is_used(translation, hit["translation"])],
+            [entry for entry in trusted if not is_used(entry, translation)],
+        )
+
     text = ask_llm(messages, model)
-    missing = [hit for hit in hits if not translation_is_used(text, hit["translation"])]
-    if missing:
+    missing, trusted_missing = not_used(text)
+    if missing or trusted_missing:
+        corrections = []
+        if missing:
+            corrections.append(build_glossary_correction(missing))
+        if trusted_missing:
+            corrections.append(build_trusted_correction(trusted_missing))
         retry_messages = messages + [
             {"role": "assistant", "content": text},
-            {"role": "user", "content": build_glossary_correction(missing)},
+            {"role": "user", "content": "\n\n".join(corrections)},
         ]
         retried = ask_llm(retry_messages, model)
-        still_missing = [hit for hit in hits if not translation_is_used(retried, hit["translation"])]
-        if len(still_missing) < len(missing):  # the second translation is kept only if it is better
+        still_missing, still_trusted_missing = not_used(retried)
+        # the second translation is kept only if it is better
+        if len(still_missing) + len(still_trusted_missing) < len(missing) + len(trusted_missing):
             text, missing = retried, still_missing
 
     report = [{**hit, "used": hit not in missing} for hit in hits]
@@ -198,11 +216,11 @@ def merge_glossary_reports(reports):
     return list(merged.values())
 
 
-def translate_normal_paragraph_with_report(paragraph, target_lang="English", glossary=None, model=None):
+def translate_normal_paragraph_with_report(paragraph, target_lang="English", glossary=None, model=None, use_trusted_terms=True):
     # A model with a small context window gets a long paragraph piece by piece (cut at the end of sentences).
     limit = max_input_chars(model)
     chunks = split_into_chunks(paragraph, limit) if limit else [paragraph]
-    results = [translate_chunk_with_report(chunk, target_lang, glossary, model) for chunk in chunks]
+    results = [translate_chunk_with_report(chunk, target_lang, glossary, model, use_trusted_terms) for chunk in chunks]
     if len(results) == 1:
         return results[0]
     return {
@@ -211,8 +229,8 @@ def translate_normal_paragraph_with_report(paragraph, target_lang="English", glo
     }
 
 
-def translate_normal_paragraph(paragraph, target_lang="English", glossary=None, model=None):
-    return translate_normal_paragraph_with_report(paragraph, target_lang, glossary, model)["text"]
+def translate_normal_paragraph(paragraph, target_lang="English", glossary=None, model=None, use_trusted_terms=True):
+    return translate_normal_paragraph_with_report(paragraph, target_lang, glossary, model, use_trusted_terms)["text"]
 
 
 def translate_quran_paragraph(segment, quran_json):
@@ -225,9 +243,10 @@ def translate_quran_paragraph(segment, quran_json):
 
 
 def translate_paragraph_segments(
-    paragraph, json_file=None, target_lang="English", glossary=None, quran_source=None, model=None
+    paragraph, json_file=None, target_lang="English", glossary=None, quran_source=None, model=None, use_trusted_terms=True
 ):
-    # quran_source = id of the quran translation (the first one of the language if None); model = see ask_llm
+    # quran_source = id of the quran translation (the first one of the language if None); model = see ask_llm;
+    # use_trusted_terms = the user's choice in the settings, see trusted_terms.py
     source = None
     if json_file is None:
         source = find_quran_source(target_lang, quran_source)
@@ -243,10 +262,10 @@ def translate_paragraph_segments(
             if source:
                 glossary_report = {"quran_source": source["id"]}  # which translation of the quran this ayah comes from
         else:
-            result = translate_normal_paragraph_with_report(segment["text"], target_lang, glossary, model)
+            result = translate_normal_paragraph_with_report(segment["text"], target_lang, glossary, model, use_trusted_terms)
             translated_text = result["text"]
             if result["glossary"]:
-                glossary_report = {"glossary": result["glossary"]}  # the terms of the user's glossary found in this part
+                glossary_report["glossary"] = result["glossary"]  # the terms of the user's glossary found in this part
         # id = stable name for the segment, text = the translation, original = the arabic we got it from
         translated_segments.append({
             **segment, "id": f"seg_{segment_number}", "text": translated_text, "original": segment["text"], **glossary_report,
@@ -256,9 +275,11 @@ def translate_paragraph_segments(
 
 
 def translate_paragraph_and_build_response(
-    paragraph, json_file=None, target_lang="English", glossary=None, quran_source=None, model=None
+    paragraph, json_file=None, target_lang="English", glossary=None, quran_source=None, model=None, use_trusted_terms=True
 ):
-    segments = translate_paragraph_segments(paragraph, json_file, target_lang, glossary, quran_source, model)
+    segments = translate_paragraph_segments(
+        paragraph, json_file, target_lang, glossary, quran_source, model, use_trusted_terms
+    )
     return {
         "paragraph": concatenate_paragraph_segements(segments),
         "parts": build_paragraph_display_parts(segments),

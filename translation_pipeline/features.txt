@@ -1,0 +1,81 @@
+FEATURES (suggestions)
+======================
+
+1. Quran style chosen by the user
+   - In the end the user decides how the ayah appears in the paragraph:
+       * on its own line
+       * on the same line between " "
+       * on the same line between ( )
+       * any other style the user suggests
+   - Default for now: same line, between " " (this is how books usually write it).
+
+2. Translate the ayah only
+   - We only translate the ayah. We do NOT add the surah name or the reference.
+   - The user can add the reference / surah name himself if he wants.
+   - Many books already write the reference in Arabic, so adding it would be wrong or duplicated.
+
+3. Keep the structure (the list is the source of truth)
+   - The paragraph is shown to the user as one normal paragraph.
+   - Behind it we keep the list of dictionaries: which part is normal text and which part is quran
+     (translated text, original arabic text, aya info).
+   - The quran style (" ", ( ), own line) is added only when the paragraph is shown, never inside the text itself.
+   - Why: if the user modifies the text, we still know which part is quran, so quran is never sent
+     to the llm and never changed, and the style stays after the modification.
+
+4. Confidence score per word / block  (POSTPONED, open question)
+   - Idea: show how sure we are about each translated word / block, and force a human review below a threshold.
+   - Open question: all translation comes from the AI, so what does the score mean and how do we compute it?
+     Do we review behind the AI instead? Decide before building. Likely postponed, kept here so we do not forget it.
+
+5. Trusted Islamic glossary (RAG)  (PRIORITY)
+   - Before translating, look up the terms of the block in the glossary and force the approved translation in the prompt.
+   - The user can upload his own custom dictionary and it is used with the same rules.
+
+6. Edit history  (PRIORITY)
+   - Every manual edit of the translation is saved (who, when, before / after) and the user can go back to an older version.
+   - Corrections are used for learning only if the user agrees.
+
+7. Export with the same layout  (PRIORITY)
+   - Rebuild the PDF with the translation while keeping the original page look (translated only, and bilingual).
+
+8. AI assistant after translation  (PRIORITY)
+   - Free instruction on a selected text (simplify, academic style, shorten). The result is a suggestion, applied only after the user accepts it.
+   - Approved glossary terms must not be changed by the assistant.
+   - Quran is never sent to the llm and never changed. If only quran is selected, tell the user that ayahs are not modified.
+   - Several selected rows: the assistant gets all of them in ONE llm call and returns the same number of rows
+     (cheaper, faster and more consistent than one call per row).
+   - Chat with many turns ("shorten it", then "make it more formal"): the next turn works on the latest version.
+   - Edited text is marked "edited by AI" (its confidence is no longer valid).
+
+9. Multiple target languages  (PRIORITY)
+   - Switch the target language of the same document (English first, then the other languages).
+
+10. Select many rows: apply to each, or merge  (PRIORITY)
+   - The user can select one or many rows (checkboxes, select all).
+   - Two modes:
+       * apply to each: same action on every selected row, any rows, the number of rows stays the same
+       * merge into one row: ONLY for rows that are next to each other (no clear place for a merged row otherwise);
+         for rows that are not next to each other the merge button is disabled and says why
+   - Merge is plain data merging (not AI): original text and translation are joined, and the segments lists are
+     joined, so we still know which part is quran. "Merge and rewrite" = merge first, then ask the assistant.
+   - A merged row keeps its source blocks (pages / positions in the pdf), so the pdf highlights all of them
+     and the user can undo the merge. The merge changes the cells in the 3 parts together (original, translation, pdf).
+
+11. Ask the AI assistant from a selection in the translated text  (PRIORITY)
+   - When the user selects text in the TRANSLATED column, a tooltip appears next to the selection with a button
+     "Ask the AI assistant". The original column and the pdf do not have this.
+   - The assistant opens with the selected text as context; the user writes what he wants; the result is a
+     suggestion (accept / reject) that replaces only the selected part, the rest of the segment stays as it is.
+   - If the selection touches ANY part of the quran, no tooltip at all (the quotes around the ayah belong to the quran).
+   - The selection is found by wrapping each segment in its own element (segment id + type), not by character
+     positions in the final paragraph. Before applying, check the selected part is still where it was.
+
+12. Editing the original text re-translates it  (PRIORITY)
+   - If the user changes anything in the original text, that row is translated again, so we can see if he
+     removed ayahs or added ayahs.
+   - Compare the quran found before and after (surah, aya start, aya end) and tell the user what was removed, added or changed.
+   - Dangerous case: a spelling mistake inside an ayah and the detector no longer finds it, so it would be translated
+     by the llm. Tell the user clearly: "there was an ayah and it is not recognised now".
+   - Only the edited row is translated again, not the whole document. Run it on save / when leaving the cell, not on every key.
+   - Manual and assistant edits of the translation of that row are lost, so ask for confirmation and keep the old
+     version in the edit history (feature 6).

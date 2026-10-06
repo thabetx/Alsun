@@ -68,6 +68,7 @@ class RetranslateRequest(BaseModel):
     glossary: List[GlossaryEntry] = []
     quran_source: Optional[str] = None  # id of the quran translation (see QURAN_SOURCES in quran_detect.py)
     model: Optional[ModelChoice] = None
+    trusted_terms: bool = True  # see TranslateRequest in main.py
 
 
 class MergeRequest(BaseModel):
@@ -130,6 +131,7 @@ def retranslate(request: RetranslateRequest):
                 request.old_segments, request.new_original_text,
                 target_lang=request.target_lang, glossary=checked_glossary(request.glossary),
                 quran_source=request.quran_source, model=checked_model(request.model),
+                use_trusted_terms=request.trusted_terms,
             )
     except ValueError as error:
         raise refuse_with_message(error)

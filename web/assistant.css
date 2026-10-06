@@ -286,6 +286,8 @@
 }
 .settings-choice:hover { background: #fbf6e8; }
 .settings-choice input { accent-color: #b8860b; }
+.settings-source { color: #7a5a08; text-decoration: underline; }
+.settings-source-line { margin: 8px 0 0; }
 .settings-tag { margin-inline-start: auto; font-size: .78rem; color: #7a5a08; background: #f8e6bf; border-radius: 999px; padding: 1px 10px; }
 .settings-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .settings-select {

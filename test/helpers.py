@@ -16,6 +16,12 @@ import llm  # noqa: E402
 llm.ENV_FILE = Path(__file__).resolve().parent / "no-such-file.env"
 os.environ["COHERE_API_KEY"] = ""
 
+# The trusted Islamic terms (data/terminology) would add a part to every prompt that has one of their words, so the
+# tests do not read the real files: a test of the terms points TERMINOLOGY_DIR to its own folder.
+import trusted_terms  # noqa: E402
+
+trusted_terms.TERMINOLOGY_DIR = Path(__file__).resolve().parent / "no-such-folder"
+
 
 class FakeLlm:
     # stands in for client.chat.completions.create and remembers what was sent

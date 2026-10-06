@@ -179,6 +179,7 @@ class TranslateRequest(BaseModel):
     glossary: List[GlossaryEntry] = []  # the terms of the user for target_lang (see glossary.py)
     quran_source: Optional[str] = None  # id of the quran translation (see QURAN_SOURCES in quran_detect.py)
     model: Optional[ModelChoice] = None  # the model the user chose in the settings (see llm.py)
+    trusted_terms: bool = True  # the trusted Islamic terms (see trusted_terms.py), unless the user turned them off in the settings
 
 
 @app.post("/translate")
@@ -188,6 +189,7 @@ def translate(request: TranslateRequest):
             result = translate_paragraph_and_build_response(
                 request.text, target_lang=request.target_lang, glossary=checked_glossary(request.glossary),
                 quran_source=request.quran_source, model=checked_model(request.model),
+                use_trusted_terms=request.trusted_terms,
             )
     except ValueError as error:  # a language we have no quran translation for, a bad choice, no model answering
         raise HTTPException(status_code=400, detail=str(error))

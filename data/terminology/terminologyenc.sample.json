@@ -1,0 +1,801 @@
+{
+ "source": "terminologyenc.com - Encyclopedia of Translated Islamic Terms",
+ "read_on": "2026-10-06",
+ "terms": [
+  {
+   "id": 2,
+   "url": "https://terminologyenc.com/en/browse/term/2",
+   "groups": [
+    "الفقه وأصوله"
+   ],
+   "term": {
+    "ar": "فَوائِتُ",
+    "en": "Missed prayers",
+    "fr": "Manquées",
+    "es": "Transcurrido, expirado, pasado.",
+    "ur": "فوت شدہ نمازیں۔ ایسی نمازیں جو وقت پر ادا نہ کی گئی ہوں۔",
+    "id": "Fawā`it",
+    "bs": "Propušteni namazi",
+    "ru": "Пропущенные молитвы (\"фава`ит\")."
+   },
+   "linguistic_meaning": {
+    "ar": "الفَوائِتُ: جَمْعُ فائتةٍ، وهو اسْمُ فاعِلٍ مِنْ فاتَ الأمْرُ، يَفُوتُ، فَوْتًا وفَواتًا: إذا مَضَى وقْتُهُ ولَمْ يُفْعَلْ، وأَصلُ الفَوْتِ: السَّبْقُ وعدمُ إدْراكِ الشَّيءِ، يقال: فاتَهُ فُلانٌ بِذِراعٍ، أيْ: سَبَقَهُ بِها، وتَفاوَتَ الشَّيْئانِ: إذا اخْتَلَفا ولم يُدرِكْ أحَدُهُما الآخَرَ، وفاتَتِ الصَّلاةُ: إذا لمْ يُدْرَكْ وَقْتُها."
+   },
+   "linguistic_explanation": {
+    "ar": "الفَوائِتُ: جمَعُ فائتةٍ، وهو اسْمُ فاعِلٍ مِنْ فاتَ الأمْرُ،إذا مَضَى وقْتُهُ ولَمْ يُفْعَلْ، وأَصلُ الفَوْتِ: السَّبْقُ وعدمُ إدْراكِ الشَّيءِ.",
+    "en": "\"Fawā’it\" (sing. fā’itah): something missed because it is not done on time. Derived from \"fawt\", which means failing to achieve something.",
+    "fr": "Le mot : « Al Fawâ’it » est le pluriel du mot : « Fâ’itah » c’est le nom d’agent du verbe : « Fâta » qui signifie : manquer une chose. On dit : « Il manque » ; « Manque » ; etc. lorsque le temps imparti à l'accomplissement d'une chose passe, sans que celle-ci ait été accomplie . L'étymologie de ce mot vient du terme : « Al Fawt » qui signifie : le dépassement du temps, et le fait de ne pas avoir atteint une chose.",
+    "es": "Son las cosas cuyo periodo ha pasado, las cosas que no se llegaron a realizar en su tiempo.",
+    "ur": "فوائت: یہ ’فائتۃ‘ کی جمع ہے جو ’فَاتَ‘ سے ماخوذ اسم فاعل ہے۔ جب کسی کام کا وقت نکل جائے اور اسے مقررہ وقت میں نہ کیا جائے تو کہا جاتا ہے: ”فاتَ الأمْرُ“۔ ’فَوت‘ کا حقیقی معنی ہے: شے کا آگے بڑھ جانا اور حاصل نہ ہونا۔",
+    "id": "Al-Fawā`it bentuk jamak dari fā`itah, yaitu isim fā’il dari kata kerja \"fāta al-amru\" apabila waktunya sudah habis tetapi belum dilakukan. Asal maknanya adalah kedahuluan dan tidak mendapatkan sesuatu.",
+    "bs": "\"El-fevait\" je množina od riječi \"faitetun\", a to je particip aktivni glagola \"fatel-emru - jefutu - fevten - fevaten\": isteklo je vrijeme, a nije to uradio. Osnova riječi \"el-fevt\" je: prednost, nedostizanje nečega.",
+    "ru": "الْفَوَائِتُ — мн. число слова الْفَائِة. Происходит от فَاتَ الْأَمْرُ — \"когда дело не было совершено и его время прошло\". Основным значением الْفَوْتُ является \"опередить\" и \"невозможность настичь что-то\"."
+   },
+   "meaning": {
+    "ar": "الصَّلَواتُ التي خَرَجَ وَقْتُها ولَمْ تُؤَدَّ فيه.",
+    "en": "Prayers that are missed and not performed in their designated times.",
+    "fr": "Les prières qui n'ont pas étaient accomplies au cours du temps imparti.",
+    "es": "Al-fauayet (expirar, pasado) son las oraciones (al-salat) cuyo tiempo ha transcurrido y no fueron realizadas (2).",
+    "ur": "ایسی نمازیں جن کا وقت نکل گیا ہو اور وہ (وقت پر) ادا نہ کی گئی ہوں۔",
+    "id": "Salat-salat yang sudah lewat waktunya tapi belum ditunaikan.",
+    "bs": "Namazi čije je vrijeme isteklo, a nisu obavljeni.",
+    "ru": "Молитвы, которые не были совершены вовремя и время которых вышло."
+   },
+   "explanation": {
+    "ar": "الفَوائِتُ بِمَعناها العام: هي العِباداتُ التي لم تُفعَل حتى خَرَج وقتُها المُحدَّد لها شَرْعًا، وتَتَعَلَّقُ بِالذِّمَّةِ إلى أنْ تُقْضى، ومن ذلك: الصَّلَواتُ المفْروضَةُ التي لم تُفْعَلْ حتى خَرَجَ وَقْتُها الشَّرْعيُّ المُحَدَّدُ لها، سَواء كان فواتُها لعُذْرٍ كالحَيْضِ، أو لِغَيْرِ عُذْرٍ كَمَن تَرَكَها عَمْدًا، وتَبْقَى لازِمَةً في حَقِّ الشَّخْصِ إلى أنْ تُقْضَى، وقَضاؤُها يكون بِفِعْلِها تامَّةً بعد وَقْتِها المُخَصَّصِ لها شَرْعًا.",
+    "en": "\"Fawā’it\" (missed prayers) generally refers to acts of worship that are not performed until their Shariah-designated time had passed. The liability remains until they are done. They include the obligatory prayers that are not performed till their designated times elapse, whether they are missed deliberately or for a valid reason, such as menses. Missed prayers are not dropped until the Muslim performs them in full, even after elapsing their specified times.",
+    "fr": "« Al Fawâ’it » sont les prières obligatoires qui n’ont pas été accomplies au cours de leur temps légal délimité jusqu’à ce qu’elles sortent de leur temps imparti. Peu importe que ce non accomplissement soit dû à une excuse, telle que les menstrues, ou non, comme le cas d’une personne qui les aurait délaissées volontairement.",
+    "es": "Al-fauayet: Son las oraciones (al-salat) obligatorias cuyo tiempo legal para llevarlas a cabo ha expirado y no se practicaron, independientemente del motivo de su omisión, ya sea por razones legales como la menstruación, o por descuido y negligencia.",
+    "ur": "فوائت اپنے عام معنی میں ان عبادات کو کہتے ہیں جن کی ادائگی نہ ہوئی ہو یہاں تک کہ ان کی ادائیگی کا شرعی مقررہ وقت نکل جائے نیز یہ عبادات اپنی قضا تک انسان کے ذمہ میں ہی ہوتی ہیں۔ ان عبادات میں ایسی فرض نمازیں بھی ہیں جن کی ادائگی نہیں ہوئی یہاں تک کہ ان کا شرعی طور پر مقررہ وقت نکل گیا۔ چاہے یہ چھوٹنا کسی شرعی عذر کی بنا پر ہو جیسے حیض یا بلا عذر ہو، جیسے کوئی شخص جان بوجھ کر وقت پر ادا نہ کرے۔ اس کی ادائیگی انسان پر واجب اور لازم ہوتی ہے اور اس کی قضا اسی صورت میں ہوتی ہے جب وہ مکمل طور پر پڑھ لی جائے اور اس کی ادائیگی کردی جائے، خواہ شریعت کے مقررہ وقت کے بعد ہی سہی۔",
+    "id": "Fawāit dalam pengertian yang umum yaitu ibadah-ibadah yang belum dikerjakan hingga habis waktunya yang ditentukan oleh syariat, dan tetap menjadi tanggungan sampai dikada. Contohnya salat fardu yang belum dikerjakan hingga habis waktunya yang ditentukan oleh syariat, baik terlewat karena sebuah uzur seperti haid atau tanpa uzur seperti orang yang meninggalkannya dengan sengaja. Ibadah tersebut tetap menjadi tanggungan seseorang hingga dikada. Cara mengkadanya adalah dengan menunaikannya secara sempurna sekalipun telah lewat waktunya yang dikhususkan oleh syariat.",
+    "bs": "Fevait u općem značenju su ibadeti koji se nisu obavili u šerijatom predviđenom vremenu i obaveza ih je nadoknaditi. Primjer tome su namazi koji se nisu obavili u propisano vrijeme, bez obzira da li se propustili zbog opravdanog razloga, poput menstrualnog ciklusa; ili bez opravdanja, kao npr. da budu namjerno izostavljeni i u tom slučaju obaveza ih je nadoknaditi na način da se obave u potpunosti, makar to bilo i mimo određenog vremena.",
+    "ru": "Пропущенные молитвы — это предписанные пятикратные молитвы, которые не были совершены до тех пор, пока не вышло определённое для них шариатом время, независимо от того, произошло ли это по уважительной причине, например, как месячные, или без уважительной причины, как, например, если человек преднамеренно оставил молитву."
+   },
+   "root": {
+    "ar": "فَوت"
+   },
+   "value": {
+    "ar": "يَرِدُ مُصْطَلَحُ (الفَوائِت) في الفِقْهِ في عِدَّةِ مواطِنَ منها: كِتابُ الطَّهارةِ، باب: التَّيمُّم، عند الكلامِ عَنْ صَلاةِ الفَوائِتِ بِتيمُّمٍ واحدٍ، وفي باب: الاسْتِحاضة، وفي كِتابِ الصَّلاةِ، باب: الأذان للفوائِتِ.\nويطلَق في كتاب الصَّلاة، باب: صلاة التَّطوّع، ويُراد به: الصَّلوات المسنونة التي خرج وقتُها ولم تُؤدَّ فيه.\nويرد في كتاب الصِّيام والاعتِكاف والزَّكاةِ والحجِّ، عند الكلامِ عن قَضاءِ ما لمُ يُؤدَّ مِنها في وقتِهِ المَشروعِ."
+   }
+  },
+  {
+   "id": 3,
+   "url": "https://terminologyenc.com/en/browse/term/3",
+   "groups": [
+    "العقيدة"
+   ],
+   "term": {
+    "ar": "قضاء",
+    "en": "Judiciary",
+    "ur": "قضا",
+    "id": "Kada (Ketentuan Allah)"
+   },
+   "linguistic_meaning": {
+    "ar": "الحُكْمُ والفَصْلُ، يُقال: قَضَى في الأَمْرِ، أيْ: حَكَمَ وفَصَلَ فيه. ويأْتي بِمعنى: الأَداء، فتقول: قَضَى دَيْنَهُ، أيْ: أدّاهُ. والقضاءُ: الإنْهاءُ والإتْمامُ، يُقال: قَضَيْتُ عَمَلِي، أيْ: أَنَهَيْتُهُ وأَتْمَمْتُهُ، ومنه سُمِّيَ القاضِي قاضِياً؛ لأنّه يَحْكُمُ في الأشْياءِ ويُنْهِي الخِلافَ فيها. ومِن مَعانِيه أيضاً: الإيجابُ، والإنْفاذُ، والإتْقانُ. وجَمْعُ قضاءٍ: أَقْضِيَةٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "الحُكْمُ والفَصْلُ، يُقال: قَضَى في الأَمْرِ، أيْ: حَكَمَ وفَصَلَ فيه. ويأْتي بِمعنى الإنْهاءِ والإتْمامِ. ومِن مَعانِيه أيضاً: الإيجابُ والإنْفاذُ والإتْقانُ."
+   },
+   "meaning": {
+    "ar": "تَعَلُّقُ عِلْمِ اللهِ تعالى بالكائِناتِ وكِتابَتُهُ لها، ثمّ خَلْقُها وِفْقَ مَشِيئَتِهِ وإِرادَتِهِ سُبحانَه.",
+    "en": "\"Qadā’\": judgment, settlement. Other meanings: finishing, completing, prescribing, executing, perfecting.",
+    "ur": "قضا کا مطلب ہے فیصلہ۔ کہا جاتا ہے : \"قَضَى في الأَمْرِ\" یعنی اس نے اس مسئلے میں فیصلہ کیا۔ ویسے یہ لفظ پورا اور مکمل کرنے کے معنی میں بھی آتا ہے۔ اس کے دیگر معانی میں واجب کرنا، نافذ کرنا اور کسی کام کو مضبوطی سے کرنا وغیرہ بھی شامل ہیں۔",
+    "id": "Penentuan hukum dan keputusan. Contohnya dalam kalimat: \"Qaḍā fil-amr\", artinya: ia menentukan hukum dan keputusan dalam suatu perkara. Al-Qaḍā` juga bermakna penyelesaian dan penyempurnaan, serta pengharusan, pelaksanaan, dan profesional."
+   },
+   "explanation": {
+    "ar": "الإيمان بالقَضاء والقَدَر هو الرُّكن السّادِسُ مِن أركان الإيمان، وله أَرْبَعُ مَراتِبَ:\n1- مَرْتَبَةُ العِلْمِ: وهو الإيمانُ بِأَنَّ اللهَ عَلِمَ كُلَّ شَيْءٍ جُمْلَةً وتَفْصِيلاً.\n2- مَرْتَبَةُ الكِتابَةِ: وهو الإيمانُ بِأَنَّ اللهَ كَتَبَ كُلَّ شَيْءٍ في اللَّوْحِ المَحْفوظِ، وقد تمَّت قبلَ خلقِ السَّمواتِ والأرضِ بِخَمسِين ألفَ سَنَةٍ.\n3- مَرْتَبَةُ المَشِيئَةِ: وهو الإيمانُ بِأنَّهُ لا يَقَعُ شَيْءٌ في الكَوْنِ مِن خَيْرٍ أو شَرٍّ إلّا بِمَشيئَةِ اللهِ وإِرادَتِهِ، وأنَّه ما شاء الله كان، وما لم يشأ لم يكن.\n4- مَرْتَبَةُ الخَلْقِ والإيجادِ: وهو الإيمانُ بِأَنَّ جَمِيعَ الكائِناتِ مَخْلوقَةٌ لِلهِ، وأنَّهُ خالِقُ أَفْعالِهِم وصِفاتِهِم."
+   },
+   "root": {
+    "ar": "قضي"
+   },
+   "value": {
+    "ar": "يَرِد مُصْطلَح (قَضاء) في العَقِيدَةِ في عِدَّة أبوابٍ، منها: باب: تَوْحِيد الأُلوهِيَّةِ عند الكَلامِ على الشِّرْكِ وأَنْواعِهِ وأَسْبابِهِ، وباب: تَوْحِيد الرُّبُوبِيَّةِ عند الكلام على أَفْعالِ اللهِ تعالى، وباب: تَوْحِيد الأَسْماءِ والصِّفاتِ، وباب: الفِرَق والأَدْيان عند الكلام على فِرَقِ المُعْتَزِلَةِ وغَيْرِهِم.\nويُطلَق في الفقه في كتاب الأقضية والشّهادات، باب: أحكام القضاء، ويُراد به: الإِخْبارُ عنْ حُكْمٍ شَرْعِيٍّ مع الإِلْزامِ بِهِ.\nويُطْلَق أيضاً في كتاب الصَّلاةِ، باب: قضاء الفَوائِتِ، وفي كِتابِ البَيْعِ، باب: القَرْض، وباب: الغَصْب، ومعناه: فِعْلُ الواجِبِ بعد خُروجِ وَقْتِهِ."
+   }
+  },
+  {
+   "id": 4,
+   "url": "https://terminologyenc.com/en/browse/term/4",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "قَهْقَهَةٌ",
+    "en": "Guffaw",
+    "fr": "Éclat de rire.",
+    "es": "Carcajada.",
+    "ur": "ققہقہ لگانا۔ زور سے ہنسنا",
+    "id": "Tertawa terbahak-bahak",
+    "ru": "Громкий смех (\"кахкаха\")."
+   },
+   "linguistic_meaning": {
+    "ar": "القَهْقَهَةُ: مصدَرُ قَهْقَهَ، يُقَهْقِهُ، قَهْقَهَةً، إذا رَجَّعَ في ضَحِكِهِ، و\"قَهْ، قَهْ\" حِكايَةُ الضَّحِكِ، وأصْلُ القَهْقَهَةِ: اشْتِدادُ الضَّحِكِ بِما يَكُونُ مَسْمُوعاً لَهُ ولِجِيرانِهِ."
+   },
+   "linguistic_explanation": {
+    "ar": "القَهْقَهَةُ: مصدَرُ قَهْقَهَ إذا رَجَّعَ في ضَحِكِهِ، وأصلُ القَهْقَهَةِ: اشْتِدادُ الضَّحِكِ بِما يَكُونُ مَسْمُوعاً لَهُ ولِجِيرانِهِ.",
+    "en": "\"Qahqahah\": laughing loudly. Original meaning: laughing so intensely such that it is heard by the person laughing and those around him.",
+    "fr": "Le mot : éclat de rire (« Al Qahqahah ») est le nom d’action du verbe : éclater de rire (« Qahqaha »). Il signifie : rire à gorge déployée. L’étymologie du mot vient de rire aux éclats au point d'être entendu par les personnes se trouvant à ses côtés.",
+    "es": "Al-qahqaha (carcajada) es la risa de forma exagerada, de modo que es audible para la gente que se encuentra alrededor.",
+    "ur": "قہقہ: قَہْقَہَ فعل کا مصدر ہے، معنی ہے باربار ہنسنا۔ قہقہ کا اصل معنی زور سے ہنسنا اور ایسی ہنسی ہے جو خود ہنسنے والے کو بھی سنائی دے اور اس کے پاس بیٹھے ہوئے لوگوں کو بھی۔",
+    "id": "Al-Qahqahah adalah masdar \"qahqaha\", yakni mengulang-ulang dalam tertawa. Asal makna al-qahqahah adalah tawa keras sehingga terdengar oleh diri sendiri dan tetangganya.",
+    "ru": "\"Аль-кахкаха\" — отглагольное существительное от слова قَهْقَهَ, означает \"громкий смех\". В основе القهقهة означает \"настолько громкий смех, что он слышен самому человеку и его соседям\"."
+   },
+   "meaning": {
+    "ar": "الضَّحِكُ بِصَوْتٍ عالٍ مع المُبالَغَةِ فيهِ، بِحيثُ يَسمَعُهُ مَنْ يَجلِسُ بِجِوارِهِ.",
+    "en": "Laughing loudly and intensely in a way that those around him can hear it.",
+    "fr": "Rire à haute voix et de façon exagérée de sorte à être entendu par la personne assise à nos côtés.",
+    "es": "Es la risa impetuosa y ruidosa, que se realiza de forma exagerada de tal forma que es audible para la gente.",
+    "ur": "بلند آواز کے ساتھ بہت زیادہ ہنسنا بایں طور کہ آس پاس بیٹھے لوگوں کو بھی سنائی دے ۔",
+    "id": "Tertawa dengan suara keras dan berlebihan sehingga bisa didengar oleh orang-orang yang duduk di sekitarnya.",
+    "ru": "Настолько громкий смех, что его слышат сидящие рядом."
+   },
+   "explanation": {
+    "ar": "القَهْقَهَةُ: نَوعٌ مِنَ الضَّحِكِ، ويَكُونُ بِانْبِساطِ الوَجْهِ وانْفِراجِ الشَّفَتَين عنِ الأَسْنانِ مِنَ السُّرُورِ، مع صَوْتٍ مَسْمُوعٍ للضّاحِكِ، ومَنْ حوْلَهُ مِن جِيرانِهِ القَرِيبِينَ مِنه، فإنْ لم تَكُن مَسْموعَةً لَهُم فهي التَّبَسُّمُ.",
+    "en": "\"Qahqahah\" (guffaw) is a form of laughter characterized by delight in the face and parting of the lips out of intense joy. It is accompanied by an audible sound that is heard by himself as well as those around him. If it is not audible, it is called smiling.",
+    "fr": "L’esclaffe est un type de rire qui se traduit par un visage enjoué et la bouche grande ouverte laissant apparaître les dents au moment où l’on rit, tout en en étant entendu par les personnes se trouvant à nos côtés. Si le rire (« Aḍ-Ḍaḥik») n’est pas audible, alors cela est un sourire (« At-Tabassumm »).",
+    "es": "Al-qahqaha es un tipo de risa que se manifiesta con el estiramiento de la cara y apertura de la boca, de tal forma que se hacen visibles los dientes; provocada por alegría. Es audible de forma exagerada. Si la risa no se oye, entonces es ibtisama (sonrisa).",
+    "ur": "قہقہہ: ہنسنے کی ایک قسم ہے جس میں خوشی کی وجہ سے چہرا پھیل جاتا ہے اور دونوں ہونٹ دانتوں سے ہٹ جاتے ہیں اوراس میں ایسی آواز نکلتی ہے جو ہنسنے والے اور اس کے اردگرد بیٹھے قریبی لوگوں کو سنائی دیتی ہے ۔ اگر ہنسنے کی آواز انہیں سنائی نہ دے تو اسے ’تبسم‘ (مسکراہٹ) کہا جاتا ہے ۔",
+    "id": "Al-Qahqahah adalah satu jenis tawa. Terjadi dengan wajah ceria dan kedua bibir terbuka hingga memperlihatkan gigi-gigi karena senang, diiringi suara yang bisa didengar orang yang tertawa sendiri dan orang-orang di sekitarnya yang dekat dengannya. Jika tidak bisa didengar oleh mereka maka disebut tabassum (senyum).",
+    "ru": "Громкий смех — разновидность смеха, при которой от радости происходит расслабление лица, губы раскрываются и становятся видны зубы, при этом звук смеха слышен и самому смеющемуся, и тем, кто находится рядом с ним. Если же звук смеха им не слышен, то это называется التَّبَسُّمُ — \"улыбка\"."
+   },
+   "root": {
+    "ar": "قهقه"
+   },
+   "value": {
+    "ar": "يُطلَقُ مُصطَلَحُ (قَهْقَهَة) في كتابِ الطَّهارةِ، بابُ: نَواقِض الوُضُوءِ."
+   }
+  },
+  {
+   "id": 14,
+   "url": "https://terminologyenc.com/en/browse/term/14",
+   "groups": [
+    "الفقه وأصوله"
+   ],
+   "term": {
+    "ar": "قِيامُ اللَّيْلِ",
+    "en": "Voluntary night prayer",
+    "fr": "La prière nocturne.",
+    "es": "Qiyam al-layl (rezo voluntario durante la noche hasta el amanecer).",
+    "ur": "قیام اللیل",
+    "id": "Salat malam",
+    "ru": "Дополнительное ночное поклонение или молитва (\"кыям аль-лейль\")."
+   },
+   "meaning": {
+    "ar": "الصَّلاةُ والذِّكْرُ تَطَوُّعاً في اللَّيْلِ.",
+    "en": "Tījāniyyah",
+    "fr": "Ce sont les prières surérogatoires et l'évocation [d’Allah], accomplies au cours de la nuit.",
+    "es": "Es el rezo y la invocación de forma voluntaria durante la noche.",
+    "ur": "رات کو نفلی نمازیں پڑھنا اور ذکرواذکار کرنا۔",
+    "id": "Salat dan zikir sunah di malam hari.",
+    "ru": "Дополнительные молитва и поминание Аллаха, совершаемые ночью."
+   },
+   "explanation": {
+    "ar": "قِيامُ اللَّيْلِ: هو الاِشْـتِغالُ بِالتَّقَرُّبِ إلى اللهِ تعالى بِالطَاعاتِ مِنْ صَلاةٍ أو ذِكْرٍ أو تَفَكُّرٍ في آياتِ اللهِ ومَخْلوقاتِهِ، ولو كانَ ساعَةً مِن اللَّيْلِ أو أَقَلَّ أو أَكْثَرَ.",
+    "fr": "La prière nocturne consiste à se consacrer au rapprochement d’Allah à travers des actes d’obéissance tels que : la prière, l'évocation [d'Allah], la méditation sur les signes d’Allah et Sa création, même si on y consacrerait plus ou moins heure de la nuit.",
+    "es": "Qiyam al-layl: Es acercarse a Al-lah a través de la adoración ritual al-salat, son las continuas invocaciones a Al-lah, etc. durante la noche, es decir, después al-salat al-‘isha hasta el amanecer; aunque no necesariamente sea todo ese periodo, es suficiente con una cuantas horas.",
+    "ur": "قیام اللیل: عبادات مثلًا نماز ، ذکر و اذکار اور اللہ کی نشانیوں اور اس کی مخلوقات میں غور و فکر اور تدبر کرکے اس کی خوشنودی کے حصول میں جٹے رہنے کو کہتے ہیں، چاہے یہ رات میں ایک گھڑی یا اس سے کچھ کم و بیش دورانیے کے لیے ہی کیوں نہ ہو۔",
+    "id": "Qiyam al-lail adalah menyibukkan diri dengan bertakarub kepada Allah -Ta'ālā- dengan melakukan ketaatan seperti salat, zikir atau merenungkan ayat-ayat Allah dan makhluk-makhluk-Nya, meskipun hanya satu jam, kurang dari satu jam atau lebih di malam hari.",
+    "ru": "Это совершение поклонения Аллаху, будь то молитва, поминание или размышления о знамениях Аллаха и Его творениях, пусть даже некоторую часть ночи, больше или меньше."
+   },
+   "value": {
+    "ar": "يَرِد مُصْطَلَحُ (قِيام اللَّيْلِ) في الفِقْهِ في عِدَّة مواطِن منها: كِتاب الصَّلاةِ، باب: صَلاة اللَّيْلِ، وباب: صَلاة الوِتْرِ، وباب: قِيام رَمَضانَ."
+   }
+  },
+  {
+   "id": 16,
+   "url": "https://terminologyenc.com/en/browse/term/16",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "كَبِدٌ"
+   },
+   "linguistic_meaning": {
+    "ar": "الكَبِدُ اسْمٌ مأخوذٌ مِنْ كَبَدَهُ، يَكْبِدُهُ، كَبْدًا، وهي اللَّحْمَةُ السَّوْداءُ في البَطْنِ، وأَصْلُ الكَبَدِ: الشِّدَّةُ والقُوَّةُ والمَشَقَّةُ، يُقالُ: كَبَدَ البَرْدُ القَوْمَ، أيْ: اشْتَدَّ علَيْهِم، وتكبَّدَ اللَّبَنُ: إذا غَلُظَ واشْتَدَّ، وكَبِدُ كُلِّ شَيْءٍ: وَسَطُهُ وغِلَظُهُ، والجَمعُ: أكْبادٌ، وكُبودٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "الكَبِدُ اسْمٌ مأخوذٌ مِنْ كَبَدَهُ كَبْدًا، وهي اللَّحْمَةُ السَّوْداءُ في البَطْنِ، وأَصْلُ الكَبَدِ: الشِّدَّةُ والقُوَّةُ والْمَشَقَّةُ."
+   },
+   "meaning": {
+    "ar": "العُضْوُ الأسْوَدُ في الجانِبِ الأيْمَنِ مِنَ البَطْنِ."
+   },
+   "explanation": {
+    "ar": "الكَبِدُ: هو العُضْوُ الأسْودُ الموْجودُ في الجِهازِ الهَضْمِي مِنَ البَطنِ، وله عِدَّةُ وَظائِفَ، مِنها: إفْرازُ الصَّفْراءِ وتَغذِيَةُ الجِسم وغير ذلك."
+   },
+   "root": {
+    "ar": "كبد"
+   },
+   "value": {
+    "ar": "يَرِد مُصطَلَحُ (الكَبِد) في عِدَّةِ مواطِنَ من كُتُبِ الفِقْهِ، مِنها: كتابُ الطَّهارةِ، باب: نَواقض الوُضُوء، عند الكلام عن حكم نَقْضِ الوضوء بأكلِ كَبِدِ الإبلِ، وفي باب: النَّجاسات، عند بَيانِ حُكمِ طَهارةِ الكَبِد، وفي كتابِ البَيعِ، عند بيانِ حُكمِ بَيْعِ البَهيمةِ واستِثناءِ شَيءٍ مِنها، وفي كتابِ الأطعمة، وكتاب الأيْمان، وغير ذلك."
+   }
+  },
+  {
+   "id": 17,
+   "url": "https://terminologyenc.com/en/browse/term/17",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "كُسُوفٌ",
+    "en": "Eclipse",
+    "ur": "سورج یا چاند گرہن",
+    "id": "Gerhana"
+   },
+   "linguistic_meaning": {
+    "ar": "الكُسُوفُ: مَصْدَرُ كَسَفَ، يَكْسِفُ، كُسُوفاً، وأَصْلُ الكَسْفِ: التَّغَيُّرُ والتَّحَوُّلُ إلى ما لا يُحَبُّ، يقال: رَجُلٌ كاسِف أيْ مَهْمُومٌ قَد تَغَيَّرَ لَوْنُهُ، وأَكْسَفَهُ الحُزْنُ، أيْ: غَيَّرَهُ، وانَكَسَفَت الشَّمْسُ والقَمَرُ، كُسُوفاً: إذا احْتَجَبا، وذَهَبَ ضَوْءُهُما، واسْوَدّا."
+   },
+   "linguistic_explanation": {
+    "ar": "الكُسُوفُ: مَصْدَرُ كَسَفَ، وأصلُ الكَسْفِ: التَّغَيُّرُ والتَّحَوُّلُ إلى ما لا يُحَبُّ، ومِنْهُ كُسُوفُ الشَّمسِ والقَمَرِ: إذا احْتَجَبا وذَهَبَ نُورُهُما وتَغيَّرَا إلى السَّوادِ.",
+    "en": "Disappearance of the light of the sun or moon, totally or partially.",
+    "id": "Hilangnya sinar salah satu dari matahari atau bulan, baik keseluruhan atau sebagiannya."
+   },
+   "meaning": {
+    "ar": "ذَهابُ ضَوْءِ أَحَدِ النَّيِّرَيْنِ -الشَّمْسِ والقَمَرِ- كُلِّهِ أو بَعْضِهِ.",
+    "en": "\"Kusūf\": eclipse. It is derived from \"kasafa\". Original meaning of \"kasf\": change into something unpleasant.",
+    "ur": "الکسوف' جس کے معنی سورج یا چاند گرہن کے ہیں، ’کسف‘ فعل کا مصدر ہے۔ ’الكَسْف‘ کے اصل معنی ہیں کسی چیز کے اندر رونما ہونے والی ایسی تبدیلی اور بدلاؤ جو پسندیدہ نہ ہو۔ اسی سے 'كُسُوفُ الشَّمسِ والقَمَرِ' یعنی سورج اور چاند گرہن کی تعبیر لی گئی ہے، جو سورج اور چاند کی اس حالت کے لیے استعمال میں آتی ہے، جب دونوں بے نور ہو جائیں اور سیاہ دکھنے لگیں۔",
+    "id": "Al-Kusūf adalah maṣdar dari fi'il \"kasafa\". Makna asal al-kasf adalah berubah dan beralih pada kondisi yang tidak disukai. Dari sini diambil istilah \"kusūf asy-syams wal-qamar\" (gerhana matahari dan bulan), yakni apabila matahari dan bulan tertutup, cahaya keduanya hilang dan berubah hitam."
+   },
+   "explanation": {
+    "ar": "الكسوفُ والخُسوفُ آيتانِِ مِن آياتِ الله تعالى يُخوِّفُ بِهما عِبادَه، وهو زَوالُ ضَوءِ الشَّمْسِ كُلِّيّاً أو جُزئِيّاً بِسبَبِ اعتِراضِ القَمَرِ بين الأرض والشَّمسِ، أو زوالُ ضوءِ القَمرِ كُلِّياً أو جُزئِيّاً بِسبب اعتِراضِ الأرضِ بين الشَّمس والقَمر، وحجبِها لأشعَّة الشَّمس عنه، ومِن الاعْتِقادات الباطِلَةِ: اعْتِقادُ أنَّ كُسُوفَ الشَّمْسِ لا يَكُونُ إلاّ لموتِ عَظِيمٍ أو وِلادَتِهِ أو أنَّ العِلمَ بوقتِ الكسوفِ وسببِه المادِّي ينفي سببَه القدريَّ المعنويَّ، وهو التَّخويفُ.",
+    "en": "Tījāniyyah"
+   },
+   "root": {
+    "ar": "كسف"
+   },
+   "value": {
+    "ar": "يرِد مُصطَلَحُ (الكُسُوفُ) في الفقه في عِدَّة مواطِن، منها: كتاب الصَّلاة، باب: الأذان، وباب: صلاة التَّطوع، وباب: اسْتِقبال القبلة، وباب: الأوقات المنهي عن الصَّلاة فيها، وفي كتاب الزَّكاةِ، باب: الصَّدَقَة، عند الكلام عن أوقاتِ الصَّدقَةِ.\nويَرِد أيضاً في عِلمِ العَقيدَةِ، عند بيانِ مَسائِلِ الجاهِلِيَة."
+   }
+  },
+  {
+   "id": 18,
+   "url": "https://terminologyenc.com/en/browse/term/18",
+   "groups": [
+    "العقيدة",
+    "الفقه وأصوله"
+   ],
+   "term": {
+    "ar": "كَلامٌ",
+    "en": "Speech",
+    "fr": "Parole.",
+    "es": "Kalam (discurso, palabra, pronunciación, conversación).",
+    "ur": "کلام، بات چیت",
+    "id": "Perkataan",
+    "ru": "Речь"
+   },
+   "linguistic_meaning": {
+    "ar": "الكَلامُ - بِفَتْحِ الكافِ -: جَمْعُ كَلِمَةٍ، وهو اسْمٌ مِنْ كَلَّمَ يُكَلِّمُ تَكْلِيماً وكَلاماً، والكَلامُ في أَصْلِ اللُّغَةِ: أَصْواتٌ مُتَتابِعَةٌ لِمَعْنىً مَفْهُومٍ، ويُطْلَقُ على قَلِيلِهِ وكَثيرِهِ، وهو إما اسمٌ، أو فِعْلٌ، أو حَرْفٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "الكَلامُ: جَمْعُ كَلِمَةٍ، وهو اسْمٌ مِنْ كَلَّمَ، والكَلامُ في الأصلِ: أَصْواتٌ مُتَتابِعَةٌ لِمَعْنىً مَفْهُومٍ، ويُطْلَقُ على قَلِيلِهِ وكَثيرِهِ.",
+    "en": "\"Kalaam\" (sing. kalimah [word]): speech. In principle, \"kalaam\" is defined as successive sounds which produce a comprehensible meaning, whether they are many or a few.",
+    "fr": "En arabe, « Kalâm » est le pluriel du mot : « Kalimah » mot. C’est un nom qui vient du verbe : \" kallama\" (parler). Etymologiquement, ce mot renvoie à une suite de sons, constituant une unité porteuse de sens. On l'emploie pour un grand ou un petit nombre de mots.",
+    "es": "Kalam es plural de kalima (palabra) y es el habla, charla, conversación.",
+    "ur": "کلام: کَلِمَہْ کی جمع ہے جو کہ ’کَلَّمَ سے ماخوذ اسم ہے۔ کلام کا اصل معنی ہے ’سمجھ میں آنے والے معنی پر دلالت کرنے والی مسلسل آوازیں، خواہ کم ہوں یا زیادہ۔",
+    "id": "Al-Kalām adalah bentuk jamak dari kalimah. Dia adalah kata benda (isim) dari \"kallama\".\nAl-Kalām asalnya adalah suara-suara yang berurutan berisi makna yang bisa dipahami.\nAl-kalām diungkapkan untuk perkataan yang sedikit maupun banyak.",
+    "ru": "\"Калям\" - это мн. ч., образованное от слова \"кялима\". Слово \"калям\" в основе означает \"совокупность упорядоченных звуков, указывающих на определенный смысл\", независимо от того много их или мало."
+   },
+   "meaning": {
+    "ar": "اللَّفْظُ الْمُرَكَّبُ الْمَوْضُوعُ لِمَعْنىً مَفْهُومٍ.",
+    "en": "Multiple words that express a comprehensible meaning.",
+    "fr": "Parole prononcée, composée de plusieurs mots, porteurs de sens.",
+    "es": "Es la emisión de palabras, la facultad de hablar.",
+    "ur": "ایسا مرکب لفظ جو قابلِ فہم معنی کے لیے وضع کیا گیا ہو۔",
+    "id": "Lafal-lafal yang tersusun yang dibuat untuk mengungkapkan makna yang bisa dipahami.",
+    "ru": "Речь – это составленное выражение, несущее определенные значения, понятный смысл."
+   },
+   "explanation": {
+    "ar": "الكَلامُ: هو اللَّفْظُ المَوْضوعُ لمَعْنى يُفْهَمُ مِنهُ الْمُرادُ، وهو عند الفُقهاءِ يَعُمُّ كُلَّ كلامٍ وإن كان مِنْ حَرْفٍ واحِدٍ، ويَشْمُلُ المُفِيد، وغَيْرَ المُفِيدِ.",
+    "en": "\"Kalaam\" (speech) consists of words used to express a meaning through which the intent is understood. According to the scholars of Fiqh, \"kalaam\" refers to all types of \"kalaam\", even if it is composed of a single letter, and regardless of whether it gives a valid meaning or not.",
+    "fr": "Al kalâm : parole exprimée, compréhensible par autrui, et qui permet à son auteur de se faire comprendre.\nChez les jurisconsultes, cela englobe toute parole, même si elle n'est constituée que d'une seule lettre et englobe ce qui est suffisant ou non à la compréhension.",
+    "es": "Es la pronunciación de palabras con significado. Para al-fuqaha (expertos en leyes islámicas) todo tipo de emisión de palabras, aunque sea solamente una letra, se considera kalam.",
+    "ur": "کلام: وہ لفظ جو کسی ایسے معنی کے لیے وضع کیا گیا ہو جس سے اس کی مراد سمجھ میں آجائے۔ فقہاء کے نزدیک اس سے مراد ہر طرح کا کلام ہے، خواہ وہ ایک ہی حرف پر مشتمل ہو۔ اور اس کا اطلاق مفید اور غیر مفید دونوں قسم کے کلام پر ہوتا ہے۔",
+    "id": "Al-Kalām adalah ucapan yang tersusun yang dibuat untuk mengungkapkan makna yang maksudnya dapat dipahami. Di kalangan pakar fikih, al-kalam mencakup semua perkataan meskipun hanya terdiri dari satu huruf, dan mencakup yang memberi faidah (pengetian sempurna) atau tidak.",
+    "ru": "Речь - это слова, выражающие определенные значения, при восприятии которых понимается их смысл. Исламские правоведы обобщают термин \"речь\", считая даже одну букву \"речью\", независимо от того несет она в себе смысл или нет."
+   },
+   "root": {
+    "ar": "كلم"
+   },
+   "value": {
+    "ar": "يرِد مُصْطَلحُ (الكَلام) في الفقه في مواضِعَ عدِة منها: كتابُ الطَّهارةِ، باب: صِفَة الوُضُوء، وباب: آداب قَضاء الحاجَة، وفي كتابِ الصَّلاةِ، باب: خطبة الجمعة، وفي كتابِ الحجِّ، باب: الطَّواف، وفي كتابِ النِّكاحِ، باب: آداب الجِماع، وفي كتابِ الجِناياتِ، باب: دِيَّة اللِّسان.\nويُطلق في عِلمِ العقيدة في باب: الصِّفات، ومعناه: صِفَةٌ ثابِتَةٌ للهِ تعالى على ما يَلِيقُ بِـجَلالِهِ سُبحانَهُ، وأنَّه بِـحَرْفٍ وصَوْتٍ يُسْمَعُ.\nويُطلقُ أيضاً في عِلمِ النَّحوِ، عند بَيانِ أنواعِ الكلامِ، ومعناه: اللَّفْظُ المُرَكَّبُ المفِيدُ بِالوَضْعِ.\nويُطلق في عِلمِ أصولِ الفِقهِ عند بيان دَلالاتِ الألْفاظِ."
+   }
+  },
+  {
+   "id": 19,
+   "url": "https://terminologyenc.com/en/browse/term/19",
+   "groups": [
+    "الفقه وأصوله"
+   ],
+   "term": {
+    "ar": "لِباسُ المَرْأَةِ",
+    "en": "Woman’s dress code",
+    "id": "Pakaian wanita"
+   },
+   "meaning": {
+    "ar": "ما تَسْتُرُ بِهِ المَرْأَةُ جِسْمَها مِن ثَوبٍ ورِداءٍ وخِمارٍ ونحوِ ذلك.",
+    "en": "Tījāniyyah",
+    "id": "Apa yang digunakan wanita untuk menutupi tubuhnya berupa baju, jubah panjang, kerudung dan semacamnya."
+   },
+   "explanation": {
+    "ar": "لِباسُ المَرْأَةِ: هو الغِطاءُ الذي تَسْتُرُ بِهِ المَرْأَةُ جَسَدَها، والسِّتْرُ الذي تُغطِّي به بَدَنَها، ويُشتَرَطُ فيه أن لا يكون رَقِيقاً يَصِفُ حجْمَها حتّى يُرِي شَكْل العُضْوِ، وأن لا يَكْشِفَ عنها، بحيث يُرَى لَوْنُ جِلدِها من تَحْتِهِ.",
+    "en": "Tījāniyyah",
+    "id": "Libās al-Mar'ah adalah penutup yang dipergunakan wanita untuk menutupi tubuhnya. Libās al-Mar`ah (pakaian wanita) disyaratkan tidak tipis yang dapat menggambarkan lekuk tubuhnya hingga memperlihatkan dengan jelas bentuk organ tubuh, dan tidak menampakkan tubuhnya hingga warna kulitnya terlihat dari balik baju."
+   },
+   "value": {
+    "ar": "يَرِد مُصْطَلَحُ (لِباس المَرْأَةِ) في الفِقْهِ في عِدَّة مواطِن، منها: كتاب الصَّلاةِ، باب: سَتْر العَوْرَةِ في الصَّلاةِ، وفي كِتابِ الـحَجِّ، باب: لِباس الإِحْرامِ، وفي كِتابِ النِّكاحِ، باب: خِطْبَة المَرْأَةِ، وباب: الإِحْداد."
+   }
+  },
+  {
+   "id": 20,
+   "url": "https://terminologyenc.com/en/browse/term/20",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "لَحْمٌ",
+    "en": "Flesh/Meat",
+    "fr": "La chair.",
+    "es": "Carne.",
+    "ur": "گوشت",
+    "id": "Daging",
+    "ru": "Мясо"
+   },
+   "linguistic_meaning": {
+    "ar": "اللَّحْمُ: مَصْدَرُ لَحَمَ الشَّيءَ، يَلْحَمُهُ، لَحْماً، وهو الجُزْءُ العَضَلِيُّ الرِّخْوُ بَيْنَ الجِلْدِ والعَظْمِ، ولَحْمُ كُلِّ شَيْءٍ: لُبُّهُ، وأصْلُ اللَّحْمِ: التَّداخُلُ والاخْتِلاطُ والإلْصاقُ، يُقال: تلاحَمَ الْمَطَرُ: إذا تتابَعَ حتَّى دَخَلَ بعضُهُ في بَعْضٍ، ومِنهُ سُمِّيَ اللَّحْمُ؛ لأنَّهُ مُتَداخِلٌ بَعْضُهُ في بَعْضٍ، وجَمْعُهُ: لُحومٌ، ولُحْمانٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "اللَّحْمُ: مَصْدَرُ لَحَمَ الشَّيءَ، وهو الجُزْءُ العَضَلِيُّ الرَّخْوُ بَيْنَ الجِلْدِ والعَظْمِ، وأصْلُ اللَّحْمِ: التَّداخُلُ والاخْتِلاطُ والإلْصاقُ.",
+    "en": "\"Lahm\": it is derived from \"lahama\", which refers to the soft muscular part between the skin and the bones. Original meaning: overlapping, intermixing, attaching.",
+    "fr": "En arabe : « Al-Laḥm » est le nom d’action du verbe : « Laḥama » qui signifie : souder une chose. Tissu musculaire mou, qui se situe entre la peau et l’os. L’origine du mot : Al-Laḥm » signifie : interpénétration, imbrication, jonction.",
+    "es": "Parte muscular flácida entre la piel y el hueso.",
+    "ur": "لَحْم: یہ ’لَحَمَ الشئ‘ کا مصدر ہے ۔ اس سے مراد (جسم کا ) وہ نرم عضلاتی حصہ ے جو جلد اور ہڈی کے درمیان ہوتا ہے ۔ ’لحم‘کا اصل معنی’ایک دوسرے میں داخل ہونا اور ملنا‘ ہوتا ہے۔",
+    "id": "Al-Lahm adalah masdar kata kerja \"lahama as-syai'a\". (Daging) ialah bagian otot lunak yang terletak di antara kulit dan tulang. Asal makna al-lahm adalah berjalinan, bercampur dan menempel.",
+    "ru": "\"Ляхм\" - это существительное, образованное от глагола \"ляхама\". \"Ляхм\" означает \"мягкая, мышечная ткань между кожей и костями\", т.е. мясо. В основе корень слова \"ляхм\" означает \"взаимопроникновение\", \"смешивание\", \"слипание\"."
+   },
+   "meaning": {
+    "ar": "الجُزْءُ العَضَلِيُّ الرِّخْوُ بَيْن الجِلْدِ والعَظْمِ.",
+    "en": "The soft muscular part between the skin and the bones.",
+    "fr": "Tissu musculaire mou imbriqué entre la peau et l’os.",
+    "es": "Parte muscular flácida entre la piel y el hueso.",
+    "ur": "(جسم میں )جلد اور ہڈی کے مابین نرم عضلاتی جزء",
+    "id": "Bagian otot lunak yang terletak di antara kulit dan tulang",
+    "ru": "Мясо - это мышечная, мягкая ткань между кожей и костями."
+   },
+   "explanation": {
+    "ar": "اللَّحْمُ: هو الجُزْء العَضَلِيُّ الرِّخْوُ، أي: المَادَةِ الطَّرِيُّة التي تَكونُ بَيْن الجِلْدِ - هو الغِشاءُ الخارِجي للبَدَنِ- وبين العَظْمِ، وهذه المادةُ قد تَكونُ حمراءَ، كلَحمِ البَقَرِ والغَنَمِ، وقد تكون بَيْضاءَ، كلَحْمِ الدَّجاجِ والسَّمَكِ.",
+    "en": "\"Lahm\" (flesh/meat) refers to the soft muscular part between the outer layer of the body (skin) and the bones. The color of this part could be red, as in cows and sheep, or white, as in chicken and fish.",
+    "fr": "La chair est le tissu musculaire mou, c’est-à-dire : la matière souple située entre la peau - qui est l’enveloppe extérieure du corps - et l’os. Cette substance peut être soit rouge comme la chair du bœuf ou du mouton ou blanche comme celle du poulet ou du poisson.",
+    "es": "Parte muscular flácida entre la piel y el hueso. Es la parte tierna que se halla entre la piel (capa que cubre la parte externa del cuerpo) y el hueso. Esa materia puede ser carne roja, como la carne vacuna y de ganado; o puede ser carne blanca, como en las gallinas y el pescado.",
+    "ur": "لحم: ایک نرم عضلاتی جزء یعنی وہ نرم ونازک مادہ جو بدن کے بیرونی کَوَرْ یعنی جلد اور ہڈی کے مابین ہوتا ہے۔ یہ مادہ کبھی تو سرخ ہوتا ہے جیسے گائے اور بھیڑ بکریوں وغیرہ کا گوشت اور کبھی سفید ہوتا ہے جیسے مرغی اور مچھلی کا گوشت ۔",
+    "id": "Al-Lahm adalah bagian otot yang lunak, artinya, materi empuk, yang terletak di antara kulit -selaput luar tubuh- dan tulang. Materi ini bisa jadi berwarna merah seperti daging sapi dan kambing, dan bisa jadi berwarna putih seperti daging ayam dan ikan.",
+    "ru": "Мясо - это мягкая, мышечная ткань между кожей (т.е. наружный покров тела) и костями. Эта ткань может иметь красный цвет подобно говядине и баранине, а также белый цвет подобно курятине и рыбе."
+   },
+   "root": {
+    "ar": "لحم"
+   },
+   "value": {
+    "ar": "يَرِدُ مُصْطَلح (لَحْم) في الفقه في عِدَّة مواضِعَ، منها: كتاب الطَّهارةِ، باب: نَواقِض الوُضوءِ، وباب: النَّجاسات، وفي كتابِ الحجِّ، باب: جَزاء الصَّيْدِ، وفي كتابِ البُيوعِ، باب: الرِّبا، وباب: السَّلَم، وفي كتابِ الأضاحي، وفي كتاب الجِنايات، باب: الجُروح والشِّجاج."
+   }
+  },
+  {
+   "id": 21,
+   "url": "https://terminologyenc.com/en/browse/term/21",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "وَبَرٌ",
+    "en": "Camel and Rabbit Hair",
+    "fr": "Fourrure.",
+    "es": "Pelo.",
+    "ur": "اونٹ اور خرگوش وغیرہ کے نرم بال",
+    "id": "Bulu",
+    "ru": "Мех"
+   },
+   "linguistic_meaning": {
+    "ar": "الوَبَرُ: الشَّعْرُ الذي يَنْبُتُ على جُلُودِ الإِبِل والأَرانِبِ، يُقالُ: جَمَلٌ وَبِرٌ وأَوْبَرُ: إذا كانَ كَثِيرَ الوَبَرِ، والنّاقَةُ وَبِرَةٌ، ووَبَرَ البَعِيرُ، أي: ظَهَرَ على جِلْدِهِ الوَبَرُ، والوَبَرُ لِلْبَعِيرِ كالصُّوفِ لِلْغَنَمِ، وجَمْعُ الوَبَرِ: أَوْبارٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "الوَبَرُ: الشَّعْرُ الذي يَنْبُتُ على جُلُودِ الإِبِل والأَرانِبِ.",
+    "en": "\"Wabar\": the hair that grows on the skin of camels and rabbits.",
+    "fr": "La fourrure est constituée des poils qui poussent sur la peau des chameaux, des lapins.",
+    "es": "Pelo que crece sobre la piel de camellos y conejos.",
+    "ur": "وبر:اونٹوں اور خرگوشوں کی جلد پر اگنے والے بال۔",
+    "id": "Al-Wabar adalah bulu yang tumbuh di kulit unta dan kelinci.",
+    "ru": "\"Уабар\" буквально означает \"волосяной покров, растущий на коже верблюдов и зайцев\"."
+   },
+   "meaning": {
+    "ar": "الشَّعْرُ الذي يَنْبُتُ على جُلُودِ الإِبِل والأَرانِبِ.",
+    "en": "The hair that grows on the skin of camels and rabbits.",
+    "fr": "C'est l'ensemble des poils qui poussent sur la peau des chameaux, des lapins.",
+    "es": "Pelo que crece sobre la piel de camellos y conejos.",
+    "ur": "ایسے بال جو اونٹوں اور خرگوشوں کی جلد پر اگتے ہیں۔",
+    "id": "Bulu yang tumbuh di kulit unta dan kelinci.",
+    "ru": "Мех - это покров, растущий на коже верблюдов и зайцев."
+   },
+   "root": {
+    "ar": "وبر"
+   },
+   "value": {
+    "ar": "يَرِد مُصْطَلَحُ (وَبَرٍ) فِي الفِقْهِ في كِتابِ الحَجِّ، باب: تقليد الهدي، وفي كِتابِ اللِّباسِ، باب: الأَلْبِسَة الـمُباحَةِ."
+   }
+  },
+  {
+   "id": 22,
+   "url": "https://terminologyenc.com/en/browse/term/22",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "وَرِكٌ",
+    "fr": "Hanche.",
+    "es": "Cadera.",
+    "ur": "کُلہا",
+    "id": "Pinggul",
+    "ru": "Тазовая кость (аль-варик)."
+   },
+   "linguistic_meaning": {
+    "ar": "الوَرِكُ - بفَتْحِ الواوِ وكَسرِها، مع سُكُونِ الرّاءِ في الحالِتَيْنِ، وبِفَتْحِ الواوِ وكَسْرِ الرّاءِ ككَتِفٍ، ثلاثُ لُغاتٍ -: ما فَوْقَ الفَخِذِ، كالكَتِفِ فوقَ العَضُدِ، وهي مُؤَنَّثَةٌ، والجَمْعُ: أَوْراكٌ، يُقالُ: وَرَك، وَرْكاً، وتَوَرَّكَ، وتَوارَكَ، أيْ: اعْتَمَدَ على وَرِكِهِ."
+   },
+   "linguistic_explanation": {
+    "ar": "الوَرِكُ: ما فَوْقَ الفَخِذِ كالكَتِفِ فوقَ العَضُدِ، وهي مُؤَنَّثَةٌ، يُقالُ: وَرَك، وَرْكاً، وتَوَرَّكَ، وتَوارَكَ، أيْ: اعْتَمَدَ على وَرِكِهِ.",
+    "fr": "La hanche se situe au-dessus de la cuisse, tout comme l’épaule se situe au-dessus du bras. C’est un nom féminin. On dit : « S’appuyer » ; « Appui » ; « Prendre appui » ; « Prise d’appui » ; etc. C’est-à-dire : lorsqu’on se repose sur un appui [en l’occurrence : sa hanche].",
+    "es": "Es lo que se halla por encima del fémur, como el hombro está encima del brazo.",
+    "ur": "’وَرِک‘ ران سے اوپر کا حصہ۔ جیسے بازو کے اوپر کا حصہ کاندھا ہیں۔ عربی زبان میں ’وَرِک‘ مؤنث ہے۔ کہا جاتا ہے: ”وَرَك، وَرْكاً، وتَوَرَّكَ، وتَوارَكَ“ کہ وہ اپنے کُلہے پر ٹیک لگایا (بیٹھا)۔",
+    "id": "Al-Warik adalah sesuatu yang ada di atas paha, seperti posisi pundak yang ada di lengan. Kata al-warik adalah bentuk muannaṡ. Dikatakan, waraka warkan wa tawarraka wa tawāraka, artinya, bertumpu di atas pinggul.",
+    "ru": "Арабским словом \"аль-варик\" называется сустав нижней конечности человека, располагающийся над бедренной костью, и в этом соотношении он подобен плечевому суставу, располагающемуся над плечевой костью. Слово \"аль-варик\" имеет женский род и может произноситься как \"аль-варак\" или \"аль-варк\". Однокоренные слова \"таваррук\" и \"таварук\" означают позу сидения человека с опорой на ягодицы (тазовую кость)."
+   },
+   "meaning": {
+    "ar": "اسْمٌ لِمَجْموعِ العِظامِ التي على طَرَفِ عَظْمِ الفَخِذِ مِنْ عَجُزِ الإِنْسانِ.",
+    "fr": "Nom qui regroupe un ensemble d’os constitué de l’extrémité supérieure de l’os de la cuisse et de la fesse (de l’homme), qui se situe à l’extrémité de l’os de la cuisse du postérieur de l’homme.",
+    "es": "Nombre que se da a los huesos que están sobre la parte superior del fémur humano.",
+    "ur": "انسان کے چوتڑ کی ہڈیوں کے مجموعے کا نام ہے، جو ران کی ہڈیوں کے کنارے ہوتی ہیں۔",
+    "id": "Nama untuk sekumpulan tulang yang ada di atas pangkal tulang paha pada pantat manusia.",
+    "ru": "Как специальный термин слово \"таз\" (аль-варик) означает группу костей и суставов образующих собой тазобедренный пояс человека."
+   },
+   "explanation": {
+    "ar": "الوَرِكُ: عَظمٌ كبير عَرِيضٌ مُسَطَّحٌ غير مُنْتَظِمِ الشَّكْلِ، يكونُ سَمِيكاً في بَعضِ الأماكِنِ، ورَقِيقاً في أماكِن أُخرى، ويُشَكِّلُ الجِدارَ الأَمامِيَّ والجانِبِيَّ للحَوْضِ عند الإنسانِ، ويكونُ فَوقَ الفَخِذِ، كالكَتِفِ فَوْقَ العَضُدِ.\nووَظِيفَتُهُ الأساسُ: هي دِعامَةُ وَزْنِ الجِسْمِ في وَضْعَي: السُّكونِ (مثل الوُقوف)، والحَرَكَةِ (مثل الـمَشْي والجَرْي)، ومَفاصِلُ الوَرِكِ: هي الجُزء الأهَمُّ في المحافَظَةِ على التَّوازُنِ.",
+    "fr": "La hanche est un grand os large, aplani et n’ayant pas un aspect uniforme. Il est épais à certains endroits et fin à d’autres. Cet os forme la paroi frontale et latérale du bassin chez l’homme. La hanche est située au-dessus de la cuisse de la même manière que l’épaule est au-dessus du bras. Sa fonction principale est de supporter le poids du corps, d’équilibrer [le corps] (en position debout) et de le mouvoir (notamment lors de la marche ou de la course). Les articulations de la hanche sont les éléments les plus importants entrant en jeu dans la conservation de l’équilibre.",
+    "es": "Es un hueso grande, ancho y plano, de forma irregular, con espesor en algunas zonas, fino en otras. Constituye el tabique delantero y lateral de la pelvis humana. Se halla por encima del fémur, al igual que el hombro está encima del brazo. Su función es ayudar en el equilibrio del cuerpo durante la estabilidad o durante el movimiento. Las articulaciones de la cadera ayudan en el equilibrio.",
+    "ur": "’وَرِک‘ ایک بڑی، چوڑی اور بے ترتیب شکل کی مسَطِّح ہڈی، جو بعض جگہوں پر موٹی ہوتی ہے اور بعض جگہوں پر پتلی و باریک۔ یہ انسان کے پیڑو (pelvis) کے سامنے اور سائڈ والی دیوار بناتی ہے۔ یہ ویسے ہی ران کے اوپر ہوتی ہے، جیسے بازو کے اوپر کندھا۔\nاس کا بنیادی کام جسم کو حالتِ سکون (جیسے کھڑے ہونے) اور حرکت (جیسے چلنے اور دوڑنے) کی حالت میں سہارا دینا ہے۔ سُرین کے جوڑ توازن کو برقرار رکھنے میں سب سے اہم رول ادا کرتے ہیں۔",
+    "id": "Al-Warik adalah tulang besar, lebar dan pipih yang bentuknya tidak teratur; di sebagian sisi tebal dan di sisi-sisi lainnya tipis. Tulang ini membentuk dinding bagian depan dan samping pelvis (tulang panggul) pada manusia dan berada di atas paha, seperti posisi pundak di atas lengan. Fungsi utama pinggul adalah menopang keseimbangan tubuh dalam dua situasi: diam (seperti berdiri) dan bergerak (seperti berjalan dan lari). Sendi-sendi pinggul adalah bagian paling penting dalam menjaga keseimbangan.",
+    "ru": "Тазовая кость - это большая плоская и неоднородная по своей структуре кость неправильной формы. В некоторых местах она представляет собой толстую и плотную костную ткань, а в некоторых - тонкую и хрупкую. Тазовая кость располагается над бедром и в этом соотношении подобна плечу, располагающемуся над плечевой костью.\nТаз играет важную роль в движении тела и поддержании естественного баланса, способствуя равномерному распределению нагрузки на конечности во время нахождения в вертикальном положении (стоя) и при выполнении различных движений, а также поддержанию равновесия тела."
+   },
+   "root": {
+    "ar": "ورك"
+   },
+   "value": {
+    "ar": "يرد مصطلح (الوَرِك) في عدَّة مواطِن من الفقه، منها: كِتاب الطَّهارَةِ، عند الكلامِ عن نَواقِضِ الوضوءِ، وصِفَةِ النَّومِ النّاقِضِ لَهُ، وفي كِتابِ الصَّلاةِ، عند الكلامِ على مسألةِ صِفَةِ التَّوَرُّكِ حالَ التَّشَهُّدِ في الصَّلاةِ، وفي كتاب الجِناياتِ،"
+   }
+  },
+  {
+   "id": 23,
+   "url": "https://terminologyenc.com/en/browse/term/23",
+   "groups": [
+    "الحديث وعلومه",
+    "العقيدة",
+    "الفقه وأصوله"
+   ],
+   "term": {
+    "ar": "فاسِقٌ",
+    "en": "Disobedient person",
+    "fr": "Pervers.",
+    "es": "Fasiq (impuro, inmoral, pervertido).",
+    "ur": "فاسق",
+    "id": "Orang Fasik",
+    "bs": "Fasik - Grešnik",
+    "ru": "Нечестивец (\"фасик\")."
+   },
+   "linguistic_meaning": {
+    "ar": "الفاسِقُ: الـخارِجُ عَن الطّاعَةِ والاِسْتِقامَةِ، والفِسْقُ: هو العِصْيانُ والخُروجُ عن طَرِيقِ الحَقِّ، يُقالُ: فَسَقَ عَنْ أَمْرِ رَبِّهِ، أيْ: خَرَجَ عن طاعَتِهِ، وأَصْلُ الفِسْقِ: خُروجُ الشَّيْءِ مِنَ الشَّيْءِ على وَجْهِ الفَسادِ، ومنه قَوْلُهُم: فَسَقَ الرُّطَبُ: إذا خَرَجَ عَنْ قِشْرِهِ، وجَمْعُ فاسِقٍ: فَواسِقٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "الفاسِقُ: الـخارِجُ عَن الطّاعَةِ والاِسْتِقامَةِ، يُقالُ: فَسَقَ عَنْ أَمْرِ رَبِّهِ، أيْ: خَرَجَ عَنْ طاعَتِهِ، وأَصْلُ الفِسْقِ: خُرُوجُ الشَّيْءِ مِنَ الشَّيْءِ على وَجْهِ الفَسادِ.",
+    "en": "A Muslim who has committed a major sin or is persistent upon committing minor sins, and hasn\"t repented from them.",
+    "fr": "Le pervers est celui qui dévie de l’obéissance et de la droiture. On dit : « il s'est détourné des commandements divins. », c’est-à-dire : qu'il a dévié de Son obéissance. L’étymologie du mot : pervers, désigne : la sortie d’une chose vers une autre dans une optique de corruption et de désordre.",
+    "es": "Fasiq es la persona que sale de la obediencia. La persona que abandona los preceptos de Al-lah. Y el origen de Al-Fisq es: salir de algo de forma corrupta.",
+    "id": "Seorang Muslim yang melakukan dosa besar atau yang terus-menerus melakukan dosa kecil dan tidak bertaubat.",
+    "bs": "\"Fasik\" je onaj koji je izašao van granica pokornosti i ustrajnosti. Kaže se: feseka an emri rabbihi: napustio je pokornost svome Gospodaru. Osnova riječi \"fisk\": izlazak nečega iz nečega drugog tako da dovodi do nereda.",
+    "ru": "\"Фасик\" — \"вышедший из повиновения и сбившийся человек\".\nВыражение فَسَقَ عَنْ أَمْرِ رَبِّهِ означает \"вышедший из повиновения своему Господу\". Происходит от основы ُالْفِسْق — \"выход из чего-либо в испорченном виде\"."
+   },
+   "meaning": {
+    "ar": "الـمُسْلِمُ الـذي فَعَلَ كَبِيرَةً، أو أَصَرَّ على صَغِيرَةٍ ولَـمْ يَتُبْ مِنها.",
+    "en": "\"Fāsiq\": one who departs from obedience and uprightness. Original meaning: something exiting something else in order to corrupt it.",
+    "fr": "Le musulman qui accomplit un péché majeur ou qui persiste dans l'accomplissement d'un péché mineur sans se repentir.",
+    "es": "Es el musulmán que cometió pecados mayores o que constantemente comete pecados menores y que no se arrepiente por ello (2).",
+    "ur": "فاسق : وہ شخص جو اطاعت و راست روی کے دائرے سے باہر نکل چکا ہو۔ کہا جاتا ہے : \"فَسَقَ عَنْ أَمْرِ رَبِّهِ\" یعنی وہ اپنے رب کی اطاعت کے دائرے سے باہر ہو گیا۔ ویسے 'فِسق' کے اصل معنی ہیں کسی چیز کا دوسری چیز سے اس طرح نکل جانا کہ اس میں فساد اور بگاڑ کا پہلو موجود ہو۔",
+    "id": "Orang fasik ialah orang yang keluar dari ketaatan dan keistikamahan. Dikatakan, \"Fasaqa 'an amri rabbihi\", artinya: ia keluar dari ketaatan kepada Rabb-nya. Asal arti al-fisq adalah keluarnya sesuatu dari sesuatu yang lain dalam bentuk yang rusak.",
+    "bs": "Musliman koji uradi veliki grijeh ili ustrajava u malom, a ne kaje se.",
+    "ru": "Мусульманин, совершивший тяжкий грех или упорствующий и не желающий раскаяться в совершении малого греха."
+   },
+   "explanation": {
+    "ar": "الفاسِقُ: هو العاصِي الذي وقَعَ في الفِسقِ، والفِسْقُ تارَةً يكون بِتَرْكِ الفَرائِضِ، كتركِ صومِ رمَضان، وعدمِ إخراجِ الزَّكاةِ، ونحو ذلك، وتارَةً يكون بِفِعلِ المُحرَّماتِ، كشُربِ الخَمرِ، ومُمارَسَةِ الزِّنا، وأصلُ الفِسقِ: الخُروجُ عن طاعَةِ الله تعالى، والذي مِن جُملتِه: ارتِكابُ الكَبائِر، والإصْرارُ على الصَّغائِر، وهي: كلُ ما نهى عنه الشارع، ولم يُرتِّب عليه وَعَيداً مخصوصاً، كالنَّظَر إلى المرأةِ الأجنبيَّةِ، ونحو ذلك.",
+    "en": "Tījāniyyah",
+    "bs": "Fasik je griješnik koji je učinio grijeh koji nekada može biti kroz ostavljanje obaveza (farzova), poput ostavljanje posta u mjesecu ramazanu, nedavanje zekata i sl., a nekada može biti kroz činjenje zabrana (harama), poput konzumiranja alkohola, bludnih radnji. Osnova značenja riječi fisk jeste izlazak van okvira pokornosti Allahu Uzvišenom, u šta se ubraja činjenje velikih i ustrajnost u malim grijesima koji predstavljaju sve ono što je Zakonodavac zabranio, ali zbog čega nije propisana posebna prijetnja, poput gledanja u žene i sl."
+   },
+   "root": {
+    "ar": "فسق"
+   },
+   "value": {
+    "ar": "يرِد مُصْطَلَحُ (فَاسِق) في عِدَّةِ أَبْوابٍ فِقْهِيَّةٍ، مِنْها: كِتاب النِّكاحِ ، باب: الوِلاية في النِّكاحِ، وباب: الكَفاءَة، وفي كِتابِ الوَقْفِ، وفي كِتابِ القَضاءِ، باب: شُروط القاضِي، وباب: مَوانِع الشَّهادَة، وفي كِتابِ السِّياسَةِ الشَّرْعِيَّةِ، باب: الإِمامَة الكُبْرَى.\nويُطْلَقُ في كِتابِ الحَجِّ، باب: مَحْظورات الإحْرامِ، وباب: جَزاء الصَّيْدِ، ومعناه: الـحَيوانُ الـذي يَعْتَدِي على النّاسِ غالِباً.\nويُطْلَقُ في عِلم العَقِيدَةِ في بابِ: تَوْحِيد الأُلوهِيَّةِ، عند الكَلامِ عن الشَّفاعَةِ في أَهْلِ النّارِ، وفي باب: الفِرَق والأَدْيان، عند الكَلامِ عن شُروطِ الخُروجِ على الحاكِمِ."
+   }
+  },
+  {
+   "id": 53,
+   "url": "https://terminologyenc.com/en/browse/term/53",
+   "groups": [
+    "القرآن الكريم وعلومه",
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "فأْفَأَةٌ",
+    "id": "Gagap"
+   },
+   "linguistic_meaning": {
+    "ar": "الفَأْفَأَةُ: غَلَبَةُ الفاءِ أَثْناءَ الكَلامِ، وهي عُقْدَةٌ في اللِّسانِ، يُقالُ: فأْفَأَ، يُفأْفِئُ، ورَجُلٌ فَأْفَأٌ وفَأْفاءٌ، وهو الذي يُرَدِّدُ الفاءَ بِكَثْرَةٍ إذا تَكَلَّمَ، وقِيل: الفَأْفَأَةُ كَثْرَةُ تَرْدادِ الكَلامِ إذا تَكَلَّمَ."
+   },
+   "linguistic_explanation": {
+    "ar": "الفَأْفَأَةُ: غَلَبَةُ الفاءِ أَثْناءَ الكَلامِ، وقِيل: الفَأْفَأَةُ كَثْرَةُ تَرْدادِ الكَلامِ إذا تَكَلَّمَ.",
+    "id": "Al-Fa`fa`ah adalah banyak mengucapkan huruf fa` saat berbicara. Dikatakan Al-Fa`fa`ah adalah banyak mengulang pengucapan apabila berbicara."
+   },
+   "meaning": {
+    "ar": "كَثْرَةُ تَرْدِيدِ الفاءِ أَثْناءَ الكَلامِ.",
+    "id": "Banyak mengulang huruf fa` saat berbicara (gagap)."
+   },
+   "explanation": {
+    "ar": "الفَأْفَأَةُ: عَيْبٌ مِنْ عُيوبِ النُّطْقِ إِمّا بِسَبَبِ عاهَةٍ ومَرَضٍ، أو بِسَبَبِ خَوْفٍ ونَحْوِ ذلك، وهي تَكْرارُ حَرْفِ الفاءِ أَثْناءَ النُّطْقِ، كَمَن يُرِيدُ نُطْقَ كلِمَةِ \"الفاتِحَةِ \" مثلاً فيقول: فَفَفَفَفَاتِـحَةٌ.",
+    "id": "Fa`fa`ah adalah salah satu jenis cacat dalam berbicara, baik disebabkan karena penyakit atau karena takut dan grogi. Yaitu mengulang-ulang huruf \"fa`\" ketika berbicara. Seperti orang yang ingin mengucapkan al-Fātiḥah, lalu ia mengatakan, \"fafafa...fātiḥah\"."
+   },
+   "root": {
+    "ar": "فأفأ"
+   }
+  },
+  {
+   "id": 63,
+   "url": "https://terminologyenc.com/en/browse/term/63",
+   "groups": [
+    "العقيدة",
+    "الفضائل والآداب"
+   ],
+   "term": {
+    "ar": "فِتْنَةٌ",
+    "ur": "فتنہ، آزمائش",
+    "id": "Fitnah"
+   },
+   "linguistic_meaning": {
+    "ar": "الفِتْنَةُ: الاِبْتِلاءُ والامْتِحانُ والاِخْتِبارُ، يُقالُ: فَتَنْتُهُ، أَفْتِنُهُ، فَتْناً وفُتُوناً: إذا امْتَحَنْتُهُ، وأَصْلُ الفِتْنَةِ مِنَ الفَتْنِ، وهو الإحْراقُ، يُقالُ: فَتَنْتُ الذَّهَبَ، أيْ: أَحْرَقْتُهُ بِالنّارِ؛ لِتَمْيِيزِ الجَيِّدِ مِنَ الرَدِيءِ، ويُسَمَّى الصّائِغُ: الفَتّانُ، ومِن مَعانِي الفِتْنَةِ: التَّنْقِيَةُ والإزالَةُ والإِعْجابُ والإِثْمُ والقَتْلُ."
+   },
+   "linguistic_explanation": {
+    "ar": "الفِتْنَةُ: الاِبْتِلاءُ والامْتِحانُ والاِخْتِبارُ، وأَصْلُها مِنَ الفَتْنِ، وهو الإحْراقُ.",
+    "ur": "فتنہ: ابتلاء، امتحان اور آزمائش کو کہتے ہیں۔ یہ دراصل ’فَتن‘ سے ماخوذ ہے جس کا معنی ہے ’جلانا‘۔",
+    "id": "Al-Fitnah artinya musibah, ujian, dan cobaan. Berasal dari kata al-fatnu, yaitu membakar."
+   },
+   "meaning": {
+    "ar": "الأمْرُ الذي يُـمْتَحَنُ بِه الإِنْسانُ حتّى يُتبَيَّنَ بِها حالُهُ مِنْ خَيْرٍ أو شَرٍّ.",
+    "ur": "وہ امور جن کے ذریعے سے انسان کا امتحان ہوتا ہے تاکہ اس کے اچھے یا برے ہونے کا علم ہوسکے۔",
+    "id": "Perkara yang digunakan untuk menguji manusia agar tampak jati dirinya, baik atau buruk."
+   },
+   "explanation": {
+    "ar": "الفِتْنَةُ: هي كُلُّ ما يَعْرِضُ لِلإنسان مِن أشْياء تَكْشِفُ عن حَقِيقَةِ باطِنِهِ، وتُظْهِرُ خَيْرَهُ مِن شَرِّهِ، سواءً كانت قَوْلاً أو فِعْلاً أو اعْتِقاداً أو غير ذلك، وأصْلُ كُلِّ فِتْنَةٍ إنّما هو مِن تَقْديمِ الرَّأْيِ على الشَّرْعِ، والهَوَى على العَقْلِ.\nوَالفِتَنُ أَنْواعٌ كَثِيرَةٌ، وترجِع إلى نوعين رئِيسيين هما:\n1- فِتَنُ الشُّبُهاتِ: وتكون في الدِّينِ، وتقعُ بِسبَبِ ضَعْفِ البَصِيرَةِ وقِلَّةِ العِلمِ وحُصولِ الهَوَى.\n2- فِتَنُ الشَّهواتِ: وتكون في السُّلوكِ والأخْلاقِ، وهي المَلَذّاتِ لِلبُطونِ والفُروجِ، وغير ذلك.",
+    "ur": "فتنہ:ہر وہ حادثہ جو کسی انسان کے ساتھ پیش آتا ہے اور اس کے باطن کی حقیقت واشگاف کردیتا اور اس کے بھلے بُرے ہونے کو ظاہر کردیتا ہے، خواہ اس کا تعلق قول سے ہو، یا فعل، یا اعتقاد اور یا کسی دیگر چیز سے ہو۔\nہر فتنہ کی جڑ آراء کو شریعیت پراور خواہش پرستی کو عقل سلیم پر مقدم کرنا ہے۔\nفتنے کئی طرح کے ہوتے ہیں۔ جن میں سے دواہم بنیادی فتنے یہ ہیں:\n1. شکوک وشبہات کے فتنے: ایسے فتنوں کی دراندازی دین میں ہوتی ہے، جس کی وجہ بصیرت کی کمزوری، کم علمی اور خواہشاتِ نفس کا حصول بنتی ہے۔\n2. شہوانی فتنے: ایسے فتنوں کی دراندازی انسان کے اخلاق وکردار، پیٹ سے وابستہ لذتوں اور شرم گاہوں وغیرہ میں ہوتی ہے۔",
+    "id": "Fitnah ialah segala yang menimpa manusia berupa hal-hal yang menyingkap hakikat batinnya serta menampakkan baik dan buruknya, baik ucapan, perbuatan, keyakinan, atau hal lainnya. Sumber setiap fitnah ialah mendahulukan akal dari syariat, dan hawa nafsu dari akal. Ada beragam fitnah, dan semuanya bermuara kepada dua macam inti, yaitu:\n1. Fitnah syubhat; ini terjadi pada agama, dan terjadi karena ilmu yang lemah dan kurang serta mengikuti hawa nafsu.\n2. Fitnah syahwat; ini terjadi dalam perilaku, akhlak. Syahwat ini adalah kenikmatan perut dan kemaluan, serta hal lainnya."
+   },
+   "root": {
+    "ar": "فتن"
+   },
+   "value": {
+    "ar": "يرِد مُصْطَلَحُ (فِتْنَة) في عِدَّةِ أَبْوابٍ فِقْهِيَّةٍ، منها: كِتابُ الصَّلاةِ، باب: سَتْر العَوْرَةِ، وفي كِتابِ الحَجِّ، باب: الاسْتِطاعَة في الحَجِّ، وفي كِتابِ البُيوعِ، باب: ما يَجوزُ بَيْعُهُ وما لا يَجوزُ، وفي كِتابِ النِّكاحِ، باب: خِطْبَة الـمَرْأَةِ، وفي كِتابِ الجِهادِ، باب: قِتال الخَوارِجِ والبُغاةِ، وغَيْر ذلك من الأبْوابِ.\nويُطْلَقُ في كِتابِ الصَّلاةِ، باب: دَفْن الـمَيِّتِ، وفي عِلْمِ العَقِيدَةِ في بابِ: الإِيمان بِاليَوْمِ الآخِرِ، ومعناه: سُؤال الـمَيِّتِ في قَبرِهِ عن رَبِّهِ، وعن نبِيِّه، وعن دِينِهِ."
+   }
+  },
+  {
+   "id": 64,
+   "url": "https://terminologyenc.com/en/browse/term/64",
+   "groups": [
+    "الفضائل والآداب",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "فُتُـوَّةٌ",
+    "ur": "نوجوانی، جواں مردی، اچھا برتاؤ",
+    "id": "Berakhlak mulia"
+   },
+   "linguistic_meaning": {
+    "ar": "الفُتُوَّةُ: الشَّبابُ، يُقالُ: فَتُوَ، يَفْتُو، فَتاءً، وقَدْ فَتِيَ يَفْتَى، فَتًى فَهو فَتِيُّ السِّنِّ بَيِّنُ الفَتاءِ، أيْ: أَصْبَحَ شابّاً، والفَتَى: الشَّابُّ، والأُنْثَى: فَتاةٌ، وتَأْتِي الفُتُوَّةُ بِـمَعْنَى الـسَّخاءِ والكَرَمِ، والفَتَى: السَّخِيُّ الكَرِيمُ، ومِنْ مَعانِيها أيضاً: الحُرِّيـَّةُ والحَياءُ."
+   },
+   "linguistic_explanation": {
+    "ar": "الفُتُوَّةُ: الشَّبابُ، والفَتَى: الشَّابُّ، والأُنْثَى: فَتاةٌ، وتَأْتِي بِـمَعْنَى الـسَّخاءِ والكَرَمِ والحُرِّيـَّةُ والحَياءِ.",
+    "ur": "الفُتوةُ: جوانی ’فَتَى‘ نوجوان لڑکے کو کہتے ہیں اور ’فَتَاۃٌ‘ نوجوان لڑکی، دوشیزہ کو کہتے ہیں۔ الفُتوةُ کا معنی سخاوت وکرم، آزادی اور حیاء بھی آتا ہے۔",
+    "id": "Al-Futuwwah artinya muda. Al-fatā adalah pemuda. Bentuk feminimnya fatātun. Kata ini bisa juga bermakna kedermawanan, murah hati, kemerdekaan dan rasa malu."
+   },
+   "meaning": {
+    "ar": "اسْتِعْمالُ الأَخْلاقِ الحَسَنَةِ مَعَ الـخَلْقِ.",
+    "ur": "مخلوق کے ساتھ اچھے اخلاق کا برتاؤ کرنا۔",
+    "id": "Mempraktikkan budi pekerti yang baik terhadap makhluk."
+   },
+   "explanation": {
+    "ar": "الفُتُوَّةُ: مَنْزِلَةٌ حَقِيقَتُها الإِحْسانُ إلى النّاسِ، وكَفُّ الأَذى عَنْهُم، واحْتِمالُ أَذاهُم باسْتِعْمالِ حُسْنِ الخُلُقِ مَعَهُم، ومِن صُوَرِها: تَركُ الخُصُومَة، والتَّغافُلُ عَن الزَّلَّةِ، ونِسْيانُ الأذِيَّة.\nلم يأتِ اسمُ الفُتُوَّةِ في القرآن، ولا في السُّنَّة، ولا في لسانِ السَّلَفِ، وإنَّما اسْتَعْمَلَهُ مَن بَعدَهُم في مَكارِمِ الأخلاقِ، وأقدَمُ مَن تَكَلَّمِ في الفُتُوَّةِ: جعفر بن محمد، ثم الفُضيل بن عياض، والإمام أحمد، وسَهْلُ بن عبدالله، والجُنَيد، وغيرهم.",
+    "ur": "الفُتوةُ: ایک ایسا درجہ جس کی حقیقت یہ ہے کہ لوگوں کے ساتھ حسن سلوک کیا جائے، انہیں تکلیف نہ دی جائے، ان سے پہنچنے والی تکلیف کو ان کے ساتھ اچھا اخلاق روا رکھ کر برداشت کیا جائے۔ اس کی کچھ صورتیں یہ ہیں: جھگڑا کرنا چھوڑنا، لغزش سے چشم پوشی کرنا اور دی گئی اذیت کو بھول جانا۔\nلفظ ’الفُتوةُ‘ کا ذکر قرآن مجید، سنت نبویہ اور صحابہ کے اقوال میں نہیں آیا ہے، اچھے اخلاق میں اس کا استعمال تو اس کے بعد ہونے لگا، سب سے پہلے ’الفُتوةُ‘ کے متعلق جعفر بن محمد نے گفتگو فرمائی ہے پھر فضیل بن عیاض، امام احمد، سہل بن عبداللہ اور جنید وغیرہ سے اس کا ذکر ملتا ہے۔",
+    "id": "Al-Futuwwah merupakan satu kedudukan yang hakikatnya adalah berbuat baik pada manusia, tidak menyakiti mereka dan sabar menghadapi keburukan mereka dengan berlaku sopan terhadap mereka. Di antara bentuknya adalah meninggalkan pertengkaran, mengesampingkan kesalahan orang lain dan melupakan gangguan.\nIstilah al-Futuwwah tidak disebutkan dalam Al-Qur`ān, Sunnah maupun lidah para salaf. Istilah ini dipakai oleh orang setelah mereka untuk menunjukkan akhlak mulia. Orang yang pertama-tama sekali membicarakan istilah ini adalah Ja'far bin Muhammad, kemudian Fuḍail bin 'Iyāḍ, Imam Ahmad, Sahal bin Abdullah, Junaid dan lainnya."
+   },
+   "root": {
+    "ar": "فتا"
+   },
+   "value": {
+    "ar": "يُطلَقٌ مُصطلح (فُتوَّة) عند الصُّوفِيَّةِ، ويُرادُ بها: إِيثارُ الـخَلْقِ على النَّفْسِ بِالدُّنْيا والآخِرَةِ، أو كَفُّ الأَذَى، وبَذْلُ النَّدَى، وتَركُ الشَّكْوَى."
+   }
+  },
+  {
+   "id": 65,
+   "url": "https://terminologyenc.com/en/browse/term/65",
+   "groups": [
+    "الفقه وأصوله"
+   ],
+   "term": {
+    "ar": "فُتْـيا",
+    "en": "Legal opinion",
+    "fr": "Fatwa.",
+    "es": "Futya (la respuesta a una consulta).",
+    "ur": "فتوی، شرعی یا قانونی سوال کا جواب، شرعی یا قانونی فیصلہ۔",
+    "id": "Fatwa",
+    "ru": "Процедура вынесения фетвы (\"футъя\")."
+   },
+   "linguistic_meaning": {
+    "ar": "الفُتْيا: الـجَوابُ عَنِ السُّؤالِ، يُقالُ: أَفْتَيْتُهُ فَتْوًى، وفُتْياً: إذا أَجَبْتُهُ عَنْ مَسْأَلَتِهِ، وتَأْتِي الفُتْيا بِـمَعْنَى تَبْيِينِ الـمُشْكِلِ وإِيضاحِهِ، يُقالُ: أَفْتاهُ في الأَمْرِ أيْ أَبانَهُ لَهُ، والفَقِيهُ يُفْتِي أيْ يُبَيِّنُ الـمُبْهَمَ، وأَفْتَيْتُهُ في مَسْألَتِهِ: إذا أجبتَه عنها، وأَصْلُ الفُتْيا والفَتْوَى مِنَ الفَتَى وهو الشّابُّ الْحَدَثُ الذي شَبَّ وقَوِي، فَكأَنَّهُ يُقَوِّي حالَ ما أَشكَلَ بِبَيانِهِ وإزالةِ إشكالِه، وقِيلَ: لأنَّ الـمُفْتِي إذا أَفْتَى فَقَدْ أَحْدَثَ حُكْماً، وَجمْعُ الفُتْيا: فَتاوَى."
+   },
+   "linguistic_explanation": {
+    "ar": "الفُتْيا: الـجَوابُ عَنِ السُّؤالِ، وأَصْلُها مِنَ الفَتَى وهو الشّابُّ الْحَدَثُ الذي شَبَّ وقَوِي.",
+    "en": "\"Al-Futyā\": to answer a question. It is derived from \"fata\", which means an adolescent who has grown and become strong.",
+    "fr": "L’avis juridique [particulier] est une réponse [donnée] à une question [posée]. On dit : « J’ai délivré une fatwa » ; « Fatwa ». Lorsque j’ai donné une réponse à une situation particulière qu'on m'a soumise . L’étymologie de ce mot vient du terme : jeune homme (« Al Fatâ »), celui qui est dans la fleur de l'âge et plein de vigueur.",
+    "es": "Al-Futya: es responder a una cuestión. El origen de la palabra procede de Al-Fata (mozo).",
+    "ur": "فُتْیا: سوال کا جواب دینا۔ یہ لفظ دراصل فَتَی سے ماخوذ ہے، جس کا اطلاق چڑھتی جوانی کی دہلیز پر قدم رکھنے والے نوجوان اور توانا شخص پر ہوتا ہے۔",
+    "id": "Al-Futyā artinya menjawab pertanyaan. Asalnya dari kata al-fatā, yaitu pemuda belia yang menginjak remaja dan kuat.",
+    "ru": "\"Аль-футъя\" (الفتيا) — \"ответ на вопрос\".\nВыражение أَفْتَيْتُهُ فَتْوًى означает \"ответил ему на его вопрос\". Происходит от الْفَتَى — \"молодой человек, который повзрослел и стал сильным\"."
+   },
+   "meaning": {
+    "ar": "الإِخْبارُ بِالـحُكْمِ الشَّرْعِيِّ دُونَ إِلْزامٍ بِهِ.",
+    "en": "To inform someone of a religious ruling without obliging him to apply it.",
+    "fr": "Information relative au jugement légal religieux sans obligation de s'y conformer.",
+    "es": "Informar del Hukm Al-Shar’i (juicio legal) sin obligar su cumplimiento.",
+    "ur": "پابند کئے بغیر کسی کو شرعی حکم بتانا۔",
+    "id": "Memberitahukan hukum syar'i tanpa mewajibkannya.",
+    "ru": "Сообщение шариатского положения, при этом человека не обязывают выполнять его."
+   },
+   "root": {
+    "ar": "فتا"
+   }
+  },
+  {
+   "id": 67,
+   "url": "https://terminologyenc.com/en/browse/term/67",
+   "groups": [
+    "الفقه وأصوله",
+    "الفضائل والآداب",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "فُحْشُ القَوْلِ",
+    "ur": "فحش کلامی، بے حیا اور ناشائستہ گفتگو",
+    "id": "Ucapan keji"
+   },
+   "meaning": {
+    "ar": "كُلُّ كَلامٍ خَرَجَ عَنْ مِقْدارِهِ حتى يُسْتَقْبَحَ ويُذَمَّ.",
+    "ur": "ہر وہ بات جو اپنی حدود سے نکل جائے اور یوں بُری اور قابلِ مذمت ہوجائے۔",
+    "id": "Setiap perkataan yang melampaui batas hingga dicap jelek dan dicela."
+   },
+   "explanation": {
+    "ar": "فُحْشُ القَوْلِ: هو كُلُّ قَوْلٍ عَظِيمِ القُبْحِ، ويَشْمَلُ ذلك كُلَّ ما يَكْرَهُهُ الطَّبْعُ مِن رَذائِلِ الأَقوالِ والألفاظِ، وما يُنْكِرُهُ العَقْلُ ويَسْتَخْبِثُهُ الشَّرْعُ.\nومِن صُوَرِه: الكَذِبُ والشَّتْمُ وَقَوْلُ الزُّورِ والغِيبَةُ والنَّمِيمَةُ والبُهْتانُ والتَّعْبِيرُ عن الأمورِ المُسْتَقْبَحَةِ بِالعِباراتِ الصَّرِيحَةِ، مثلُ أَلفاظِ الجماع وما يَتَعَلَّقُ بِهِما.",
+    "ur": "فحش کلامی: ہر بہت بُری بات کو کہتے ہیں۔ جو ان ساری باتوں اور لفظوں کو شامل ہے جو طبیعتِ انسانی کو ناگوار محسوس ہوں، عقل سلیم جن پر نکیر کرے اور شریعت بُرا گردانے۔\nفحش کلامی کی کئی شکلیں ہیں، جیسے کذب گوئی، گالی گلوج، خلافِ حقیقت بات، غیبت وچغلخوری، بہتان تراشی، علانیہ انداز میں بُرائیوں کا بیان۔ جیسے ہمبستری اور اس سے متعلقہ کیفیات کے لیے مستعمل الفاظ۔",
+    "id": "Ucapan keji adalah setiap ucapan yang sangat jelek. Yaitu mencakup semua ucapan dan kata-kata buruk yang dibenci secara moral serta diingkari oleh akal dan dianggap kotor oleh syariat. Di antara bentuknya ucapan dusta, mencaci, berkata bohong, gibah, adu domba, dan memfitnah serta mengungkapkan hal-hal tabu dengan bahasa vulgar, seperti kata-kata jimak dan yang berkaitan dengannya."
+   },
+   "value": {
+    "ar": "يَرِد مُصْطَلَحُ (فُحش القَولِ) في عِدَّة مواطِن من الفقه، منها: كِتَاب الصَّلاَة، باب: فَضائِل الصَّلاةِ، وفي كتاب الحَجِّ، بَابِ محظورات الإحْرامِ، وفي كِتاب الصَّوْمِ، باب: مُفسِدات الصَّوْمِ، وفي كتاب الحُدودِ، باب: حَدّ القَذْفِ، وفي كِتاب القَضاءِ، باب: آداب القَضاءِ، وغير ذلك."
+   }
+  },
+  {
+   "id": 68,
+   "url": "https://terminologyenc.com/en/browse/term/68",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "فَواسِق",
+    "en": "Vicious animals",
+    "fr": "Pervers.",
+    "es": "Fauasiq (cinco animales que, por su naturaleza, causan daño al ser humano, más que los otros animales).",
+    "ur": "انسان کو اذیت و تکلیف پہنچانے والے جانور۔",
+    "id": "Binatang yang mengganggu",
+    "bs": "Štetočine",
+    "ru": "Вредные насекомые и животные (\"фавасик\")."
+   },
+   "linguistic_meaning": {
+    "ar": "الفَواسِقُ: جَمْعُ فاسِقةٍ، وهو اسمُ فاعلٍ مِن فَسَقَ يَفْسُقُ فُسُوقًا وفِسْقًا، وأَصْلُ الفِسْقِ: الخُروجُ مِن الشَّيْءِ على وَجْهِ الفَسادِ، يُقال: فَسَقَتِ الرُّطَبَةُ: إذا خَرَجَت مِن قِشْرِها، ومِنهُ سُمِّيتِ الحَيَواناتُ المؤْذِيَةِ فَواسِقَ؛ لِخُروجِها عَن عادَةِ بَقِيَةِ الحَيَواناتِ في سَلامَتِها والانْتِفاعِ بها إلى الإضْرارِ والأذَى."
+   },
+   "linguistic_explanation": {
+    "ar": "الفَواسِقُ: جمعُ فاسِقٍ، وهو العاصِي والمُذْنِبُ، وأَصْلُ الفِسْقِ: الخُروجُ مِن الشَّيْءِ على وَجْهِ الفَسادِ.",
+    "en": "\"Fawaasiq\" (sing. faasiq): sinful persons. Original meaning of \"fisq\": coming out of something because of turning bad (like date coming out of skin because it has started to rot).",
+    "fr": "« Al Fawâsiq » est le pluriel du mot : « Fâsiq », c'est un mot désignant le désobéssant, le pécheur. L’étymologie de ce mot vient du terme : « Al Fisq » qui signifie : sortir d’une chose dans l’optique d'accomplir un acte réprouvé, de mettre le désordre. On dit : « La datte fraîche a été corrompue dès lors qu'elle est sortie de sa pellicule. »",
+    "es": "Fuasiq es plural de fasiq, sust. común abst. de Fasaq (depravación, inmoralidad, impureza). Y el origen de Al-Fasiq es: salir de algo de forma corrupta.",
+    "ur": "فواسق: فاسِقٌ کی جمع ہے۔ اس کا معنی ہے ازراہِ فساد وبگاڑ کسی شے سے نکلنا۔",
+    "id": "Al-Fawāsiq bentuk jamak dari fāsiq, yaitu orang yang durhaka dan melakukan dosa. Asal arti al-fisqu ialah keluar dari sesuatu karena rusak.",
+    "bs": "\"Fevasik\" je množina riječi \"fasik\", a to je griješnik. Osnova riječi \"fisk\": izlazak iz nečega na način da se napravi nered. Kaže se: fesekati-r-rutabeh: plod hurme izišao je iz kore.",
+    "ru": "\"Аль-фасик\" (الفواسق) — форма мн. числа слова \"фасик\" (فاسق) — \"нечестивец\", причастие действительного залога от глагола \"фасака\" (فَسَقَ) — \"отклоняться в сторону, быть нечестивым\". Основой الْفِسْقُ является \"выходить из чего-либо в испорченном виде\", и фраза فَسَقَتْ الرُطْبَةُ означает, что свежий финик испортился настолько, что вышел из своей кожуры."
+   },
+   "meaning": {
+    "ar": "الحَيَواناتُ التي مِن عادَتِها الاعْتِداءُ على النّاسِ غالِبًا.",
+    "en": "Animals which instinctively attack people and harm them.",
+    "fr": "Les animaux qui attaquent habituellement les êtres humains.",
+    "es": "Son los animales que, por costumbre, atacan mayormente a los humanos.",
+    "ur": "وہ جانور جو عمومًا لوگوں پر حملہ آور ہوتے ہیں۔",
+    "id": "Hewan-hewan yang biasanya mengganggu manusia.",
+    "bs": "Životinje za koje je poznato da su agresivne prema ljudima u većini slučajeva.",
+    "ru": "Животные, которые в подавляющем большинстве случаев нападают на человека."
+   },
+   "explanation": {
+    "ar": "الفَواسِقُ: هي الحَيَواناتُ التي تبْتَدِئُ الإنْسانَ بِالأَذى والعُدْوانِ غالِبًا، كالعَقْرَبِ، والفَأْرَةِ، والغُراب، والكَلْبِ العَقورِ، والحِدَأةِ، ونحو ذلك، وقد سَمّاها الشّارِعُ فَواسِقَ امْتِهانًا لَهُنَّ؛ لِكَثْرَةِ خُبْثِهِنَّ وأَذِيتِهِنَّ.",
+    "en": "\"Fawaasiq\" (vicious animals) are animals that instinctively tend to harm people and attack them, such as scorpions, mice, crows, rabid dogs, kites, and so on. The Prophet, may Allah's peace and blessings be upon him, called these animals by this name out of despising them due to their excessive evil and their harmful nature.",
+    "fr": "« Al Fawâsiq » désignent les animaux qui causent généralement du tort aux hommes et leur nuisent comme : le scorpion, le rat, le corbeau, le chien enragé, le milan, etc. Le Législateur a appelé ces animaux des [animaux] nuisibles car c’est leur fonction première du fait de leur malignité et leur nuisibilité.",
+    "es": "Al-Fauasiq: son los animales que por costumbre atacan a los humanos, como los escorpiones, roedores, cuervos, perros feroces, milanos, etc. Al-lah denominó a estos tipos de animales Fauasiq debido a los daños que causan.",
+    "ur": "فواسق: وہ جانور جو عمومًا انسان کو تکلیف پہنچانے میں پہل کرتے ہیں اور اس پر حملہ آور ہوتے ہیں جیسے بچھو، چوہا، کوا، کاٹنے والا کتا اور چیل وغیرہ ۔ شارع نے ان کی کثرت خبث و اذیت کی وجہ سے انہیں ’فواسق‘ کا نام دیا ہے۔",
+    "id": "Al-Fawāsiq adalah hewan-hewan yang biasanya menyakiti dan mengganggu manusia seperti kalajengking, tikus, burung gagak, anjing liar, rajawali, dan sebagainya. Syariat menamakan binatang-binatang ini \"fawāsiq\" untuk menghinakannya, karena sifatnya yang sangat buruk dan banyak mengganggu.",
+    "bs": "Štetočine su životinje koje u većini slučajeva uznemiravaju čovjeka, poput škorpije, miša, gavrana, bjesnog psa, ptica grabljivica i sl. Zakonodavac je ove životinje nazvao štetočinima kao vid njihova nipodaštavanja i zbog mnoštva zla koje čine.",
+    "ru": "Вредные животные и насекомые — это животные, которые в подавляющем большинстве случаев первыми причиняют вред человеку и нападают на него. Например, такие как скорпион, мышь, ворона, злая собака, коршун и им подобные. Законодатель назвал их словом الفواسق, подчеркнув одну из их основных особенностей, в силу того, что они отвратительны и причиняют вред."
+   },
+   "root": {
+    "ar": "فَسَقَ"
+   },
+   "value": {
+    "ar": "يَرِدُ مُصطَلَحُ (فَواسِق) في الفِقْهِ في مَواطِنَ مِنها: كتابُ الطَّهارةِ، باب: إزالة النَّجاسات، وفي كتاب الأطعمة، باب: ما يَحرُمُ أكلُه."
+   }
+  },
+  {
+   "id": 80,
+   "url": "https://terminologyenc.com/en/browse/term/80",
+   "groups": [
+    "الفقه وأصوله",
+    "أخرى"
+   ],
+   "term": {
+    "ar": "صُوفٌ",
+    "en": "Wool",
+    "fr": "Laine.",
+    "es": "Lana.",
+    "ur": "اون",
+    "id": "Bulu Domba",
+    "ru": "Шерсть (\"суф\")."
+   },
+   "linguistic_meaning": {
+    "ar": "الصُّوفُ: ما يَنْبُتُ على جِلْدِ الشّاةِ، وهو كَالشَّعْرِ لِلْماعِزِ، والوَبَرِ لِلْإِبِلِ، وجَمْعُ الصُّوفِ: أَصْوافٌ."
+   },
+   "linguistic_explanation": {
+    "ar": "الصُّوفُ: ما يَنْبُتُ على جِلْدِ الشّاةِ.",
+    "en": "\"Soof\" is what grows on the skin of the sheep.",
+    "fr": "Ce qui pousse sur la peau d’une brebis ou d’un mouton.",
+    "es": "Lana: lo que crece [pelo] en el cuero de la oveja.",
+    "ur": "’صوف‘ (اون): بھیڑ کی کھال پر اُگنے والے بال۔",
+    "id": "Aṣ-Ṣūf adalah bulu yang tumbuh di kulit domba.",
+    "ru": "Шерсть — это то, что растет на шкуре овец."
+   },
+   "meaning": {
+    "ar": "ما يَنْبُتُ على جِلْدِ الشّاةِ.",
+    "en": "It is what grows on the skin of the sheep.",
+    "fr": "Ce qui pousse sur la peau d’une brebis ou d’un mouton.",
+    "es": "Lana: lo que crece [pelo] en el cuero de la oveja.",
+    "ur": "بھیڑ کی جلد پر اُگنے والے بال۔",
+    "id": "Bulu yang tumbuh di kulit domba.",
+    "ru": "Волосяной покров на теле овец."
+   },
+   "root": {
+    "ar": "صوف"
+   },
+   "value": {
+    "ar": "يرِدُ مُصْطَلَحُ (صُوف) في عِدَّة مواطن، منها: كِتاب الصَّلاة، باب: سَتْر العَوْرَةِ، وفي كِتابِ البُيُوعِ، باب: ما يَجُوز بَيْعُهُ، وباب: السَّلَم، وباب: الرِّبا، وباب: الرَّهْن، وفي كِتابِ الهَدْيِ والأضاحِي، باب: صِفَة الأُضْحِيَّةِ."
+   }
+  }
+ ]
+}

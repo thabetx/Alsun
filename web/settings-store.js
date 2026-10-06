@@ -1,6 +1,7 @@
 // The settings of the user, kept in the browser (localStorage):
 //   - the model he chose (OpenAI or Cohere) for the translation and the assistant; none = the default one of the server
 //   - the quran translation he chose for each language; none = the first one of the language
+//   - whether the trusted Islamic terms are used in the translation (yes, unless he turned them off)
 // The keys of the providers are never here: they are in the .env file of the server.
 
 const STORAGE_KEY = "alsun:settings:v1";
@@ -49,6 +50,18 @@ export function setQuranSource(language, id) {
   writeAll(all);
 }
 
+// the trusted Islamic terms (see python/trusted_terms.py) are used unless the user turned them off
+export function getTrustedTerms() {
+  return readAll().trustedTerms !== false;
+}
+
+export function setTrustedTerms(on) {
+  const all = readAll();
+  if (on) delete all.trustedTerms;
+  else all.trustedTerms = false;
+  writeAll(all);
+}
+
 // what is added to the body of a request to the server (translation, re-translation, assistant)
 export function modelSettings() {
   const choice = getModelChoice();
@@ -57,5 +70,5 @@ export function modelSettings() {
 
 export function translationSettings(language) {
   const source = getQuranSource(language);
-  return { ...modelSettings(), ...(source ? { quran_source: source } : {}) };
+  return { ...modelSettings(), ...(source ? { quran_source: source } : {}), ...(getTrustedTerms() ? {} : { trusted_terms: false }) };
 }

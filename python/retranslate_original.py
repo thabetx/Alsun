@@ -70,11 +70,12 @@ def compare_quran_before_and_after(old_segments, new_segments, new_original_text
 
 
 def retranslate_edited_original(
-    old_segments, new_original_text, json_file=None, target_lang="English", glossary=None, quran_source=None, model=None
+    old_segments, new_original_text, json_file=None, target_lang="English", glossary=None, quran_source=None, model=None,
+    use_trusted_terms=True,
 ):
     # the user changed the arabic text: translate the row again and tell what happened to the ayahs
     new_segments = translate_paragraph_segments(
-        new_original_text, json_file, target_lang, glossary, quran_source, model
+        new_original_text, json_file, target_lang, glossary, quran_source, model, use_trusted_terms
     )
     quran_changes = compare_quran_before_and_after(old_segments, new_segments, new_original_text)
     needs_review = bool(quran_changes["removed"] or quran_changes["added"] or quran_changes["damaged"])

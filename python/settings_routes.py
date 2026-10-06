@@ -1,4 +1,4 @@
-# Endpoints of the settings window: what the user can choose (models, quran translations),
+# Endpoints of the settings window: what the user can choose (models, quran translations, trusted terms),
 # and the change of the quran translation of rows that are already translated.
 
 from typing import Any, Dict, List
@@ -7,14 +7,19 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from llm import model_options
-from quran_detect import find_quran_source, quran_source_options, swap_quran_source
+from quran_detect import QURAN_SOURCES, find_quran_source, quran_source_options, swap_quran_source
+from trusted_terms import trusted_terms_options
 
 router = APIRouter()
 
 
 @router.get("/settings/options")
 def settings_options():
-    return {"models": model_options(), "quran_sources": quran_source_options()}
+    return {
+        "models": model_options(),
+        "quran_sources": quran_source_options(),
+        "trusted_terms": trusted_terms_options(list(QURAN_SOURCES)),
+    }
 
 
 class RowSegments(BaseModel):

@@ -426,6 +426,7 @@ function showBookInTheSelect(info) {
   }
   option.textContent = info.name;
   bookSelect.value = info.id;
+  showBookName(info.name);
   document.title = `${info.name} — ألسن`;
 }
 
@@ -560,7 +561,16 @@ function pdfViewWidth() {
   return pdfPages.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
 }
 
-function drawPage(entry) {
+async function drawPage(entry) {
+  // A drawing that is still going on is stopped first: two drawings on one canvas (the first one and the one
+  // after the scrollbar changed the width) put one page over the other, and the page looks flipped and garbled.
+  const turn = (entry.turn = (entry.turn ?? 0) + 1);
+  if (entry.renderTask) {
+    entry.renderTask.cancel();
+    await entry.renderTask.promise.catch(() => {}); // it ends with "cancelled", which is what we wanted
+    if (turn !== entry.turn) return; // a newer drawing was asked while we waited: it draws
+  }
+
   const natural = entry.page.getViewport({ scale: 1 }).width;
   const width = pdfViewWidth();
   const scale = width ? Math.min(MAX_PDF_SCALE, width / natural) : MAX_PDF_SCALE;
@@ -569,7 +579,10 @@ function drawPage(entry) {
   entry.canvas.height = viewport.height;
   entry.svg.setAttribute("width", viewport.width);
   entry.svg.setAttribute("height", viewport.height);
-  entry.page.render({ canvasContext: entry.canvas.getContext("2d"), viewport }).promise;
+  entry.renderTask = entry.page.render({ canvasContext: entry.canvas.getContext("2d"), viewport });
+  entry.renderTask.promise.catch((error) => {
+    if (error?.name !== "RenderingCancelledException") console.error(error);
+  });
 }
 
 // The window is resized, the pdf panel is shown again, and drawing a page can itself change the
@@ -625,6 +638,13 @@ pageInput.addEventListener("focus", () => pageInput.select());
 pageInput.addEventListener("blur", () => setPageIndicator(parseInt(pageInput.value, 10) || 1));
 
 const bookSelect = document.getElementById("book-select");
+// the header shows the name of the book (without ".pdf"); the select is hidden, the code reads the book from it
+const bookNameLabel = document.getElementById("book-name");
+function showBookName(name) {
+  bookNameLabel.textContent = String(name || "").replace(/\.pdf$/i, "");
+  bookNameLabel.title = String(name || "");
+}
+showBookName([...bookSelect.options].find((o) => o.value === (new URLSearchParams(location.search).get("book") || bookSelect.value))?.textContent);
 // The book is in the address (/app?book=...): the sample books of the page, or the id of an uploaded one.
 const currentBook = new URLSearchParams(location.search).get("book") || bookSelect.value;
 bookSelect.addEventListener("change", () => {

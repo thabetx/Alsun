@@ -26,3 +26,9 @@
   .site-title { font-size: 1.05rem; }
 }
 
+/* the name of the book in the middle of the header */
+.site-book {
+  justify-self: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-weight: 800; font-size: 1.15rem; line-height: 1.4; direction: auto; unicode-bidi: plaintext;
+}
+
