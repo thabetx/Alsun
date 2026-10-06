@@ -28,7 +28,7 @@ class FakeAnnotater:
         type(self).built += 1
         time.sleep(0.05)  # a slow build, so threads that ask together really overlap
 
-    def matchAll(self, paragraph):
+    def detect(self, paragraph):
         return []
 
 
@@ -39,7 +39,7 @@ class TestLazyDetector(unittest.TestCase):
         previous = quran_detect._annotater
         quran_detect._annotater = None
         self.addCleanup(setattr, quran_detect, "_annotater", previous)
-        patcher = mock.patch.object(quran_detect.qdetect, "qMatcherAnnotater", FakeAnnotater)
+        patcher = mock.patch.object(quran_detect, "get_engine", FakeAnnotater)
         patcher.start()
         self.addCleanup(patcher.stop)
 

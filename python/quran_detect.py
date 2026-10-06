@@ -1,4 +1,4 @@
-import QDetect.qdetect as qdetect
+from quran_detector import get_engine
 import codecs
 import json
 import re
@@ -95,7 +95,7 @@ def load_detector():
     global _annotater
     with detector_lock:
         if _annotater is None:
-            _annotater = qdetect.qMatcherAnnotater()
+            _annotater = get_engine()
         return _annotater
 
 
@@ -113,9 +113,18 @@ def quran_detector(paragraph):
     # one matcher is shared by all the requests; only one request uses it at a time
     annotater = load_detector()
     with detector_lock:
-        quran_detector_result = annotater.matchAll(paragraph)
-    #print(quran_detector_result)
-    return quran_detector_result
+        matches = annotater.detect(paragraph)
+    # keep the old match shape: startInText/endInText word indexes and aya_name
+    return [
+        {
+            "startInText": match["start_in_text"],
+            "endInText": match["end_in_text"],
+            "aya_name": match["surah_name"],
+            "aya_start": match["aya_start"],
+            "aya_end": match["aya_end"],
+        }
+        for match in matches
+    ]
 
 
 def split_quran_and_normal_paragraph(paragraph):
