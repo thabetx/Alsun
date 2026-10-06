@@ -158,7 +158,7 @@ def ocr(book: Optional[str] = None, page_range: Optional[str] = None, filename: 
     page_range is 0-indexed ("0-4,7"), at most MAX_PAGES_PER_REQUEST pages: the front reads a long book
     a few pages at a time. A short book can be asked without it. `filename` is the old name of `book`.
     """
-    found = book_or_error(book or filename or "two-pages.pdf")
+    found = book_or_error(book or filename or "فقه الاستدراك.pdf")
     if page_range is None and found.pages > MAX_PAGES_PER_REQUEST:
         raise HTTPException(status_code=400, detail="the page range is not valid")
     try:

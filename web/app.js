@@ -428,7 +428,7 @@ function showBookInTheSelect(info) {
   option.textContent = info.name;
   bookSelect.value = info.id;
   showBookName(info.name);
-  document.title = `${info.name} — ألسن`;
+  document.title = "ألسن";
 }
 
 // Gives {children: the pages read, error: the message if the reading stopped}. If the first request fails there is

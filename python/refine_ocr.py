@@ -88,8 +88,8 @@ def refine_ocr_text(text):
     marked_text = mark_detected_ayas(text, quran_detector(text))
     response = client.chat.completions.create(
         # TODO:
-        # model="gpt-6-luna",
-        model="gpt-4o-mini",
+        model="gpt-6-luna",
+        # model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": marked_text},

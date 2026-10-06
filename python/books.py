@@ -27,7 +27,9 @@ MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
 MAX_PAGES = 200  # every page is read by the ocr, which is paid by the page
 MAX_NAME_CHARS = 120
 
-SAMPLE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.pdf")
+# a sample pdf in data/: any letters (also arabic) and spaces are fine, but no folder separators and no control
+# characters, so a path is never followed
+SAMPLE_NAME = re.compile(r"[\w][\w\s._-]{0,80}\.pdf")
 UPLOAD_ID = re.compile(r"[0-9a-f]{16}")
 
 

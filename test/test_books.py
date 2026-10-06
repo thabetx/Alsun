@@ -105,6 +105,11 @@ class TestFindBook(BooksTestCase):
         found = books.find_book("yaqzan.pdf")
         self.assertTrue(found.sample)
 
+    def test_the_arabic_sample_is_the_default_book(self):
+        found = books.find_book("فقه الاستدراك.pdf")
+        self.assertTrue(found.sample)
+        self.assertEqual((found.name, found.pages), ("فقه الاستدراك.pdf", 2))
+
     def test_a_book_that_does_not_exist_is_not_found(self):
         with self.assertRaises(FileNotFoundError):
             books.find_book("0123456789abcdef")
