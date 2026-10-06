@@ -2,11 +2,11 @@
   "$schema": "https://schema.railpack.com",
   "provider": "python",
   "steps": {
-    "source": {
-      "inputs": [{ "local": true }]
-    },
     "install": {
-      "inputs": [{ "step": "source" }],
+      "inputs": [
+        { "step": "packages:mise" },
+        { "local": true, "include": ["."] }
+      ],
       "commands": [
         "python -m venv .venv",
         ".venv/bin/python -m pip install --no-cache-dir -r requirements.txt"
