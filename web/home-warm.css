@@ -44,3 +44,5 @@
   .site-logo img { height: 42px; }
 }
 
+/* the word «ألسن» as a logo inside a heading */
+.inline-logo { height: 1.25em; width: auto; vertical-align: -0.28em; margin-inline: .1em; }
