@@ -2,7 +2,7 @@ import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs";
 
-import { rowStates } from "./state.js";
+import { rowStates, joinDisplayText } from "./state.js";
 import { renderTranslated, syncRowFromDom } from "./translated-view.js";
 import { protectAyahsInCell, EDIT_REFUSED_MESSAGE } from "./segment-sync.js";
 import { handleOriginalEdited } from "./retranslate-ui.js";
@@ -14,11 +14,13 @@ import { rowMenuMarkup, refreshRowMenu, runRowMenuAction } from "./row-menu.js";
 import { detectAyahsInRows } from "./detect-ayas.js";
 import { askConfirmation } from "./confirm-dialog.js";
 import { getRowById, getSelectedRows } from "./selection.js";
+import { normalizeArabic, matchesSearch } from "./arabic-text.js";
 import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
 import { targetLanguageInArabic } from "./target-language.js";
 import { initGlossary } from "./glossary-ui.js";
 import { initSettings } from "./settings-ui.js";
+import { beginLoading } from "./loading-overlay.js";
 import {
   fingerprintOf, loadSavedWork, clearSavedWork, enableSaving, pauseSaving, watchWork,
 } from "./saved-work.js";
@@ -179,10 +181,31 @@ function replaceRows(oldRows, newStates) {
   notifySelectionChanged();
 }
 
+// The translations change (translate, edit, assistant, merge), so they are normalized when the user searches;
+// the cache keeps the answer for a text that did not change, so typing a word does not redo every row.
+const normalizedTranslations = new Map(); // text -> normalized text
+function normalizedTranslation(text) {
+  let normalized = normalizedTranslations.get(text);
+  if (normalized === undefined) {
+    if (normalizedTranslations.size > 3000) normalizedTranslations.clear();
+    normalized = normalizeArabic(text);
+    normalizedTranslations.set(text, normalized);
+  }
+  return normalized;
+}
+
+// What a search looks at in a row: the Arabic original (normalized when the row was made) and its translation.
+// The translation comes from the state of the row, not from the cell, so the "not translated yet" message is not searched.
+function searchableText(tr) {
+  const segments = rowStates.get(tr.dataset.id)?.segments;
+  if (!segments?.length) return tr.dataset.search;
+  return `${tr.dataset.search} ${normalizedTranslation(joinDisplayText(segments))}`;
+}
+
 function applySearch() {
   const q = searchInput.value.trim();
   blockRows.querySelectorAll("tr.block-row").forEach((tr) => {
-    const hit = !q || tr.dataset.search.includes(q);
+    const hit = !q || matchesSearch(searchableText(tr), q);
     tr.style.display = hit ? "" : "none";
   });
 }
@@ -226,7 +249,7 @@ function makeRow(b) {
   // a row made by a merge has its own text (b.text), a pdf block has html
   const text = b.text !== undefined ? b.text : stripHtml(b.html);
   const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  tr.dataset.search = text;
+  tr.dataset.search = normalizeArabic(text); // the search ignores tashkeel, hamza forms, taa marbuta ...
 
   // the state of the row: what we know about its translation (the segments) and where it comes from
   rowStates.set(b.id, {
@@ -341,7 +364,7 @@ function restoreSavedWork(filename, fingerprint) {
     if (!tr || state.merged_from) return createRowFromState(state); // a merged row has to be built again
     rowStates.set(state.id, state);
     tr.querySelector(".original-text").textContent = state.originalText;
-    tr.dataset.search = state.originalText;
+    tr.dataset.search = normalizeArabic(state.originalText);
     renderTranslated(tr);
     return tr;
   });
@@ -350,7 +373,27 @@ function restoreSavedWork(filename, fingerprint) {
   return true;
 }
 
+// The pen covers the page while the book is read (the ocr can take a while) and the rows are drawn.
+const BOOK_TIPS = [
+  "آيات القرآن لا تُترجم بالذكاء الاصطناعي، بل تؤخذ من ترجمات منشورة وموثّقة.",
+  "يُحفظ عملك تلقائيًا في متصفحك، فلا يضيع عند تحديث الصفحة.",
+  "أضف مصطلحاتك وترجماتها المعتمدة من زر «القاموس»، وتُطبَّق في كل ترجمة.",
+  "يمكنك اختيار النموذج ومرجع القرآن من زر «الإعدادات».",
+  "عدّل أي فقرة مترجمة في مكانها، أو اطلب من المساعد الذكي تعديلها.",
+];
+
 async function loadBook(filename) {
+  // the detector of the quran loads while the book is read (it is not loaded when the server starts)
+  fetch("/warmup", { method: "POST" }).catch(() => {});
+  const endLoading = beginLoading({ message: "جارٍ قراءة الكتاب…", tips: BOOK_TIPS });
+  try {
+    await readBook(filename);
+  } finally {
+    endLoading();
+  }
+}
+
+async function readBook(filename) {
   pauseSaving(); // the table is empty while it loads, that must not be saved
   blockRows.innerHTML = "";
   pdfPages.innerHTML = "";
@@ -558,6 +601,18 @@ document.getElementById("restart-work").addEventListener("click", async () => {
   clearSavedWork(bookSelect.value);
   await loadBook(bookSelect.value);
   showToast("تم مسح العمل المحفوظ");
+});
+
+// a checked row that gets translated (or loses its translation) changes what the toolbar can do
+// (the assistant needs a translated row, merge needs rows that are all translated or all not): refresh the buttons
+let toolbarRefreshWaiting = false;
+blockRows.addEventListener("alsun:translated-changed", () => {
+  if (toolbarRefreshWaiting) return; // several rows in a row (translate all, restore) are one refresh
+  toolbarRefreshWaiting = true;
+  setTimeout(() => {
+    toolbarRefreshWaiting = false;
+    notifySelectionChanged();
+  }, 0);
 });
 
 loadBook(bookSelect.value);

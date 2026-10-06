@@ -45,6 +45,17 @@ export function renderTranslated(tr, { animate = false } = {}) {
   renderOriginalHighlights(tr);
   // only for a fresh translation (not for the assistant, undo or merge)
   if (animate) typeTranslation(tr);
+  announceIfTranslatedChanged(tr, state);
+}
+
+// The buttons of the toolbar (the assistant, merge) depend on which rows are translated, and the row is
+// checked before or while it is translated. So when a row becomes translated (or stops being), the page is told
+// with an event that goes up to the table, and app.js refreshes the buttons.
+function announceIfTranslatedChanged(tr, state) {
+  const translated = state.segments.length > 0 ? "1" : "";
+  if ((tr.dataset.translated ?? "") === translated) return;
+  tr.dataset.translated = translated;
+  tr.dispatchEvent(new CustomEvent("alsun:translated-changed", { bubbles: true }));
 }
 
 function describeAyahRange(segment) {

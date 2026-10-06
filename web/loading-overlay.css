@@ -39,3 +39,16 @@
 @media (prefers-reduced-motion: reduce) {
   .loading-overlay, .loading-card { transition: none; }
 }
+
+/* tips for a long wait: they change slowly, each one fades in and out */
+.loading-tip {
+  margin: 8px 0 0; max-width: 24em; min-height: 3.2em; text-align: center; font-size: .92rem; line-height: 1.6;
+  color: #7a6741; transition: opacity .35s ease;
+}
+.loading-tip.is-hidden { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .loading-tip { transition: none; } }
+
+/* the page behind is readable through the loading: the texts get a soft light edge so they can still be read over it */
+.loading-title, .loading-progress, .loading-tip {
+  text-shadow: 0 0 3px #fbf6ea, 0 0 6px #fbf6ea, 0 0 10px #fbf6ea, 0 0 16px #fbf6ea, 0 0 22px #fbf6ea;
+}

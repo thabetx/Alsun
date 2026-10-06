@@ -31,8 +31,10 @@ load_dotenv(ROOT / ".env")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from quran_detect import (  # noqa: E402
+    detector_is_ready,
     split_quran_and_normal_paragraph,
     translate_paragraph_and_build_response,
+    warm_up_detector_in_background,
 )
 from ocr import extract_pdf_segments  # noqa: E402
 from assistant_routes import (  # noqa: E402
@@ -73,6 +75,20 @@ def old_home_address():
 @app.get("/web/index.html", include_in_schema=False)
 def old_viewer_address():
     return RedirectResponse("/app", status_code=307)
+
+
+@app.get("/health")
+def health():
+    # for serve.bat (it opens the browser when this answers) and for anything that watches the server
+    return {"status": "ok", "detector": "ready" if detector_is_ready() else "not loaded yet"}
+
+
+@app.post("/warmup")
+def warmup():
+    # The page calls this when the user chooses a book: the quran detector (the slow part to build) starts to load
+    # in the background, so the translation does not wait for it. It does nothing if it is loaded or loading.
+    warm_up_detector_in_background()
+    return {"detector": "ready" if detector_is_ready() else "loading"}
 
 
 @app.exception_handler(StarletteHTTPException)

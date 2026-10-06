@@ -84,12 +84,35 @@ def quran_source_options():
 
 
 detector_lock = threading.Lock()
-quran_annotate = qdetect.qMatcherAnnotater() # built once, it takes ~6 seconds
+_annotater = None  # the quran matcher, see load_detector
+
+
+def load_detector():
+    # The matcher takes ~6 seconds to build. It is not built when this module is imported (that made the server
+    # take that long to start, and the browser showed an error until it did): it is built the first time it is
+    # needed, or earlier by warm_up_detector_in_background. Only one build, even if many requests ask together.
+    global _annotater
+    with detector_lock:
+        if _annotater is None:
+            _annotater = qdetect.qMatcherAnnotater()
+        return _annotater
+
+
+def detector_is_ready():
+    return _annotater is not None
+
+
+def warm_up_detector_in_background():
+    # the page of the user asks for this when a book is chosen, so the matcher is ready when the translation starts
+    if _annotater is None:
+        threading.Thread(target=load_detector, daemon=True).start()
+
 
 def quran_detector(paragraph):
     # one matcher is shared by all the requests; only one request uses it at a time
+    annotater = load_detector()
     with detector_lock:
-        quran_detector_result = quran_annotate.matchAll(paragraph)
+        quran_detector_result = annotater.matchAll(paragraph)
     #print(quran_detector_result)
     return quran_detector_result
 

@@ -22,6 +22,8 @@ function setFile(file) {
   } else {
     chosen = file;
   }
+  // the server starts to load the quran detector now, so it is ready when the translation starts
+  if (chosen) fetch("/warmup", { method: "POST" }).catch(() => {});
   fileName.textContent = chosen ? chosen.name : "";
   fileSize.textContent = chosen ? formatSize(chosen.size) : "";
   chip.hidden = !chosen;
