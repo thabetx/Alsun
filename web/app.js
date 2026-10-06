@@ -8,10 +8,12 @@ import { protectAyahsInCell, EDIT_REFUSED_MESSAGE } from "./segment-sync.js";
 import { handleOriginalEdited } from "./retranslate-ui.js";
 import { initAssistant, refreshAssistantButton, forgetDeletedRow } from "./assistant.js";
 import { initMerge, refreshMergeButton } from "./merge-ui.js";
+import { rememberBlockKind } from "./row-kind.js";
+import { highlightRowInPreview, initExportPreview, refreshExportPreview, watchExportPreview } from "./export-preview.js";
 import { rowMenuMarkup, refreshRowMenu, runRowMenuAction } from "./row-menu.js";
 import { detectAyahsInRows } from "./detect-ayas.js";
 import { askConfirmation } from "./confirm-dialog.js";
-import { getSelectedRows } from "./selection.js";
+import { getRowById, getSelectedRows } from "./selection.js";
 import { showToast } from "./toast.js";
 import { initTranslateAll } from "./translate-all.js";
 import { targetLanguageInArabic } from "./target-language.js";
@@ -31,6 +33,8 @@ const pageInput = document.getElementById("page-input");
 const pageTotal = document.getElementById("page-total");
 const searchInput = document.getElementById("search-input");
 const pageSheets = [];
+// the drawn pages, kept to be drawn again when the width of the panel changes (see drawPage)
+const renderedPages = [];
 let totalPages = 0;
 
 // pdf block id -> its polygon on the page, and pdf block id -> the row that shows it now
@@ -51,6 +55,7 @@ function notifySelectionChanged() {
   updateDeleteButton();
   refreshAssistantButton();
   refreshMergeButton();
+  refreshExportPreview(); // what is in the table is what the book will be
 }
 
 function setRowHighlight(tr, on) {
@@ -60,17 +65,34 @@ function setRowHighlight(tr, on) {
   tr.classList.toggle("active", on);
 }
 
+// The mouse is in one of the three panels and the other two answer: the row lights up in the table
+// and on the page, and the panels that are not under the mouse bring it into view. The panel the
+// mouse is in already shows it, so nothing there is scrolled: a page that centres itself under the
+// cursor would move the words out from under the pointer.
+function revealRow(rowId, on, from) {
+  const tr = rowId && getRowById(rowId);
+  if (!tr) return;
+  setRowHighlight(tr, on);
+  if (from !== "book") highlightRowInPreview(rowId, on);
+  if (!on) return;
+  if (from !== "pdf") tr.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  if (from !== "table") scrollPdfToRow(tr);
+}
+
+// the pdf panel turns to the page that holds the first block of the row
+function scrollPdfToRow(tr) {
+  const blockIds = JSON.parse(tr.dataset.sourceBlocks);
+  polygonsByBlockId.get(blockIds[0])?.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+
 // connects a row to the pdf blocks it shows (its state.source_blocks)
 function registerRowBlocks(tr) {
   const blockIds = rowStates.get(tr.dataset.id).source_blocks.map((block) => block.id);
   tr.dataset.sourceBlocks = JSON.stringify(blockIds);
   blockIds.forEach((blockId) => rowByBlockId.set(blockId, tr));
 
-  tr.addEventListener("mouseenter", () => {
-    setRowHighlight(tr, true);
-    polygonsByBlockId.get(blockIds[0])?.scrollIntoView({ block: "center", behavior: "smooth" });
-  });
-  tr.addEventListener("mouseleave", () => setRowHighlight(tr, false));
+  tr.addEventListener("mouseenter", () => revealRow(tr.dataset.id, true, "table"));
+  tr.addEventListener("mouseleave", () => revealRow(tr.dataset.id, false, "table"));
 }
 
 // builds the row of a state (used when rows are merged or split again)
@@ -215,6 +237,8 @@ function makeRow(b) {
     aiEdited: false,
     history: [],
   });
+  // the kind the ocr gave this block (a section header, a footnote...) is what the export makes of it
+  rememberBlockKind(b.id, b.block_type);
 
   tr.innerHTML = `
     <td class="col-check text-center">
@@ -360,8 +384,8 @@ async function loadBook(filename) {
   totalPages = pages.length;
   pageTotal.textContent = `/ ${totalPages}`;
   pageSheets.length = 0;
+  renderedPages.length = 0;
   setPageIndicator(1);
-  const scale = 1.5;
 
   pages.forEach((page, pi) => {
     // ---- right: render PDF page with overlay ----
@@ -383,12 +407,9 @@ async function loadBook(filename) {
     svg.setAttribute("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
 
     pdf.getPage(pi + 1).then((pdfPage) => {
-      const viewport = pdfPage.getViewport({ scale });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      svg.setAttribute("width", viewport.width);
-      svg.setAttribute("height", viewport.height);
-      pdfPage.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+      const entry = { page: pdfPage, canvas, svg };
+      renderedPages.push(entry);
+      drawPage(entry);
     });
 
     const blocks = collectBlocks(page);
@@ -403,12 +424,8 @@ async function loadBook(filename) {
         polygonsByBlockId.set(b.id, poly);
 
         // the row of this block may be a merged row by now, so it is looked up when the mouse comes
-        poly.addEventListener("mouseenter", () => {
-          const row = rowByBlockId.get(b.id);
-          setRowHighlight(row, true);
-          row.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        });
-        poly.addEventListener("mouseleave", () => setRowHighlight(rowByBlockId.get(b.id), false));
+        poly.addEventListener("mouseenter", () => revealRow(rowByBlockId.get(b.id)?.dataset.id, true, "pdf"));
+        poly.addEventListener("mouseleave", () => revealRow(rowByBlockId.get(b.id)?.dataset.id, false, "pdf"));
       }
     }
   });
@@ -432,6 +449,44 @@ async function loadBook(filename) {
   // ayahs in it and mark them, which is the detector alone, no llm and no cost
   detectAyahsInRows([...blockRows.querySelectorAll("tr.block-row")]);
 }
+
+// A page is drawn to fit the panel instead of being cropped: a page wider than the view is drawn
+// smaller, because the words on the canvas and the polygons over them are placed from the same
+// viewport and must be the same size for the pointer to mean anything. On a wide screen the page is
+// left at MAX_PDF_SCALE rather than blown up to a wall of pixels.
+const MAX_PDF_SCALE = 1.5;
+
+// the width the pages are drawn into: the panel without its padding (0 when it is hidden)
+function pdfViewWidth() {
+  if (!pdfPages.clientWidth) return 0;
+  const style = getComputedStyle(pdfPages);
+  return pdfPages.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+}
+
+function drawPage(entry) {
+  const natural = entry.page.getViewport({ scale: 1 }).width;
+  const width = pdfViewWidth();
+  const scale = width ? Math.min(MAX_PDF_SCALE, width / natural) : MAX_PDF_SCALE;
+  const viewport = entry.page.getViewport({ scale });
+  entry.canvas.width = viewport.width;
+  entry.canvas.height = viewport.height;
+  entry.svg.setAttribute("width", viewport.width);
+  entry.svg.setAttribute("height", viewport.height);
+  entry.page.render({ canvasContext: entry.canvas.getContext("2d"), viewport }).promise;
+}
+
+// The window is resized, the pdf panel is shown again, and drawing a page can itself change the
+// width left for it (a page that fills the panel brings a scrollbar), so the observer draws again
+// until the size has settled.
+function refitPages() {
+  if (pdfViewWidth()) renderedPages.forEach(drawPage);
+}
+
+let refitTimer = null;
+new ResizeObserver(() => {
+  clearTimeout(refitTimer);
+  refitTimer = setTimeout(refitPages, 100);
+}).observe(pdfPages);
 
 function addPolygon(svg, points) {
   const poly = document.createElementNS(SVGNS, "polygon");
@@ -458,6 +513,7 @@ togglePdf.addEventListener("click", () => {
   const hidden = pdfPanel.style.display === "none";
   pdfPanel.style.display = hidden ? "" : "none";
   togglePdf.setAttribute("aria-pressed", String(hidden));
+  if (hidden) refitPages(); // the panel has a width again, the pages must fill it
 });
 
 pageInput.addEventListener("keydown", (e) => {
@@ -512,4 +568,6 @@ initGlossary();
 initSettings();
 document.getElementById("delete-rows").addEventListener("click", () => deleteRows(getSelectedRows()));
 initMerge({ replaceRows });
+initExportPreview({ onHoverRow: (rowId, on) => revealRow(rowId, on, "book") });
+watchExportPreview(blockRows);
 notifySelectionChanged();

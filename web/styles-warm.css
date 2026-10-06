@@ -11,7 +11,8 @@ html, body { background: #fbf6ea; color: #231a19; }
   border: 1px solid #e6d9bf; border-radius: 18px;
   box-shadow: 0 8px 24px rgba(120, 86, 20, .08);
 }
-.panel-text { flex: 7 1 0; border-right: 1px solid #e6d9bf; }
+.panel-preview { flex: 3 1 0; border-right: 1px solid #e6d9bf; }
+.panel-text { flex: 6 1 0; border-right: 1px solid #e6d9bf; }
 .panel-pdf  { flex: 3 1 0; }
 
 /* ---------- table ---------- */
@@ -83,6 +84,24 @@ html, body { background: #fbf6ea; color: #231a19; }
 }
 .toggle-pdf:hover { border-color: #b8860b; color: #231a19; }
 .toggle-pdf[aria-pressed="true"] { background: #e8d9b8; }
+/* the preview button stands at the far left of the toolbar. The toolbar packs to the right and wraps
+   into several rows, and a button in the flow would sit wherever its row happened to end, so the
+   free space of the row is given to it: it is the last one on its row, at its left end, whether
+   the toolbar fits on one row or on two. */
+#toggle-preview { margin-inline-start: auto; }
+
+/* ---------- left: the book as it will be saved ---------- */
+.preview-body { background: #efe7d5; }
+.export-preview { box-shadow: 0 2px 8px rgba(120, 86, 20, .12); }
+.preview-title { display: inline-flex; align-items: center; gap: 8px; font-size: .95rem; color: #231a19; }
+.preview-title .fa-solid { color: #b8860b; }
+.preview-count { font-size: .85rem; color: #7a6d63; }
+.preview-download { margin-right: auto; } /* the rtl toolbar packs to the right, the button goes left */
+.export-format {
+  font: inherit; font-size: .9rem; font-weight: 700; color: #231a19; cursor: pointer;
+  background: #fffdf8; border: 1px solid #e0d2b2; border-radius: 8px; padding: 3px 8px;
+}
+.export-format:focus { outline: none; border-color: #b8860b; }
 
 /* ---------- PDF side ---------- */
 .panel-pdf .panel-body { background: #c9bca3; }
