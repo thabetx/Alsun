@@ -9,17 +9,22 @@ comes back here. Every ask pays for the pages it names.
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from datalab_sdk import ConvertOptions, DatalabClient
 
 from refine_ocr import refine_page
 
-API_KEY = "hOqLUjJtLx8Os_ZPtG1toGsRBoOVgiBbjwCeJqk8X00"
+ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(ENV_FILE, override=True)
 
 
 def datalab_api_key():
-    # DATALAB_API_KEY in the .env file wins; the key written above is only what is used if there is none, so
-    # nothing stops working. Put the key in .env and take it out of this file.
-    return os.environ.get("DATALAB_API_KEY", "").strip() or API_KEY
+    # the .env is read again each time, so a key added while the server is running is seen without a restart
+    load_dotenv(ENV_FILE, override=True)
+    key = os.environ.get("DATALAB_API_KEY", "").strip()
+    if not key:
+        raise ValueError("no api key for datalab: add DATALAB_API_KEY to the .env file")
+    return key
 
 
 ROOT = Path(__file__).resolve().parent.parent

@@ -243,6 +243,11 @@ class TestEndpoints(BooksTestCase):
             self.client.get("/ocr", params={"book": book_id, "page_range": "0"})
         self.assertEqual(FakeDatalab.api_key, "a-key-from-the-env-file")
 
+    def test_a_missing_datalab_key_is_a_clear_error(self):
+        with mock.patch.dict("os.environ", {"DATALAB_API_KEY": ""}):
+            with self.assertRaisesRegex(ValueError, "DATALAB_API_KEY"):
+                ocr.datalab_api_key()
+
     def test_ocr_refuses_a_bad_range_before_paying_for_anything(self):
         book_id = self.upload(make_pdf(30)).json()["id"]
         for page_range in ["0-10", "x", "5-2", "0-40"]:
