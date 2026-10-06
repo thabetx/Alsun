@@ -44,7 +44,7 @@ class TestSaveUpload(BooksTestCase):
         self.assertEqual((book.name, book.pages, book.sample), ("كتاب جميل.pdf", 3, False))
         self.assertRegex(book.book, r"^[0-9a-f]{16}$")
         self.assertTrue((self.folder / f"{book.book}.pdf").is_file())
-        self.assertEqual(book.cache_dir, self.folder / "ocr_cache" / book.book)
+        self.assertFalse((self.folder / "ocr_cache").exists())  # the ocr is kept by the browser, not here
 
     def test_the_same_file_is_the_same_book(self):
         first = books.save_upload(make_pdf(2), "first.pdf")
@@ -104,7 +104,6 @@ class TestFindBook(BooksTestCase):
     def test_a_sample_is_found_by_its_file_name(self):
         found = books.find_book("yaqzan.pdf")
         self.assertTrue(found.sample)
-        self.assertEqual(found.cache_dir.name, "yaqzan")
 
     def test_a_book_that_does_not_exist_is_not_found(self):
         with self.assertRaises(FileNotFoundError):
@@ -221,7 +220,9 @@ class TestEndpoints(BooksTestCase):
         self.assertGreater(body["pages"], 0)
         self.assertEqual(self.client.get("/books/yaqzan.pdf/pdf").status_code, 200)
 
-    def test_ocr_reads_the_asked_pages_of_an_uploaded_book_and_keeps_them(self):
+    def test_ocr_reads_the_asked_pages_of_an_uploaded_book(self):
+        # nothing is kept between two requests: the browser keeps the ocr of a book in
+        # localStorage (web/ocr-store.js), so a second ask for a page is a new run of datalab
         book_id = self.upload(make_pdf(8)).json()["id"]
         first = self.client.get("/ocr", params={"book": book_id, "page_range": "0-2"})
         self.assertEqual(first.status_code, 200)
@@ -229,12 +230,12 @@ class TestEndpoints(BooksTestCase):
                          ["/page/0/Page/0", "/page/1/Page/0", "/page/2/Page/0"])
         self.assertEqual([call[1] for call in FakeDatalab.calls], ["0-2"])
 
-        # the pages are kept in the folder of the book: asking again, and asking for more, only pays for what is new
+        # asking again, and asking for more, is a new run of datalab for exactly what is asked
         again = self.client.get("/ocr", params={"book": book_id, "page_range": "1-4"})
         self.assertEqual([page["id"] for page in again.json()["children"]],
                          [f"/page/{n}/Page/0" for n in range(1, 5)])
-        self.assertEqual([call[1] for call in FakeDatalab.calls], ["0-2", "3-4"])
-        self.assertTrue((self.folder / "ocr_cache" / book_id / "0.json").is_file())
+        self.assertEqual([call[1] for call in FakeDatalab.calls], ["0-2", "1-4"])
+        self.assertFalse((self.folder / "ocr_cache").exists())
 
     def test_ocr_asks_datalab_with_the_key_of_the_env(self):
         book_id = self.upload(make_pdf(1)).json()["id"]

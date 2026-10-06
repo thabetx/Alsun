@@ -36,13 +36,20 @@ class Book:
     book: str  # the text that names it (see above)
     name: str  # what the user sees
     path: Path  # the pdf
-    cache_dir: Path  # the ocr pages of this book
     pages: int
     size: int
     sample: bool
 
     def as_dict(self):
-        return {"id": self.book, "name": self.name, "pages": self.pages, "size": self.size, "sample": self.sample}
+        # "modified" is when the pdf itself last changed. The browser keeps the ocr of a book in
+        # localStorage (web/ocr-store.js) and uses this to know that the file it read before is not
+        # this one any more; seconds, so the number stays exact in a javascript Number.
+        try:
+            modified = int(self.path.stat().st_mtime)
+        except OSError:
+            modified = 0
+        return {"id": self.book, "name": self.name, "pages": self.pages, "size": self.size,
+                "sample": self.sample, "modified": modified}
 
 
 def clean_name(name):
@@ -102,7 +109,7 @@ def find_book(book):
         except (OSError, ValueError):
             meta = {}
         return Book(
-            book=book, name=meta.get("name") or "book.pdf", path=pdf, cache_dir=UPLOAD_DIR / "ocr_cache" / book,
+            book=book, name=meta.get("name") or "book.pdf", path=pdf,
             pages=int(meta.get("pages") or count_pages(pdf)), size=pdf.stat().st_size, sample=False,
         )
 
@@ -111,7 +118,7 @@ def find_book(book):
         if not pdf.is_file():
             raise FileNotFoundError(f"no book {book}")
         return Book(
-            book=book, name=book, path=pdf, cache_dir=SAMPLE_DIR / "ocr_cache" / pdf.stem,
+            book=book, name=book, path=pdf,
             pages=count_pages(pdf), size=pdf.stat().st_size, sample=True,
         )
 

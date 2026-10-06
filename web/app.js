@@ -26,6 +26,7 @@ import { getJson } from "./api.js";
 import {
   fingerprintOf, loadSavedWork, clearSavedWork, enableSaving, pauseSaving, watchWork,
 } from "./saved-work.js";
+import { loadOcr, saveOcr } from "./ocr-store.js";
 
 document.getElementById("translated-heading").textContent = `الترجمة إلى ${targetLanguageInArabic()}`;
 
@@ -462,7 +463,18 @@ async function readBook(filename) {
   try {
     info = await getJson(`/books/${encodeURIComponent(filename)}`);
     showBookInTheSelect(info);
-    data = await readPages(info);
+
+    // the book read before is kept in localStorage, so the server is not asked to run the ocr and the
+    // llm again. "modified" of the book is what tells a pdf replaced under the same name apart.
+    const stamp = info.modified ? String(info.modified) : null;
+    const stored = loadOcr(filename, stamp);
+    if (stored) {
+      data = stored;
+    } else {
+      data = await readPages(info);
+      // a book that does not fit in the storage is not an error, but it is read again every time
+      if (stamp && !data.error && !saveOcr(filename, stamp, data)) showToast("تعذّر حفظ نتيجة OCR في المتصفح");
+    }
   } catch (e) {
     blockRows.innerHTML =
       `<tr><td colspan="4" style="color:#b3402e">تعذّرت قراءة الكتاب: ${escapeHtml(e.message)}</td></tr>`;

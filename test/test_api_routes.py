@@ -1,11 +1,8 @@
 import copy
 import json
-import os
 import sys
-import tempfile
 import types
 import unittest
-from pathlib import Path
 from unittest import mock
 
 from helpers import FakeLlm
@@ -417,82 +414,6 @@ class TestParagraphText(unittest.TestCase):
         with mock.patch.object(refine_ocr.client.chat.completions, "create", fake_llm):
             refine_ocr.refine_page(page)
         self.assertEqual(fake_llm.calls[0]["messages"][1]["content"], "اذيا صاحبي، علمه")
-
-
-class TestRefinedPageCache(unittest.TestCase):
-    def setUp(self):
-        sys.modules.setdefault("datalab_sdk", types.SimpleNamespace(ConvertOptions=object, DatalabClient=object))
-        import ocr
-        self.ocr = ocr
-
-    def test_the_refined_page_is_written_next_to_the_raw_one_and_read_back_after(self):
-        page = an_ocr_page()
-        with tempfile.TemporaryDirectory() as book:
-            book = Path(book)
-            fake_llm = FakeLlm(lambda kwargs: "نص")
-            with mock.patch.object(refine_ocr.client.chat.completions, "create", fake_llm):
-                refined = self.ocr.load_or_build_refined_page(book, 0, page)
-            self.assertEqual(refined["children"][1]["html"], "<p>نص</p>")
-            # 0.json is what datalab returned and stays untouched, 0_refined.json is ours
-            written = json.loads((book / "0_refined.json").read_text(encoding="utf-8"))
-            self.assertEqual(written["children"][1]["html"], "<p>نص</p>")
-            self.assertFalse((book / "0.json").exists())
-
-            # the second time the file on disk is used, and the llm is not called again
-            fake_llm = FakeLlm(lambda kwargs: "شيء آخر")
-            with mock.patch.object(refine_ocr.client.chat.completions, "create", fake_llm):
-                again = self.ocr.load_or_build_refined_page(book, 0, page)
-            self.assertEqual(again, refined)
-            self.assertEqual(fake_llm.calls, [])
-
-    def test_a_damaged_refined_file_is_built_again(self):
-        page = an_ocr_page()
-        with tempfile.TemporaryDirectory() as book:
-            book = Path(book)
-            (book / "0_refined.json").write_text("{ not json", encoding="utf-8")
-            fake_llm = FakeLlm(lambda kwargs: "نص")
-            with mock.patch.object(refine_ocr.client.chat.completions, "create", fake_llm):
-                refined = self.ocr.load_or_build_refined_page(book, 0, page)
-            self.assertEqual(refined["children"][1]["html"], "<p>نص</p>")
-            self.assertEqual(len(fake_llm.calls), 2)
-
-    def test_a_refined_file_older_than_its_raw_page_is_built_again(self):
-        # datalab writes the raw page again when the pdf changed: the refined text that
-        # came from the old one is stale and must not be served
-        page = an_ocr_page()
-        with tempfile.TemporaryDirectory() as book:
-            book = Path(book)
-            raw_file = book / "0.json"
-            raw_file.write_text(json.dumps(page, ensure_ascii=False), encoding="utf-8")
-            (book / "0_refined.json").write_text(
-                json.dumps({"block_type": "Page", "children": [{"block_type": "Text"}], "old": True}),
-                encoding="utf-8")
-            # the refined file was written before the raw page was fetched again
-            os.utime(book / "0_refined.json", ns=(1_000_000, 1_000_000))
-            os.utime(raw_file, ns=(2_000_000, 2_000_000))
-
-            fake_llm = FakeLlm(lambda kwargs: "نص جديد")
-            with mock.patch.object(refine_ocr.client.chat.completions, "create", fake_llm):
-                refined = self.ocr.load_or_build_refined_page(book, 0, page)
-            self.assertEqual(refined["children"][1]["html"], "<p>نص جديد</p>")
-            self.assertNotIn("old", refined)
-
-    def test_a_refined_file_newer_than_its_raw_page_is_kept(self):
-        page = an_ocr_page()
-        with tempfile.TemporaryDirectory() as book:
-            book = Path(book)
-            raw_file = book / "0.json"
-            raw_file.write_text(json.dumps(page, ensure_ascii=False), encoding="utf-8")
-            (book / "0_refined.json").write_text(
-                json.dumps({"block_type": "Page", "children": [], "marker": "cached"}), encoding="utf-8")
-            os.utime(raw_file, ns=(1_000_000, 1_000_000))
-            os.utime(book / "0_refined.json", ns=(2_000_000, 2_000_000))
-
-            fake_llm = FakeLlm(lambda kwargs: "نص")
-            with mock.patch.object(refine_ocr.client.chat.completions, "create", fake_llm):
-                refined = self.ocr.load_or_build_refined_page(book, 0, page)
-            self.assertEqual(refined["marker"], "cached")
-            self.assertEqual(fake_llm.calls, [])
 
 
 if __name__ == "__main__":

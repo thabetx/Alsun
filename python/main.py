@@ -40,7 +40,7 @@ from quran_detect import (  # noqa: E402
 from books import (  # noqa: E402
     MAX_PAGES_PER_REQUEST, MAX_UPLOAD_BYTES, check_page_range, find_book, save_upload,
 )
-from ocr import extract_segments_of_pdf  # noqa: E402
+from ocr import extract_pdf_segments  # noqa: E402
 from assistant_routes import (  # noqa: E402
     router as assistant_router, GlossaryEntry, ModelChoice, checked_glossary, checked_model,
 )
@@ -153,7 +153,7 @@ def book_pdf(book_id: str):
 
 @app.get("/ocr")
 def ocr(book: Optional[str] = None, page_range: Optional[str] = None, filename: Optional[str] = None):
-    """The Datalab blocks json of some pages of a book, fixed by the llm (kept per page, see ocr.py).
+    """The Datalab blocks json of some pages of a book, fixed by the llm (kept by the browser, see ocr.py).
 
     page_range is 0-indexed ("0-4,7"), at most MAX_PAGES_PER_REQUEST pages: the front reads a long book
     a few pages at a time. A short book can be asked without it. `filename` is the old name of `book`.
@@ -166,7 +166,7 @@ def ocr(book: Optional[str] = None, page_range: Optional[str] = None, filename: 
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
     try:
-        return extract_segments_of_pdf(found.path, found.cache_dir, wanted)
+        return extract_pdf_segments(found.path, wanted)
     except Exception as error:  # noqa: BLE001 - the ocr service is outside, whatever it raises is "the ocr failed"
         raise HTTPException(status_code=502, detail=f"the ocr failed: {type(error).__name__}")
 
