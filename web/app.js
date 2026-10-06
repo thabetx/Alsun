@@ -80,8 +80,8 @@ function revealRow(rowId, on, from) {
   setRowHighlight(tr, on);
   if (from !== "book") highlightRowInPreview(rowId, on);
   if (!on) return;
-  if (from !== "pdf") tr.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  if (from !== "table") scrollPdfToRow(tr);
+  if (from !== "table") tr.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  if (from !== "pdf") scrollPdfToRow(tr);
 }
 
 // the pdf panel turns to the page that holds the first block of the row
